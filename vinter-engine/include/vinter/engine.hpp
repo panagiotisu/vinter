@@ -2,17 +2,18 @@
 #include <memory>
 
 namespace vn {
+    struct ProjectSettings;
     class Window;
 
     class Engine {
     public:
-        Engine();
+        explicit Engine(const ProjectSettings& project_settings);
         virtual ~Engine();
 
         void run();
 
     protected:
-        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Window> window;
 
         virtual void load() {}
         virtual void poll_events();

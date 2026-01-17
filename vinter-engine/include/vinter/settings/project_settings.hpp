@@ -6,8 +6,8 @@
 
 namespace vn {
     struct ProjectSettings {
-        WindowSettings window_settings;
-        RendererSettings renderer_settings;
-        PhysicsSettings physics_settings;
+        WindowSettings window;
+        RendererSettings renderer;
+        PhysicsSettings physics;
     };
 } // vn

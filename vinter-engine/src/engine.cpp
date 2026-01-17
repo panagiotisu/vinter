@@ -3,9 +3,10 @@
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
 #include "vinter/window.hpp"
+#include "vinter/settings/project_settings.hpp"
 
 namespace vn {
-    Engine::Engine() {
+    Engine::Engine(const ProjectSettings &project_settings) {
         if (!SDL_Init(
             SDL_INIT_VIDEO |
             SDL_INIT_AUDIO |
@@ -15,6 +16,10 @@ namespace vn {
         )) {
             throw std::runtime_error(SDL_GetError());
         }
+
+        // Forgo member initialization list to initialize SDL before other systems.
+        // TODO: Bring back member initialization for Engine constructor or find better alternative.
+        window = std::make_unique<Window>(project_settings.window);
     }
 
     Engine::~Engine() {
