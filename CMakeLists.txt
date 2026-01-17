@@ -13,9 +13,9 @@ set(QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER ON CACHE INTERNAL "")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-add_subdirectory(vinter-engine)
-add_subdirectory(vinter-editor)
-add_subdirectory(game-bomberman)
+add_subdirectory("vinter-engine")
+add_subdirectory("vinter-editor")
+add_subdirectory("examples/bomberman")
 
 ######################################################################################################################
 # Platform and Compiler settings
