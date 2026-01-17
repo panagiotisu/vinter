@@ -20,8 +20,11 @@ namespace vn {
             minimized,
             hidden,
             borderless,
-            on_top,
+            always_on_top,
             mouse_captured,
+            mouse_grabbed,
+            mouse_focus,
+            mouse_relative_mode,
             keyboard_grabbed,
             high_pixel_density;
         };
