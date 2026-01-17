@@ -2,17 +2,14 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-#include "vinter/window.hpp"
 #include "vinter/settings/project_settings.hpp"
+#include "vinter/window.hpp"
+#include "vinter/renderer.hpp"
 
 namespace vn {
     Engine::Engine(const ProjectSettings &project_settings) {
         if (!SDL_Init(
-            SDL_INIT_VIDEO |
-            SDL_INIT_AUDIO |
-            SDL_INIT_EVENTS |
-            SDL_INIT_GAMEPAD |
-            SDL_INIT_JOYSTICK
+            SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD | SDL_INIT_JOYSTICK
         )) {
             throw std::runtime_error(SDL_GetError());
         }
@@ -20,6 +17,7 @@ namespace vn {
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
         window = std::make_unique<Window>(project_settings.window);
+        renderer = Renderer::create(project_settings.renderer, *window);
     }
 
     Engine::~Engine() {

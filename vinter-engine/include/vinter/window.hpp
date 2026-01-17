@@ -2,6 +2,8 @@
 
 #include <memory>
 
+struct SDL_Window;
+
 namespace vn {
     struct WindowSettings;
 
@@ -9,6 +11,8 @@ namespace vn {
     public:
         explicit Window(const WindowSettings& window_settings);
         ~Window();
+
+        [[nodiscard]] SDL_Window* get_native_handle() const;
 
     private:
         struct Impl;
