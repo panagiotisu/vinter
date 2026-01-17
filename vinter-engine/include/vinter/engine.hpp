@@ -10,7 +10,7 @@ namespace vn {
 
     protected:
         virtual void load() {}
-        virtual void poll_events() {}
+        virtual void poll_events();
         virtual void update() {}
         virtual void render() {}
 
