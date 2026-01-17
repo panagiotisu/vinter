@@ -1,6 +1,9 @@
 #pragma once
+#include <memory>
 
 namespace vn {
+    class Window;
+
     class Engine {
     public:
         Engine();
@@ -9,6 +12,8 @@ namespace vn {
         void run();
 
     protected:
+        std::unique_ptr<Window> m_window;
+
         virtual void load() {}
         virtual void poll_events();
         virtual void update() {}

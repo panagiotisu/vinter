@@ -9,7 +9,7 @@ namespace vn {
 
     void Engine::run() {
         m_running = true;
-
+        
         load();
         while (m_running) {
             poll_events();
