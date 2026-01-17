@@ -2,14 +2,28 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-namespace vn {
-    Engine::Engine() {}
+#include "vinter/window.hpp"
 
-    Engine::~Engine() {}
+namespace vn {
+    Engine::Engine() {
+        if (!SDL_Init(
+            SDL_INIT_VIDEO |
+            SDL_INIT_AUDIO |
+            SDL_INIT_EVENTS |
+            SDL_INIT_GAMEPAD |
+            SDL_INIT_JOYSTICK
+        )) {
+            throw std::runtime_error(SDL_GetError());
+        }
+    }
+
+    Engine::~Engine() {
+        SDL_Quit();
+    }
 
     void Engine::run() {
         m_running = true;
-        
+
         load();
         while (m_running) {
             poll_events();
