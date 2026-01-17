@@ -8,6 +8,20 @@ namespace vn {
     struct Window::Impl {
         SDL_Window* sdl_window_backend;
 
+        explicit Impl(const WindowSettings& window_settings)
+            : sdl_window_backend(SDL_CreateWindow(
+                window_settings.title.c_str(),
+                window_settings.initial_size.width,
+                window_settings.initial_size.height,
+                to_sdl_window_flags(window_settings.flags)
+            )) {
+            if (!sdl_window_backend) throw std::runtime_error(SDL_GetError());
+        }
+
+        ~Impl() {
+            if (sdl_window_backend) SDL_DestroyWindow(sdl_window_backend);
+        }
+
         static SDL_WindowFlags to_sdl_window_flags(const WindowSettings::Flags& flags) {
             SDL_WindowFlags sdl_window_flags = 0;
 
@@ -28,10 +42,9 @@ namespace vn {
         }
     };
 
-    Window::Window(const WindowSettings &window_settings) {
+    Window::Window(const WindowSettings &window_settings)
+        : m_impl(std::make_unique<Impl>(window_settings)) {
     }
 
-    Window::~Window() {
-        SDL_DestroyWindow(m_impl->sdl_window_backend);
-    }
+    Window::~Window() = default;
 } // vn
