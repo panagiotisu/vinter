@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vinter/engine.hpp>
+#include <vinter/color.hpp>
+#include "vinter/renderer.hpp"
 
 class Bomberman : public vn::Engine {
 public:
@@ -11,6 +13,6 @@ public:
 protected:
     void load() override {}
     void poll_events() override { Engine::poll_events(); }
-    void update() override {}
-    void render() override {}
+    void update(float delta) override {}
+    void render() override { renderer->set_clear_color(vn::colors::BLUE); }
 };

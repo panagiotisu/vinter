@@ -2,8 +2,9 @@
 
 #include <SDL3/SDL.h>
 
-#include "vinter/window.hpp"
 #include "vinter/settings/renderer_settings.hpp"
+#include "vinter/window.hpp"
+#include "vinter/color.hpp"
 
 namespace vn {
     struct RendererSDL::Impl {
@@ -43,6 +44,12 @@ namespace vn {
     RendererSDL::~RendererSDL() = default;
 
     void RendererSDL::begin_frame() {
+        const auto clear_color = get_clear_color();
+
+        SDL_SetRenderDrawColor(
+            m_impl->sdl_renderer_backend,
+            clear_color.r, clear_color.g, clear_color.b, clear_color.a
+        );
         SDL_RenderClear(m_impl->sdl_renderer_backend);
     }
 

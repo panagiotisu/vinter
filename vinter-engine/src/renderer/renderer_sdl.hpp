@@ -10,12 +10,11 @@ namespace vn {
         RendererSDL(const RendererSettings& renderer_settings, const Window& window);
         ~RendererSDL() override;
 
-        void begin_frame() override;
-
-        void end_frame() override;
-
     private:
         struct Impl;
         std::unique_ptr<Impl> m_impl;
+
+        void begin_frame() override;
+        void end_frame() override;
     };
 } // vn

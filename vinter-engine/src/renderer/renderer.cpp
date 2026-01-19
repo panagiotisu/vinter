@@ -18,4 +18,7 @@ namespace vn {
     }
 
     Renderer::~Renderer() {}
+
+    Color Renderer::get_clear_color() const { return m_clear_color; }
+    void Renderer::set_clear_color(const Color color) { m_clear_color = color; }
 }

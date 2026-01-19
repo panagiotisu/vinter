@@ -36,7 +36,9 @@ namespace vn {
             time->update();
             update(time->get_delta());
 
+            renderer->begin_frame();
             render();
+            renderer->end_frame();
         }
     }
 
