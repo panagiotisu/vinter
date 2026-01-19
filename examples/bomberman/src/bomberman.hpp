@@ -22,6 +22,6 @@ protected:
     }
 
     void render() override {
-        renderer->set_clear_color(vn::colors::BLUE);
+        renderer->set_clear_color(vn::colors::DARK_BLUE);
     }
 };
