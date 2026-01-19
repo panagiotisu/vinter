@@ -28,7 +28,7 @@ namespace vn {
         std::unique_ptr<Time> time;
 
         virtual void load() {}
-        virtual void poll_events();
+        virtual void poll_events() {}
         virtual void update(float delta) {}
         virtual void render() {}
 

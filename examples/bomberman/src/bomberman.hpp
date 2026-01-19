@@ -9,8 +9,19 @@ public:
     }
 
 protected:
-    void load() override {}
-    void poll_events() override { Engine::poll_events(); }
-    void update(float delta) override {}
-    void render() override { renderer->set_clear_color(vn::colors::BLUE); }
+    void load() override {
+
+    }
+
+    void poll_events() override {
+
+    }
+
+    void update(float delta) override {
+
+    }
+
+    void render() override {
+        renderer->set_clear_color(vn::colors::BLUE);
+    }
 };
