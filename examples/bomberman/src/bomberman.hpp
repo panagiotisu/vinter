@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vinter/engine.hpp>
-#include <vinter/color.hpp>
-#include "vinter/renderer.hpp"
 
 class Bomberman : public vn::Engine {
 public:

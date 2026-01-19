@@ -1,5 +1,3 @@
-#include <vinter/settings/project_settings.hpp>
-
 #include "bomberman.hpp"
 
 int main() {

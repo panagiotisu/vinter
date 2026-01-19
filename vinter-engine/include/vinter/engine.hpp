@@ -1,5 +1,13 @@
 #pragma once
+
 #include <memory>
+
+// TODO: Place these in a fwd.hpp.
+#include "vinter/settings/project_settings.hpp"
+#include "vinter/window.hpp"
+#include "vinter/color.hpp"
+#include "vinter/renderer.hpp"
+#include "vinter/time.hpp"
 
 namespace vn {
     struct ProjectSettings;
