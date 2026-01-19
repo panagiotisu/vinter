@@ -34,8 +34,7 @@ namespace vn {
             poll_events();
 
             time->update();
-            update();
-
+            update(time->get_delta());
 
             render();
         }
