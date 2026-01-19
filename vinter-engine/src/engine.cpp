@@ -5,6 +5,7 @@
 #include "vinter/settings/project_settings.hpp"
 #include "vinter/window.hpp"
 #include "vinter/renderer.hpp"
+#include "vinter/time.hpp"
 
 namespace vn {
     Engine::Engine(const ProjectSettings &project_settings) {
@@ -18,6 +19,7 @@ namespace vn {
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
         window = std::make_unique<Window>(project_settings.window);
         renderer = Renderer::create(project_settings.renderer, *window);
+        time = std::make_unique<Time>();
     }
 
     Engine::~Engine() {
@@ -30,7 +32,11 @@ namespace vn {
         load();
         while (m_running) {
             poll_events();
+
+            time->update();
             update();
+
+
             render();
         }
     }

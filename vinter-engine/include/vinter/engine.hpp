@@ -5,6 +5,7 @@ namespace vn {
     struct ProjectSettings;
     class Window;
     class Renderer;
+    class Time;
 
     class Engine {
     public:
@@ -16,6 +17,7 @@ namespace vn {
     protected:
         std::unique_ptr<Window> window;
         std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<Time> time;
 
         virtual void load() {}
         virtual void poll_events();
