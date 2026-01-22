@@ -8,7 +8,7 @@
 #include "vinter/time.hpp"
 
 namespace vn {
-    Engine::Engine(const ProjectSettings &project_settings) {
+    Engine::Engine(const ProjectSettings& project_settings) {
         if (!SDL_Init(
             SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD | SDL_INIT_JOYSTICK
         )) {

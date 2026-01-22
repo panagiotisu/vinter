@@ -39,6 +39,10 @@ namespace vn {
 
     RendererSDL::RendererSDL(const RendererSettings &renderer_settings, const Window &window)
         : m_impl(std::make_unique<Impl>(renderer_settings, window)) {
+
+        // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
+        // the window does not show blank state due to non-existent renderer.
+        SDL_ShowWindow(window.get_native_handle());
     }
 
     RendererSDL::~RendererSDL() = default;
