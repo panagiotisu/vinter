@@ -2,11 +2,6 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-#include "vinter/settings/project_settings.hpp"
-#include "vinter/window.hpp"
-#include "vinter/renderer.hpp"
-#include "vinter/time.hpp"
-
 namespace vn {
     Engine::Engine(const ProjectSettings& project_settings) {
         if (!SDL_Init(
