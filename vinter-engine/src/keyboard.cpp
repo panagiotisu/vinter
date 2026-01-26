@@ -92,11 +92,11 @@ namespace vn {
 
     bool Keyboard::is_key_pressed(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return m_impl->current[sdl_key] && m_impl->previous[sdl_key];
+        return m_impl->current[sdl_key];
     }
     bool Keyboard::is_key_released(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return !m_impl->current[sdl_key] && !m_impl->previous[sdl_key];
+        return !m_impl->current[sdl_key];
     }
     bool Keyboard::is_key_just_pressed(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);

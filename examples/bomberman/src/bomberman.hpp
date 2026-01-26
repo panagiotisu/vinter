@@ -21,7 +21,7 @@ protected:
     }
 
     void update(float delta) override {
-        if (keyboard->is_key_just_pressed(vn::Key::Up)) std::print("\n Pressed");
+        if (keyboard->is_key_pressed(vn::Key::Up)) std::print("\n Pressed");
     }
 
     void render() override {
