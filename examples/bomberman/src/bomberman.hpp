@@ -2,6 +2,8 @@
 
 #include <vinter/engine.hpp>
 
+#include "vinter/keyboard.hpp"
+
 class Bomberman : public vn::Engine {
 public:
     explicit Bomberman(const vn::ProjectSettings& project_settings)
@@ -18,10 +20,13 @@ protected:
     }
 
     void update(float delta) override {
-
+        if (keyboard->is_key_just_pressed(vn::Key::A)) m_background_color = vn::colors::RED;
     }
 
     void render() override {
-        renderer->set_clear_color(vn::colors::DARK_BLUE);
+        renderer->set_clear_color(m_background_color);
     }
+
+private:
+    vn::Color m_background_color { vn::colors::DARK_BLUE };
 };

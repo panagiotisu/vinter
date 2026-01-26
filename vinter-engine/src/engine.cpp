@@ -2,6 +2,8 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
+#include "vinter/keyboard.hpp"
+
 namespace vn {
     Engine::Engine(const ProjectSettings& project_settings) {
         if (!SDL_Init(
@@ -15,6 +17,7 @@ namespace vn {
         window = std::make_unique<Window>(project_settings.window);
         renderer = Renderer::create(project_settings.renderer, *window);
         time = std::make_unique<Time>();
+        keyboard = std::make_unique<Keyboard>();
     }
 
     Engine::~Engine() { SDL_Quit(); }
@@ -38,6 +41,7 @@ namespace vn {
 
             time->update();
             update(time->get_delta());
+            keyboard->update();
 
             renderer->begin_frame();
             render();

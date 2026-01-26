@@ -8,13 +8,9 @@
 #include "vinter/color.hpp"
 #include "vinter/renderer.hpp"
 #include "vinter/time.hpp"
+#include "vinter/keyboard.hpp"
 
 namespace vn {
-    struct ProjectSettings;
-    class Window;
-    class Renderer;
-    class Time;
-
     class Engine {
     public:
         explicit Engine(const ProjectSettings& project_settings);
@@ -26,6 +22,7 @@ namespace vn {
         std::unique_ptr<Window> window;
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<Time> time;
+        std::unique_ptr<Keyboard> keyboard;
 
         virtual void load() {}
         virtual void poll_events() {}
