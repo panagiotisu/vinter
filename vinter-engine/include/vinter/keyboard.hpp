@@ -24,7 +24,7 @@ namespace vn {
         [[nodiscard]] bool is_key_just_released(Key key) const;
 
     private:
-        void update() const;
+        void update();
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;

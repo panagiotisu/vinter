@@ -5,17 +5,9 @@
 #include <array>
 
 namespace vn {
-    struct KeyStatesSDL {
-        const bool* current { nullptr };
-        std::array<bool, SDL_SCANCODE_COUNT> previous {};
-    };
-
     struct Keyboard::Impl {
-        KeyStatesSDL key_states_sdl = {};
-
-        Impl()
-            : key_states_sdl({SDL_GetKeyboardState(nullptr)}) {
-        }
+        const bool* current { SDL_GetKeyboardState(nullptr) };
+        std::array<bool, SDL_SCANCODE_COUNT> previous {};
 
         static SDL_Scancode to_sdl_scancode(const Key key) {
             switch (key) {
@@ -110,24 +102,24 @@ namespace vn {
 
     bool Keyboard::is_key_pressed(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return m_impl->key_states_sdl.current[sdl_key] && m_impl->key_states_sdl.previous[sdl_key];
+        return m_impl->current[sdl_key] && m_impl->previous[sdl_key];
     }
     bool Keyboard::is_key_released(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return !m_impl->key_states_sdl.current[sdl_key] && !m_impl->key_states_sdl.previous[sdl_key];
+        return !m_impl->current[sdl_key] && !m_impl->previous[sdl_key];
     }
     bool Keyboard::is_key_just_pressed(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return m_impl->key_states_sdl.current[sdl_key] && !m_impl->key_states_sdl.previous[sdl_key];
+        return m_impl->current[sdl_key] && !m_impl->previous[sdl_key];
     }
     bool Keyboard::is_key_just_released(const Key key) const {
         const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return !m_impl->key_states_sdl.current[sdl_key] && m_impl->key_states_sdl.previous[sdl_key];
+        return !m_impl->current[sdl_key] && m_impl->previous[sdl_key];
     }
 
-    void Keyboard::update() const {
+    void Keyboard::update() {
         for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++) {
-            m_impl->key_states_sdl.previous[i] = m_impl->key_states_sdl.current[i];
+            m_impl->previous[i] = m_impl->current[i];
         }
     }
 } // vn
