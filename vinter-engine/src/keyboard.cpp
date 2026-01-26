@@ -71,13 +71,6 @@ namespace vn {
 
                 // Control keys
                 case Key::Esc:       return SDL_SCANCODE_ESCAPE;
-                case Key::ShiftL:    return SDL_SCANCODE_LSHIFT;
-                case Key::ShiftR:    return SDL_SCANCODE_RSHIFT;
-                case Key::CtrlL:     return SDL_SCANCODE_LCTRL;
-                case Key::CtrlR:     return SDL_SCANCODE_RCTRL;
-                case Key::AltL:      return SDL_SCANCODE_LALT;
-                case Key::AltR:      return SDL_SCANCODE_RALT;
-                case Key::Super:     return SDL_SCANCODE_LGUI;
                 case Key::Space:     return SDL_SCANCODE_SPACE;
                 case Key::Backspace: return SDL_SCANCODE_BACKSPACE;
                 case Key::Enter:     return SDL_SCANCODE_RETURN;
@@ -87,9 +80,6 @@ namespace vn {
                 case Key::Down:  return SDL_SCANCODE_DOWN;
                 case Key::Left:  return SDL_SCANCODE_LEFT;
                 case Key::Right: return SDL_SCANCODE_RIGHT;
-
-                // Special
-                case Key::Fn: return SDL_SCANCODE_UNKNOWN; // Fn is firmware-level on most keyboards
             }
         }
     };

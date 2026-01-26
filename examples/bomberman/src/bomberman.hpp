@@ -1,4 +1,5 @@
 #pragma once
+#include <print>
 
 #include <vinter/engine.hpp>
 
@@ -20,7 +21,7 @@ protected:
     }
 
     void update(float delta) override {
-        if (keyboard->is_key_just_pressed(vn::Key::A)) m_background_color = vn::colors::RED;
+        if (keyboard->is_key_just_pressed(vn::Key::Up)) std::print("\n Pressed");
     }
 
     void render() override {
