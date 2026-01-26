@@ -19,7 +19,7 @@ namespace vn {
         ~Keyboard();
 
         [[nodiscard]] bool is_key_pressed(Key key) const;
-        [[nodiscard]] bool is_key_released(Key key) const;
+        [[nodiscard]] bool is_key_up(Key key) const;
         [[nodiscard]] bool is_key_just_pressed(Key key) const;
         [[nodiscard]] bool is_key_just_released(Key key) const;
 
