@@ -39,7 +39,7 @@ namespace vn {
                 case Key::_9: return SDL_SCANCODE_9;
                 case Key::_0: return SDL_SCANCODE_0;
 
-                // Letters (QWERTY order)
+                // Letters
                 case Key::Q: return SDL_SCANCODE_Q;
                 case Key::W: return SDL_SCANCODE_W;
                 case Key::E: return SDL_SCANCODE_E;
@@ -50,7 +50,6 @@ namespace vn {
                 case Key::I: return SDL_SCANCODE_I;
                 case Key::O: return SDL_SCANCODE_O;
                 case Key::P: return SDL_SCANCODE_P;
-
                 case Key::A: return SDL_SCANCODE_A;
                 case Key::S: return SDL_SCANCODE_S;
                 case Key::D: return SDL_SCANCODE_D;
@@ -60,7 +59,6 @@ namespace vn {
                 case Key::J: return SDL_SCANCODE_J;
                 case Key::K: return SDL_SCANCODE_K;
                 case Key::L: return SDL_SCANCODE_L;
-
                 case Key::Z: return SDL_SCANCODE_Z;
                 case Key::X: return SDL_SCANCODE_X;
                 case Key::C: return SDL_SCANCODE_C;
@@ -69,17 +67,62 @@ namespace vn {
                 case Key::N: return SDL_SCANCODE_N;
                 case Key::M: return SDL_SCANCODE_M;
 
-                // Control keys
+                // Special keys
                 case Key::Esc:       return SDL_SCANCODE_ESCAPE;
+                case Key::Tab:       return SDL_SCANCODE_TAB;
+                case Key::CapsLock:  return SDL_SCANCODE_CAPSLOCK;
                 case Key::Space:     return SDL_SCANCODE_SPACE;
-                case Key::Backspace: return SDL_SCANCODE_BACKSPACE;
                 case Key::Enter:     return SDL_SCANCODE_RETURN;
+                case Key::Backspace: return SDL_SCANCODE_BACKSPACE;
+                case Key::Insert:    return SDL_SCANCODE_INSERT;
+                case Key::Delete:    return SDL_SCANCODE_DELETE;
+                case Key::Home:      return SDL_SCANCODE_HOME;
+                case Key::End:       return SDL_SCANCODE_END;
+                case Key::PageUp:    return SDL_SCANCODE_PAGEUP;
+                case Key::PageDown:  return SDL_SCANCODE_PAGEDOWN;
 
                 // Arrows
                 case Key::Up:    return SDL_SCANCODE_UP;
                 case Key::Down:  return SDL_SCANCODE_DOWN;
                 case Key::Left:  return SDL_SCANCODE_LEFT;
                 case Key::Right: return SDL_SCANCODE_RIGHT;
+
+                // Symbols/Punctuation
+                case Key::Minus:        return SDL_SCANCODE_MINUS;
+                case Key::Equals:       return SDL_SCANCODE_EQUALS;
+                case Key::LeftBracket:  return SDL_SCANCODE_LEFTBRACKET;
+                case Key::RightBracket: return SDL_SCANCODE_RIGHTBRACKET;
+                case Key::Semicolon:    return SDL_SCANCODE_SEMICOLON;
+                case Key::Apostrophe:   return SDL_SCANCODE_APOSTROPHE;
+                case Key::Grave:        return SDL_SCANCODE_GRAVE;
+                case Key::Backslash:    return SDL_SCANCODE_BACKSLASH;
+                case Key::Comma:        return SDL_SCANCODE_COMMA;
+                case Key::Period:       return SDL_SCANCODE_PERIOD;
+                case Key::Slash:        return SDL_SCANCODE_SLASH;
+
+                // Numpad
+                case Key::Numpad0: return SDL_SCANCODE_KP_0;
+                case Key::Numpad1: return SDL_SCANCODE_KP_1;
+                case Key::Numpad2: return SDL_SCANCODE_KP_2;
+                case Key::Numpad3: return SDL_SCANCODE_KP_3;
+                case Key::Numpad4: return SDL_SCANCODE_KP_4;
+                case Key::Numpad5: return SDL_SCANCODE_KP_5;
+                case Key::Numpad6: return SDL_SCANCODE_KP_6;
+                case Key::Numpad7: return SDL_SCANCODE_KP_7;
+                case Key::Numpad8: return SDL_SCANCODE_KP_8;
+                case Key::Numpad9: return SDL_SCANCODE_KP_9;
+                case Key::NumpadMultiply: return SDL_SCANCODE_KP_MULTIPLY;
+                case Key::NumpadDivide:   return SDL_SCANCODE_KP_DIVIDE;
+                case Key::NumpadPlus:     return SDL_SCANCODE_KP_PLUS;
+                case Key::NumpadMinus:    return SDL_SCANCODE_KP_MINUS;
+                case Key::NumpadEnter:    return SDL_SCANCODE_KP_ENTER;
+                case Key::NumpadPeriod:   return SDL_SCANCODE_KP_PERIOD;
+                case Key::NumLock:        return SDL_SCANCODE_NUMLOCKCLEAR;
+
+                // Other
+                case Key::PrintScreen: return SDL_SCANCODE_PRINTSCREEN;
+                case Key::ScrollLock:  return SDL_SCANCODE_SCROLLLOCK;
+                case Key::Pause:       return SDL_SCANCODE_PAUSE;
             }
         }
     };
