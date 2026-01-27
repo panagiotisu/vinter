@@ -1,4 +1,4 @@
-#include "vinter/keyboard.hpp"
+#include "vinter/input/keyboard.hpp"
 
 #include <SDL3/SDL.h>
 

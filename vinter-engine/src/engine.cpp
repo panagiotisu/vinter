@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-#include "vinter/keyboard.hpp"
+#include "../include/vinter/input/keyboard.hpp"
 
 namespace vn {
     Engine::Engine(const ProjectSettings& project_settings) {
@@ -18,6 +18,7 @@ namespace vn {
         renderer = Renderer::create(project_settings.renderer, *window);
         time = std::make_unique<Time>();
         keyboard = std::make_unique<Keyboard>();
+        mouse = std::make_unique<Mouse>();
     }
 
     Engine::~Engine() { SDL_Quit(); }
@@ -36,12 +37,18 @@ namespace vn {
                 ) {
                     m_running = false;
                 }
+
+                if (sdl_event.type == SDL_EVENT_MOUSE_WHEEL) {
+                    mouse->handle_wheel_event(sdl_event.wheel.y);
+                }
             }
+
             poll_events();
 
             time->update();
             update(time->get_delta());
             keyboard->update();
+            mouse->update();
 
             renderer->begin_frame();
             render();

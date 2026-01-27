@@ -8,7 +8,8 @@
 #include "vinter/color.hpp"
 #include "vinter/renderer.hpp"
 #include "vinter/time.hpp"
-#include "vinter/keyboard.hpp"
+#include "input/keyboard.hpp"
+#include "input/mouse.hpp"
 
 namespace vn {
     class Engine {
@@ -23,6 +24,7 @@ namespace vn {
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<Time> time;
         std::unique_ptr<Keyboard> keyboard;
+        std::unique_ptr<Mouse> mouse;
 
         virtual void load() {}
         virtual void poll_events() {}

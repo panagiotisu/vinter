@@ -1,9 +1,6 @@
 #pragma once
 #include <print>
-
 #include <vinter/engine.hpp>
-
-#include "vinter/keyboard.hpp"
 
 class Bomberman : public vn::Engine {
 public:
@@ -21,7 +18,7 @@ protected:
     }
 
     void update(float delta) override {
-        if (keyboard->is_key_pressed(vn::Key::Up)) std::print("\n Pressed");
+        if (mouse->is_button_just_released(vn::MouseButton::Left)) std::println("Pressed");
     }
 
     void render() override {
