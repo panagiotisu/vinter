@@ -24,7 +24,9 @@ namespace vn {
         [[nodiscard]] glm::vec2 get_delta() const;
         [[nodiscard]] float get_scroll_delta() const;
 
+        [[nodiscard]] bool is_cursor_visible() const;
         void set_cursor_visible(bool visible) const;
+
 
     private:
         void handle_wheel_event(float delta);

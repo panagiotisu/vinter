@@ -73,6 +73,10 @@ namespace vn {
         return m_impl->scroll_delta;
     }
 
+    bool Mouse::is_cursor_visible() const {
+        return SDL_CursorVisible();
+    }
+
     void Mouse::set_cursor_visible(const bool visible) const {
         if (visible) SDL_ShowCursor();
         else SDL_HideCursor();

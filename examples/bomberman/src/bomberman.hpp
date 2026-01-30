@@ -18,11 +18,9 @@ protected:
     }
 
     void update(float delta) override {
-        if (mouse->is_button_just_pressed(vn::MouseButton::X1)) {
-            mouse->set_cursor_visible(false);
-        }
-        if (keyboard->is_key_just_pressed(vn::Key::C)) {
-            mouse->set_cursor_visible(true);
+        if (mouse->is_button_just_pressed(vn::MouseButton::Left)) {
+            if (mouse->is_cursor_visible()) mouse->set_cursor_visible(false);
+            else mouse->set_cursor_visible(true);
         }
     }
 
