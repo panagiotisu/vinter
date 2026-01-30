@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include <memory>
+#include "vinter/input/buttons.hpp"
 
 namespace vn {
     enum class MouseButton {
@@ -13,9 +13,6 @@ namespace vn {
         friend class Engine;
 
     public:
-        Mouse();
-        ~Mouse();
-
         [[nodiscard]] bool is_button_pressed(MouseButton button) const;
         [[nodiscard]] bool is_button_just_pressed(MouseButton button) const;
         [[nodiscard]] bool is_button_just_released(MouseButton button) const;
@@ -27,12 +24,14 @@ namespace vn {
         [[nodiscard]] bool is_cursor_visible() const;
         void set_cursor_visible(bool visible) const;
 
-
     private:
         void handle_wheel_event(float delta);
         void update();
 
-        struct Impl;
-        std::unique_ptr<Impl> m_impl;
+        Buttons<5> m_buttons {};
+        glm::vec2 m_position;
+        glm::vec2 m_position_previous;
+        float m_scroll;
+        float m_scroll_delta;
     };
 } // vn

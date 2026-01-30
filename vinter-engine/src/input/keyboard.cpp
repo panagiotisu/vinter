@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "buttons.hpp"
+#include "../../include/vinter/input/buttons.hpp"
 
 namespace vn {
     struct Keyboard::Impl {
