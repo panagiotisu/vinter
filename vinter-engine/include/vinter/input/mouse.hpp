@@ -27,7 +27,7 @@ namespace vn {
         void set_cursor_visible(bool visible) const;
 
     private:
-        void handle_wheel_event(int delta);
+        void handle_wheel_event(float delta);
         void update();
 
         struct Impl;

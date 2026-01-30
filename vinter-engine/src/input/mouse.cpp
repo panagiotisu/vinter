@@ -9,13 +9,13 @@ namespace vn {
         float x { 0 }, y { 0 };
         float x_previous { 0 }, y_previous { 0 };
 
-        int scroll { 0 };
-        int scroll_delta { 0 };
+        float scroll { 0 };
+        float scroll_delta { 0 };
 
         std::array<bool, 5> buttons {};
         std::array<bool, 5> buttons_previous {};
 
-        void handle_wheel_event(const int delta) {
+        void handle_wheel_event(const float delta) {
             scroll += delta;
         }
 
@@ -39,17 +39,17 @@ namespace vn {
             return static_cast<size_t>(button);
         }
 
-        bool is_button_pressed(const MouseButton button) const {
+        [[nodiscard]] bool is_button_pressed(const MouseButton button) const {
             const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
             return buttons[sdl_mouse_button];
         }
 
-        bool is_button_just_pressed(const MouseButton button) const {
+        [[nodiscard]] bool is_button_just_pressed(const MouseButton button) const {
             const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
             return buttons[sdl_mouse_button] && !buttons_previous[sdl_mouse_button];
         }
 
-        bool is_button_just_released(const MouseButton button) const {
+        [[nodiscard]] bool is_button_just_released(const MouseButton button) const {
             const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
             return !buttons[sdl_mouse_button] && buttons_previous[sdl_mouse_button];
         }
@@ -93,7 +93,7 @@ namespace vn {
         return m_impl->is_button_just_released(button);
     }
 
-    void Mouse::handle_wheel_event(const int delta) {
+    void Mouse::handle_wheel_event(const float delta) {
         m_impl->handle_wheel_event(delta);
     }
 

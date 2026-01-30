@@ -18,7 +18,13 @@ protected:
     }
 
     void update(float delta) override {
-        if (mouse->is_button_just_released(vn::MouseButton::Left)) std::println("Pressed");
+        if (mouse->get_scroll_delta() > 0) {
+            m_background_color = vn::colors::RED;
+        } else if (mouse->get_scroll_delta() < 0) {
+            m_background_color = vn::colors::GREEN;
+        } else {
+            m_background_color = vn::colors::DARK_BLUE;
+        }
     }
 
     void render() override {
