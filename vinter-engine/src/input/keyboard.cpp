@@ -2,12 +2,12 @@
 
 #include <SDL3/SDL.h>
 
-#include <array>
+#include "buttons.hpp"
 
 namespace vn {
     struct Keyboard::Impl {
-        const bool* current { SDL_GetKeyboardState(nullptr) };
-        std::array<bool, SDL_SCANCODE_COUNT> previous {};
+        const bool* sdl_state { SDL_GetKeyboardState(nullptr) };
+        Buttons<SDL_SCANCODE_COUNT> keys;
 
         static SDL_Scancode to_sdl_scancode(const Key key) {
             switch (key) {
@@ -134,21 +134,21 @@ namespace vn {
     Keyboard::~Keyboard() = default;
 
     bool Keyboard::is_key_pressed(const Key key) const {
-        const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return m_impl->current[sdl_key];
+        return m_impl->keys.is_pressed(Impl::to_sdl_scancode(key));
     }
     bool Keyboard::is_key_just_pressed(const Key key) const {
-        const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return m_impl->current[sdl_key] && !m_impl->previous[sdl_key];
+        return m_impl->keys.is_just_pressed(Impl::to_sdl_scancode(key));
     }
     bool Keyboard::is_key_just_released(const Key key) const {
-        const SDL_Scancode sdl_key = Impl::to_sdl_scancode(key);
-        return !m_impl->current[sdl_key] && m_impl->previous[sdl_key];
+        return m_impl->keys.is_just_released(Impl::to_sdl_scancode(key));
     }
 
     void Keyboard::update() {
+        m_impl->keys.update();
+
+        // Synchronize with actual sdl state.
         for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++) {
-            m_impl->previous[i] = m_impl->current[i];
+            m_impl->keys.state_current[i] = m_impl->sdl_state[i];
         }
     }
 } // vn

@@ -18,12 +18,11 @@ protected:
     }
 
     void update(float delta) override {
-        if (mouse->get_scroll_delta() > 0) {
-            m_background_color = vn::colors::RED;
-        } else if (mouse->get_scroll_delta() < 0) {
-            m_background_color = vn::colors::GREEN;
-        } else {
-            m_background_color = vn::colors::DARK_BLUE;
+        if (mouse->is_button_just_pressed(vn::MouseButton::X1)) {
+            mouse->set_cursor_visible(false);
+        }
+        if (keyboard->is_key_just_pressed(vn::Key::C)) {
+            mouse->set_cursor_visible(true);
         }
     }
 

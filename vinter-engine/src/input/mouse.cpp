@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 
-#include <array>
+#include "buttons.hpp"
 
 namespace vn {
     struct Mouse::Impl {
@@ -12,24 +12,24 @@ namespace vn {
         float scroll { 0 };
         float scroll_delta { 0 };
 
-        std::array<bool, 5> buttons {};
-        std::array<bool, 5> buttons_previous {};
+        Buttons<5> buttons;
 
         void handle_wheel_event(const float delta) {
             scroll += delta;
         }
 
-        void poll_state() {
+        void update() {
+            buttons.update();
+
             x_previous = x;
             y_previous = y;
-            buttons_previous = buttons;
 
             const SDL_MouseButtonFlags sdl_buttons = SDL_GetMouseState(&x, &y);
-            buttons[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
-            buttons[1] = (sdl_buttons & SDL_BUTTON_RMASK)  != 0;
-            buttons[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
-            buttons[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
-            buttons[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
+            buttons.state_current[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
+            buttons.state_current[1] = (sdl_buttons & SDL_BUTTON_RMASK)  != 0;
+            buttons.state_current[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
+            buttons.state_current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
+            buttons.state_current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
 
             scroll_delta = scroll; // Delta since last frame.
             scroll = 0;
@@ -40,18 +40,15 @@ namespace vn {
         }
 
         [[nodiscard]] bool is_button_pressed(const MouseButton button) const {
-            const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
-            return buttons[sdl_mouse_button];
+            return buttons.is_pressed(to_sdl_mouse_button(button));
         }
 
         [[nodiscard]] bool is_button_just_pressed(const MouseButton button) const {
-            const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
-            return buttons[sdl_mouse_button] && !buttons_previous[sdl_mouse_button];
+            return buttons.is_just_pressed(to_sdl_mouse_button(button));
         }
 
         [[nodiscard]] bool is_button_just_released(const MouseButton button) const {
-            const SDL_MouseButtonFlags sdl_mouse_button = to_sdl_mouse_button(button);
-            return !buttons[sdl_mouse_button] && buttons_previous[sdl_mouse_button];
+            return buttons.is_just_released(to_sdl_mouse_button(button));
         }
     };
 
@@ -98,6 +95,6 @@ namespace vn {
     }
 
     void Mouse::update() {
-        m_impl->poll_state();
+        m_impl->update();
     }
 } // vn
