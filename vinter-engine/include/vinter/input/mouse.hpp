@@ -22,7 +22,7 @@ namespace vn {
 
         [[nodiscard]] glm::vec2 get_position() const;
         [[nodiscard]] glm::vec2 get_delta() const;
-        [[nodiscard]] int get_scroll_delta() const;
+        [[nodiscard]] float get_scroll_delta() const;
 
         void set_cursor_visible(bool visible) const;
 

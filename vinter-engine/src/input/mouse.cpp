@@ -35,8 +35,8 @@ namespace vn {
             scroll = 0;
         }
 
-        static size_t to_sdl_mouse_button(MouseButton button) {
-            return static_cast<size_t>(button);
+        static std::size_t to_sdl_mouse_button(MouseButton button) {
+            return static_cast<std::size_t>(button);
         }
 
         [[nodiscard]] bool is_button_pressed(const MouseButton button) const {
@@ -72,7 +72,7 @@ namespace vn {
         };
     }
 
-    int Mouse::get_scroll_delta() const {
+    float Mouse::get_scroll_delta() const {
         return m_impl->scroll_delta;
     }
 
