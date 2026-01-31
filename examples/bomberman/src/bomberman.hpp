@@ -10,7 +10,8 @@ public:
 
 protected:
     void load() override {
-
+        input->bind("toggle_cursor_visibility", vn::MouseButton::Left);
+        input->bind("toggle_cursor_visibility", vn::Key::Space);
     }
 
     void poll_events() override {
@@ -18,7 +19,7 @@ protected:
     }
 
     void update(float delta) override {
-        if (mouse->is_button_just_pressed(vn::MouseButton::Left)) {
+        if (input->is_action_just_pressed("toggle_cursor_visibility")) {
             if (mouse->is_cursor_visible()) mouse->set_cursor_visible(false);
             else mouse->set_cursor_visible(true);
         }

@@ -19,6 +19,7 @@ namespace vn {
         time = std::make_unique<Time>();
         keyboard = std::make_unique<Keyboard>();
         mouse = std::make_unique<Mouse>();
+        input = std::make_unique<InputMap>(*keyboard, *mouse);
     }
 
     Engine::~Engine() { SDL_Quit(); }
