@@ -4,42 +4,15 @@
 #include <vector>
 #include <string_view>
 #include <cstdint>
+#include <variant>
 
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
 #include "vinter/utils/hash.hpp"
 
 namespace vn {
-
     using ActionID = std::uint64_t;
-
-    struct InputBinding {
-        enum class Type {
-            Key,
-            MouseButton
-        };
-
-        Type type;
-
-        union {
-            Key key;
-            MouseButton mouse_button;
-        };
-
-        static InputBinding from_key(const Key k) {
-            InputBinding b {};
-            b.type = Type::Key;
-            b.key = k;
-            return b;
-        }
-
-        static InputBinding from_mouse(const MouseButton mb) {
-            InputBinding b {};
-            b.type = Type::MouseButton;
-            b.mouse_button = mb;
-            return b;
-        }
-    };
+    using Input = std::variant<Key, MouseButton>;
 
     class InputMap {
     public:
@@ -51,79 +24,73 @@ namespace vn {
         }
 
         void bind(std::string_view action_name, const Key key) {
-            m_bindings[action_id(action_name)].push_back(
-                InputBinding::from_key(key)
-            );
+            m_bindings[action_id(action_name)].emplace_back(key);
         }
-
-        void bind(std::string_view action_name, const MouseButton button) {
-            m_bindings[action_id(action_name)].push_back(
-                InputBinding::from_mouse(button)
-            );
+        void bind(std::string_view action_name, const MouseButton mouse_button) {
+            m_bindings[action_id(action_name)].emplace_back(mouse_button);
         }
 
         [[nodiscard]] bool is_action_pressed(std::string_view action_name) const {
-            return check(action_name, Query::Pressed);
+            return check_action_state(action_name, ActionState::Pressed);
         }
-
         [[nodiscard]] bool is_action_just_pressed(std::string_view action_name) const {
-            return check(action_name, Query::JustPressed);
+            return check_action_state(action_name, ActionState::JustPressed);
         }
-
         [[nodiscard]] bool is_action_just_released(std::string_view action_name) const {
-            return check(action_name, Query::JustReleased);
+            return check_action_state(action_name, ActionState::JustReleased);
         }
 
     private:
-        enum class Query {
+        enum class ActionState {
             Pressed,
             JustPressed,
             JustReleased
         };
 
-        bool check(std::string_view action_name, const Query query) const {
+        bool check_action_state(std::string_view action_name, const ActionState state) const {
             const auto it = m_bindings.find(action_id(action_name));
             if (it == m_bindings.end())
                 return false;
 
-            for (const InputBinding& binding : it->second) {
-                if (evaluate(binding, query))
+            for (const Input& input : it->second) {
+                if (evaluate(input, state))
                     return true;
             }
 
             return false;
         }
 
-        bool evaluate(const InputBinding& b, const Query q) const {
-            switch (b.type) {
-                case InputBinding::Type::Key:
-                    return eval_key(b.key, q);
+        bool evaluate(const Input& input, const ActionState state) const {
+            return std::visit([&](auto input_visitor) {
+                using T = std::decay_t<decltype(input_visitor)>;
 
-                case InputBinding::Type::MouseButton:
-                    return eval_mouse(b.mouse_button, q);
-            }
-            return false;
+                if constexpr (std::is_same_v<T, Key>) {
+                    return eval_key(input_visitor, state);
+                } else if constexpr (std::is_same_v<T, MouseButton>) {
+                    return eval_mouse(input_visitor, state);
+                }
+            }, input);
         }
 
-        bool eval_key(const Key key, const Query q) const {
-            switch (q) {
-                case Query::Pressed:
+        bool eval_key(const Key key, const ActionState state) const {
+            switch (state) {
+                case ActionState::Pressed:
                     return m_keyboard.is_key_pressed(key);
-                case Query::JustPressed:
+                case ActionState::JustPressed:
                     return m_keyboard.is_key_just_pressed(key);
-                case Query::JustReleased:
+                case ActionState::JustReleased:
                     return m_keyboard.is_key_just_released(key);
             }
             return false;
         }
 
-        bool eval_mouse(const MouseButton button, const Query q) const {
-            switch (q) {
-                case Query::Pressed:
+        bool eval_mouse(const MouseButton button, const ActionState state) const {
+            switch (state) {
+                case ActionState::Pressed:
                     return m_mouse.is_button_pressed(button);
-                case Query::JustPressed:
+                case ActionState::JustPressed:
                     return m_mouse.is_button_just_pressed(button);
-                case Query::JustReleased:
+                case ActionState::JustReleased:
                     return m_mouse.is_button_just_released(button);
             }
             return false;
@@ -131,7 +98,7 @@ namespace vn {
 
         Keyboard& m_keyboard;
         Mouse& m_mouse;
-        std::unordered_map<ActionID, std::vector<InputBinding>> m_bindings;
+        std::unordered_map<ActionID, std::vector<Input>> m_bindings;
     };
 
 } // vn
