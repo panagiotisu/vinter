@@ -11,6 +11,8 @@
 #include "input/keyboard.hpp"
 #include "input/mouse.hpp"
 #include "input/input_map.hpp"
+#include "component.hpp"
+#include "game_object.hpp"
 
 namespace vn {
     class Engine {
