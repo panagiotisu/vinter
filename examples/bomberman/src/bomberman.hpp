@@ -1,5 +1,4 @@
 #pragma once
-#include <print>
 #include <vinter/engine.hpp>
 
 class Bomberman : public vn::Engine {
@@ -10,18 +9,17 @@ public:
 
 protected:
     void load() override {
-        input->bind("toggle_cursor_visibility", vn::MouseButton::Left);
-        input->bind("toggle_cursor_visibility", vn::Key::Space);
-    }
-
-    void poll_events() override {
-
+        input->bind("set_bg_color_red", vn::MouseButton::Left);
+        input->bind("set_bg_color_red", vn::Key::Space);
+        input->bind("set_bg_color_blue", vn::Key::T);
     }
 
     void update(float delta) override {
-        if (input->is_action_just_pressed("toggle_cursor_visibility")) {
-            if (mouse->is_cursor_visible()) mouse->set_cursor_visible(false);
-            else mouse->set_cursor_visible(true);
+        if (input->is_action_just_pressed("set_bg_color_red")) {
+            m_background_color = vn::colors::RED;
+        }
+        else if (input->is_action_just_pressed("set_bg_color_blue")) {
+            m_background_color = vn::colors::BLUE;
         }
     }
 
