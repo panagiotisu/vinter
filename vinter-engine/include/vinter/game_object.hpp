@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <ranges>
+#include <vector>
 #include <unordered_map>
 #include <typeindex>
 #include <type_traits>
@@ -10,12 +12,23 @@
 namespace vn {
     class GameObject {
     public:
+        // ======================================================================================================== //
+        // GameObject API
+        // ======================================================================================================== //
         void update(float delta) {
-            for (auto& [type, component] : m_components) {
+            for (const auto& component : m_components | std::views::values) {
                 component->update(delta);
             }
         }
 
+        void add_child(GameObject& game_object) {
+            game_object.m_parent = this;
+            m_children.emplace_back(game_object);
+        }
+
+        // ======================================================================================================== //
+        // Component API
+        // ======================================================================================================== //
         template<typename T>
         T& add_component(T&& component) {
             assert_is_base_of_component<T>();
@@ -70,7 +83,9 @@ namespace vn {
         }
 
     private:
-        std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components;
+        std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components {};
+        std::vector<GameObject> m_children {};
+        GameObject* m_parent { nullptr };
 
         template<typename T>
         void assert_is_base_of_component() const {
