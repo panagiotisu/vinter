@@ -4,8 +4,6 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-#include "../include/vinter/input/keyboard.hpp"
-
 namespace vn {
     Engine::Engine(const ProjectSettings& project_settings) {
         if (!SDL_Init(
