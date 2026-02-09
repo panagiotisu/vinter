@@ -19,17 +19,8 @@ namespace vn {
         window = std::make_unique<Window>(project_settings.window);
         renderer = Renderer::create(project_settings.renderer, *window);
         time = std::make_unique<Time>();
-        keyboard = std::make_unique<Keyboard>();
-        mouse = std::make_unique<Mouse>();
-        gamepad = std::make_unique<Gamepad>();
-        input = std::make_unique<InputMap>(*keyboard, *mouse, *gamepad);
-
-        char guid_str[33];
-        SDL_GUIDToString(SDL_GetJoystickGUIDForID(0), guid_str, sizeof(guid_str));
-
-        std::cout << std::boolalpha << SDL_IsGamepad(gamepad->get_id()) << std::endl;
-        std::cout << static_cast<int>(gamepad->get_type()) << std::endl;
-        std::cout << "Joystick GUID: " << guid_str << std::endl;
+        devices = std::make_unique<DeviceManager>();
+        input = std::make_unique<InputMap>(*devices);
     }
 
     Engine::~Engine() { SDL_Quit(); }
@@ -45,18 +36,13 @@ namespace vn {
                 if (sdl_event.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
-                if (sdl_event.type == SDL_EVENT_MOUSE_WHEEL) {
-                    mouse->handle_wheel_event(sdl_event.wheel.y);
-                }
+                devices->handle_events(sdl_event);
             }
-
             poll_events();
 
             time->update();
             update(time->get_delta());
-            keyboard->update();
-            mouse->update();
-            gamepad->update();
+            devices->update();
 
             renderer->begin_frame();
             render();

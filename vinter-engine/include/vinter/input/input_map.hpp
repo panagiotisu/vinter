@@ -17,8 +17,8 @@ namespace vn {
 
     class InputMap {
     public:
-        InputMap(Keyboard& keyboard, Mouse& mouse, Gamepad& gamepad)
-            : m_keyboard(keyboard), m_mouse(mouse), m_gamepad(gamepad) {
+        explicit InputMap(DeviceManager& devices)
+            : m_devices(devices) {
         }
 
         [[nodiscard]] static constexpr ActionID action_id(std::string_view name) noexcept {
@@ -74,7 +74,7 @@ namespace vn {
                 } else if constexpr (std::is_same_v<T, Mouse::Button>) {
                     return eval_mouse(input_visitor, state);
                 } else if constexpr (std::is_same_v<T, Gamepad::Button>) {
-                    return eval_gamepad(input_visitor, state);
+                    return eval_gamepads(input_visitor, state);
                 }
             }, input);
         }
@@ -82,11 +82,11 @@ namespace vn {
         bool eval_key(const Keyboard::Key key, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
-                    return m_keyboard.is_key_pressed(key);
+                    return m_devices.get_keyboard().is_key_pressed(key);
                 case ActionState::JustPressed:
-                    return m_keyboard.is_key_just_pressed(key);
+                    return m_devices.get_keyboard().is_key_just_pressed(key);
                 case ActionState::JustReleased:
-                    return m_keyboard.is_key_just_released(key);
+                    return m_devices.get_keyboard().is_key_just_released(key);
             }
             return false;
         }
@@ -94,30 +94,29 @@ namespace vn {
         bool eval_mouse(const Mouse::Button button, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
-                    return m_mouse.is_button_pressed(button);
+                    return m_devices.get_mouse().is_button_pressed(button);
                 case ActionState::JustPressed:
-                    return m_mouse.is_button_just_pressed(button);
+                    return m_devices.get_mouse().is_button_just_pressed(button);
                 case ActionState::JustReleased:
-                    return m_mouse.is_button_just_released(button);
+                    return m_devices.get_mouse().is_button_just_released(button);
             }
             return false;
         }
 
-        bool eval_gamepad(const Gamepad::Button button, const ActionState state) const {
+        bool eval_gamepads(const Gamepad::Button button, const ActionState state) const {
+            for (const auto gamepad : m_devices.get_gamepads())
             switch (state) {
                 case ActionState::Pressed:
-                    return m_gamepad.is_button_pressed(button);
+                    return gamepad->is_button_pressed(button);
                 case ActionState::JustPressed:
-                    return m_gamepad.is_button_just_pressed(button);
+                    return gamepad->is_button_just_pressed(button);
                 case ActionState::JustReleased:
-                    return m_gamepad.is_button_just_released(button);
+                    return gamepad->is_button_just_released(button);
             }
             return false;
         }
 
-        Keyboard& m_keyboard;
-        Mouse& m_mouse;
-        Gamepad& m_gamepad;
+        DeviceManager& m_devices;
         std::unordered_map<ActionID, std::vector<Input>> m_bindings;
     };
 

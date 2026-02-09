@@ -4,9 +4,11 @@
 
 #include "vinter/input/buttons.hpp"
 
+union SDL_Event;
+
 namespace vn {
     class Mouse {
-        friend class Engine;
+        friend class DeviceManager;
 
     public:
         enum class Button {
@@ -25,7 +27,7 @@ namespace vn {
         void set_cursor_visible(bool visible) const;
 
     private:
-        void handle_wheel_event(float delta);
+        void handle_events(const SDL_Event& event);
         void update();
 
         Buttons<5> m_buttons {};

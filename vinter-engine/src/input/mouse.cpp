@@ -40,6 +40,12 @@ namespace vn {
         else SDL_HideCursor();
     }
 
+    void Mouse::handle_events(const SDL_Event& event) {
+        if (event.type == SDL_EVENT_MOUSE_WHEEL) {
+            m_scroll_delta += event.wheel.y;
+        }
+    }
+
     void Mouse::update() {
         m_buttons.update();
 
@@ -54,9 +60,5 @@ namespace vn {
 
         m_scroll_delta = m_scroll; // Delta since last frame.
         m_scroll = 0;
-    }
-
-    void Mouse::handle_wheel_event(const float delta) {
-        m_scroll += delta;
     }
 } // vn

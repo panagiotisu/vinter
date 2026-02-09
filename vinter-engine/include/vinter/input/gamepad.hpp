@@ -2,15 +2,15 @@
 
 #include <memory>
 #include <string>
-#include <array>
 
-#include "vinter/input/buttons.hpp"
+union SDL_Event;
 
 namespace vn {
     class Gamepad {
-        friend class Engine;
+        friend class DeviceManager;
+
     public:
-        Gamepad();
+        explicit Gamepad(unsigned int joystick_id);
         ~Gamepad();
 
         enum class Button {
@@ -61,6 +61,7 @@ namespace vn {
         [[nodiscard]] bool is_button_just_released(Button button) const noexcept;
 
     private:
+        void handle_events(const SDL_Event& event);
         void update();
 
         struct Impl;

@@ -8,12 +8,13 @@
 #include "vinter/color.hpp"
 #include "vinter/renderer.hpp"
 #include "vinter/time.hpp"
-#include "input/keyboard.hpp"
-#include "input/mouse.hpp"
-#include "input/gamepad.hpp"
-#include "input/input_map.hpp"
-// #include "component.hpp"
-// #include "game_object.hpp"
+#include "vinter/input/keyboard.hpp"
+#include "vinter/input/mouse.hpp"
+#include "vinter/input/gamepad.hpp"
+#include "vinter/input/device_manager.hpp"
+#include "vinter/input/input_map.hpp"
+// #include "vinter/component.hpp"
+// #include "vinter/game_object.hpp"
 
 namespace vn {
     class Engine {
@@ -27,9 +28,7 @@ namespace vn {
         std::unique_ptr<Window> window;
         std::unique_ptr<Renderer> renderer;
         std::unique_ptr<Time> time;
-        std::unique_ptr<Keyboard> keyboard;
-        std::unique_ptr<Mouse> mouse;
-        std::unique_ptr<Gamepad> gamepad;
+        std::unique_ptr<DeviceManager> devices;
         std::unique_ptr<InputMap> input;
 
         virtual void load() {}

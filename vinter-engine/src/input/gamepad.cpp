@@ -2,10 +2,22 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/input/buttons.hpp"
+
 namespace vn {
     struct Gamepad::Impl {
         SDL_Gamepad* sdl_gamepad { nullptr };
         Buttons<SDL_GAMEPAD_BUTTON_COUNT> buttons {};
+        std::array<float, SDL_GAMEPAD_AXIS_COUNT> axes_current {};
+        std::array<float, SDL_GAMEPAD_AXIS_COUNT> axes_previous {};
+
+        explicit Impl(const unsigned int joystick_id)
+            : sdl_gamepad(SDL_OpenGamepad(joystick_id)) {
+        }
+
+        ~Impl() {
+            SDL_CloseGamepad(sdl_gamepad);
+        }
 
         static SDL_GamepadButton to_sdl_gamepad_button(const Button button) noexcept {
             switch (button) {
@@ -48,14 +60,11 @@ namespace vn {
         }
     };
 
-    Gamepad::Gamepad()
-        : m_impl(std::make_unique<Impl>()) {
-        m_impl->sdl_gamepad = SDL_OpenGamepad(0);
+    Gamepad::Gamepad(const unsigned int joystick_id)
+        : m_impl(std::make_unique<Impl>(joystick_id)) {
     }
 
-    Gamepad::~Gamepad() {
-        SDL_CloseGamepad(m_impl->sdl_gamepad);
-    }
+    Gamepad::~Gamepad() = default;
 
     unsigned int Gamepad::get_id() const noexcept {
         return SDL_GetGamepadID(m_impl->sdl_gamepad);
@@ -114,6 +123,9 @@ namespace vn {
     }
     bool Gamepad::is_button_just_released(const Button button) const noexcept {
         return m_impl->buttons.is_just_released(Impl::to_sdl_gamepad_button(button));
+    }
+
+    void Gamepad::handle_events(const SDL_Event& event) {
     }
 
     void Gamepad::update() {

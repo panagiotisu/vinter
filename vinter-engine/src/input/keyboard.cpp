@@ -143,6 +143,9 @@ namespace vn {
         return m_impl->keys.is_just_released(Impl::to_sdl_scancode(key));
     }
 
+    void Keyboard::handle_events(const SDL_Event& event) {
+    }
+
     void Keyboard::update() {
         m_impl->keys.update();
 

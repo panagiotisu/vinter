@@ -2,9 +2,11 @@
 
 #include <memory>
 
+union SDL_Event;
+
 namespace vn {
     class Keyboard {
-        friend class Engine;
+        friend class DeviceManager;
 
     public:
         Keyboard();
@@ -53,6 +55,7 @@ namespace vn {
         [[nodiscard]] bool is_key_just_released(Key key) const;
 
     private:
+        void handle_events(const SDL_Event& event);
         void update();
 
         struct Impl;
