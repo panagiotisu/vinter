@@ -1,5 +1,7 @@
 #include "vinter/engine.hpp"
 
+#include <iostream>
+
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
 #include "../include/vinter/input/keyboard.hpp"
@@ -19,7 +21,11 @@ namespace vn {
         time = std::make_unique<Time>();
         keyboard = std::make_unique<Keyboard>();
         mouse = std::make_unique<Mouse>();
-        input = std::make_unique<InputMap>(*keyboard, *mouse);
+        gamepad = std::make_unique<Gamepad>();
+        input = std::make_unique<InputMap>(*keyboard, *mouse, *gamepad);
+
+        std::cout << std::boolalpha << SDL_IsGamepad(gamepad->get_id()) << std::endl;
+        std::cout << static_cast<int>(gamepad->get_type()) << std::endl;
     }
 
     Engine::~Engine() { SDL_Quit(); }
@@ -46,6 +52,7 @@ namespace vn {
             update(time->get_delta());
             keyboard->update();
             mouse->update();
+            gamepad->update();
 
             renderer->begin_frame();
             render();

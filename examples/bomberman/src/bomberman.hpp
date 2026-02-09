@@ -7,28 +7,12 @@ public:
         : Engine(project_settings) {
     }
 
-    class Transform2D : public vn::Component {
-    public:
-        Transform2D(const glm::vec2 pos, const float rot)
-            : m_position(pos)
-            , m_rotation(rot) {
-        }
-
-    private:
-        glm::vec2 m_position { 0, 0 };
-        glm::vec2 m_scale { 1, 1};
-        float m_rotation { 0 };
-    };
-
-    vn::GameObject root;
-
 protected:
     void load() override {
         input->bind("set_bg_color_red", vn::MouseButton::Left);
         input->bind("set_bg_color_red", vn::Key::Space);
         input->bind("set_bg_color_blue", vn::Key::T);
-
-        root.add_component(Transform2D({0,0}, 0));
+        input->bind("set_bg_color_blue", vn::GamepadButton::Start);
     }
 
     void update(float delta) override {

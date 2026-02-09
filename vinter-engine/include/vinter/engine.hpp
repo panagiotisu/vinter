@@ -10,9 +10,10 @@
 #include "vinter/time.hpp"
 #include "input/keyboard.hpp"
 #include "input/mouse.hpp"
+#include "input/gamepad.hpp"
 #include "input/input_map.hpp"
-#include "component.hpp"
-#include "game_object.hpp"
+// #include "component.hpp"
+// #include "game_object.hpp"
 
 namespace vn {
     class Engine {
@@ -28,6 +29,7 @@ namespace vn {
         std::unique_ptr<Time> time;
         std::unique_ptr<Keyboard> keyboard;
         std::unique_ptr<Mouse> mouse;
+        std::unique_ptr<Gamepad> gamepad;
         std::unique_ptr<InputMap> input;
 
         virtual void load() {}

@@ -7,7 +7,7 @@
 namespace vn {
     struct Keyboard::Impl {
         const bool* sdl_state { SDL_GetKeyboardState(nullptr) };
-        Buttons<SDL_SCANCODE_COUNT> keys;
+        Buttons<SDL_SCANCODE_COUNT> keys {};
 
         static SDL_Scancode to_sdl_scancode(const Key key) {
             switch (key) {
