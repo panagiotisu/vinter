@@ -24,8 +24,12 @@ namespace vn {
         gamepad = std::make_unique<Gamepad>();
         input = std::make_unique<InputMap>(*keyboard, *mouse, *gamepad);
 
+        char guid_str[33];
+        SDL_GUIDToString(SDL_GetJoystickGUIDForID(0), guid_str, sizeof(guid_str));
+
         std::cout << std::boolalpha << SDL_IsGamepad(gamepad->get_id()) << std::endl;
         std::cout << static_cast<int>(gamepad->get_type()) << std::endl;
+        std::cout << "Joystick GUID: " << guid_str << std::endl;
     }
 
     Engine::~Engine() { SDL_Quit(); }

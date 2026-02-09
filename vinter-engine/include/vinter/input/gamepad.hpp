@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <array>
 
 #include "vinter/input/buttons.hpp"
 
@@ -50,6 +51,7 @@ namespace vn {
         ~Gamepad();
 
         [[nodiscard]] unsigned int get_id() const noexcept;
+        [[nodiscard]] std::string get_guid_string() const noexcept;
         [[nodiscard]] std::string get_name() const noexcept;
         [[nodiscard]] GamepadType get_type() const noexcept;
         [[nodiscard]] GamepadButtonLabel get_button_label(GamepadButton button) const noexcept;

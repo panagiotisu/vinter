@@ -4,11 +4,7 @@
 
 namespace vn {
     struct Gamepad::Impl {
-        SDL_Gamepad* sdl_gamepad { nullptr };   // Supervisory gamepad backend.
-        SDL_Joystick* sdl_joystick { nullptr }; // Secondary raw joystick backend.
-        // NOTE: All gamepads are also joysticks, but not all joysticks are compatible
-        // with the gamepad API by SDL.
-
+        SDL_Gamepad* sdl_gamepad { nullptr };
         Buttons<SDL_GAMEPAD_BUTTON_COUNT> buttons {};
 
         static SDL_GamepadButton to_sdl_gamepad_button(const GamepadButton button) noexcept {
@@ -63,6 +59,16 @@ namespace vn {
 
     unsigned int Gamepad::get_id() const noexcept {
         return SDL_GetGamepadID(m_impl->sdl_gamepad);
+    }
+
+    std::string Gamepad::get_guid_string() const noexcept {
+        SDL_Joystick* joy = SDL_GetGamepadJoystick(m_impl->sdl_gamepad);
+        if (!joy) return {};
+
+        SDL_GUID guid = SDL_GetJoystickGUID(joy);
+        char buf[33];
+        SDL_GUIDToString(guid, buf, sizeof(buf));
+        return std::string { buf };
     }
 
     std::string Gamepad::get_name() const noexcept {
