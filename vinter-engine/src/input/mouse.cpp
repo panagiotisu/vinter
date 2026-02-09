@@ -3,19 +3,19 @@
 #include <SDL3/SDL.h>
 
 namespace vn {
-    static std::size_t to_sdl_mouse_button(MouseButton button) {
+    static std::size_t to_sdl_mouse_button(Mouse::Button button) {
         return static_cast<std::size_t>(button);
     }
 
-    [[nodiscard]] bool Mouse::is_button_pressed(const MouseButton button) const {
+    [[nodiscard]] bool Mouse::is_button_pressed(const Button button) const {
         return m_buttons.is_pressed(to_sdl_mouse_button(button));
     }
 
-    [[nodiscard]] bool Mouse::is_button_just_pressed(const MouseButton button) const {
+    [[nodiscard]] bool Mouse::is_button_just_pressed(const Button button) const {
         return m_buttons.is_just_pressed(to_sdl_mouse_button(button));
     }
 
-    [[nodiscard]] bool Mouse::is_button_just_released(const MouseButton button) const {
+    [[nodiscard]] bool Mouse::is_button_just_released(const Button button) const {
         return m_buttons.is_just_released(to_sdl_mouse_button(button));
     }
 

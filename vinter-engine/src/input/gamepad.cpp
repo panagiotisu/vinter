@@ -7,43 +7,43 @@ namespace vn {
         SDL_Gamepad* sdl_gamepad { nullptr };
         Buttons<SDL_GAMEPAD_BUTTON_COUNT> buttons {};
 
-        static SDL_GamepadButton to_sdl_gamepad_button(const GamepadButton button) noexcept {
+        static SDL_GamepadButton to_sdl_gamepad_button(const Button button) noexcept {
             switch (button) {
                 default: return SDL_GAMEPAD_BUTTON_INVALID;
 
-                case GamepadButton::South:          return SDL_GAMEPAD_BUTTON_SOUTH;
-                case GamepadButton::East:           return SDL_GAMEPAD_BUTTON_EAST;
-                case GamepadButton::West:           return SDL_GAMEPAD_BUTTON_WEST;
-                case GamepadButton::North:          return SDL_GAMEPAD_BUTTON_NORTH;
+                case Button::South:          return SDL_GAMEPAD_BUTTON_SOUTH;
+                case Button::East:           return SDL_GAMEPAD_BUTTON_EAST;
+                case Button::West:           return SDL_GAMEPAD_BUTTON_WEST;
+                case Button::North:          return SDL_GAMEPAD_BUTTON_NORTH;
 
-                case GamepadButton::Back:           return SDL_GAMEPAD_BUTTON_BACK;
-                case GamepadButton::Guide:          return SDL_GAMEPAD_BUTTON_GUIDE;
-                case GamepadButton::Start:          return SDL_GAMEPAD_BUTTON_START;
+                case Button::Back:           return SDL_GAMEPAD_BUTTON_BACK;
+                case Button::Guide:          return SDL_GAMEPAD_BUTTON_GUIDE;
+                case Button::Start:          return SDL_GAMEPAD_BUTTON_START;
 
-                case GamepadButton::LeftStick:      return SDL_GAMEPAD_BUTTON_LEFT_STICK;
-                case GamepadButton::RightStick:     return SDL_GAMEPAD_BUTTON_RIGHT_STICK;
+                case Button::LeftStick:      return SDL_GAMEPAD_BUTTON_LEFT_STICK;
+                case Button::RightStick:     return SDL_GAMEPAD_BUTTON_RIGHT_STICK;
 
-                case GamepadButton::LeftShoulder:   return SDL_GAMEPAD_BUTTON_LEFT_SHOULDER;
-                case GamepadButton::RightShoulder:  return SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER;
+                case Button::LeftShoulder:   return SDL_GAMEPAD_BUTTON_LEFT_SHOULDER;
+                case Button::RightShoulder:  return SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER;
 
-                case GamepadButton::DpadUp:          return SDL_GAMEPAD_BUTTON_DPAD_UP;
-                case GamepadButton::DpadDown:        return SDL_GAMEPAD_BUTTON_DPAD_DOWN;
-                case GamepadButton::DpadLeft:        return SDL_GAMEPAD_BUTTON_DPAD_LEFT;
-                case GamepadButton::DpadRight:       return SDL_GAMEPAD_BUTTON_DPAD_RIGHT;
+                case Button::DpadUp:          return SDL_GAMEPAD_BUTTON_DPAD_UP;
+                case Button::DpadDown:        return SDL_GAMEPAD_BUTTON_DPAD_DOWN;
+                case Button::DpadLeft:        return SDL_GAMEPAD_BUTTON_DPAD_LEFT;
+                case Button::DpadRight:       return SDL_GAMEPAD_BUTTON_DPAD_RIGHT;
 
-                case GamepadButton::RightPaddle1:    return SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1;
-                case GamepadButton::LeftPaddle1:     return SDL_GAMEPAD_BUTTON_LEFT_PADDLE1;
-                case GamepadButton::RightPaddle2:    return SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2;
-                case GamepadButton::LeftPaddle2:     return SDL_GAMEPAD_BUTTON_LEFT_PADDLE2;
+                case Button::RightPaddle1:    return SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1;
+                case Button::LeftPaddle1:     return SDL_GAMEPAD_BUTTON_LEFT_PADDLE1;
+                case Button::RightPaddle2:    return SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2;
+                case Button::LeftPaddle2:     return SDL_GAMEPAD_BUTTON_LEFT_PADDLE2;
 
-                case GamepadButton::Touchpad:        return SDL_GAMEPAD_BUTTON_TOUCHPAD;
+                case Button::Touchpad:        return SDL_GAMEPAD_BUTTON_TOUCHPAD;
 
-                case GamepadButton::Misc1:            return SDL_GAMEPAD_BUTTON_MISC1;
-                case GamepadButton::Misc2:            return SDL_GAMEPAD_BUTTON_MISC2;
-                case GamepadButton::Misc3:            return SDL_GAMEPAD_BUTTON_MISC3;
-                case GamepadButton::Misc4:            return SDL_GAMEPAD_BUTTON_MISC4;
-                case GamepadButton::Misc5:            return SDL_GAMEPAD_BUTTON_MISC5;
-                case GamepadButton::Misc6:            return SDL_GAMEPAD_BUTTON_MISC6;
+                case Button::Misc1:            return SDL_GAMEPAD_BUTTON_MISC1;
+                case Button::Misc2:            return SDL_GAMEPAD_BUTTON_MISC2;
+                case Button::Misc3:            return SDL_GAMEPAD_BUTTON_MISC3;
+                case Button::Misc4:            return SDL_GAMEPAD_BUTTON_MISC4;
+                case Button::Misc5:            return SDL_GAMEPAD_BUTTON_MISC5;
+                case Button::Misc6:            return SDL_GAMEPAD_BUTTON_MISC6;
             }
         }
     };
@@ -75,44 +75,44 @@ namespace vn {
         return std::string { SDL_GetGamepadName(m_impl->sdl_gamepad) };
     }
 
-    GamepadType Gamepad::get_type() const noexcept {
+    Gamepad::Type Gamepad::get_type() const noexcept {
         switch (SDL_GetGamepadType(m_impl->sdl_gamepad)) {
-            default: return GamepadType::Unknown;
-            case SDL_GAMEPAD_TYPE_STANDARD:                     return GamepadType::Standard;
-            case SDL_GAMEPAD_TYPE_XBOX360:                      return GamepadType::Xbox360;
-            case SDL_GAMEPAD_TYPE_XBOXONE:                      return GamepadType::XboxOne;
-            case SDL_GAMEPAD_TYPE_PS3:                          return GamepadType::Ps3;
-            case SDL_GAMEPAD_TYPE_PS4:                          return GamepadType::Ps4;
-            case SDL_GAMEPAD_TYPE_PS5:                          return GamepadType::Ps5;
-            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO:          return GamepadType::Switch;
-            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT:  return GamepadType::JoyconLeft;
-            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT: return GamepadType::JoyconRight;
-            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:  return GamepadType::JoyconPair;
-            case SDL_GAMEPAD_TYPE_GAMECUBE:                     return GamepadType::GameCube;
+            default: return Type::Unknown;
+            case SDL_GAMEPAD_TYPE_STANDARD:                     return Type::Standard;
+            case SDL_GAMEPAD_TYPE_XBOX360:                      return Type::Xbox360;
+            case SDL_GAMEPAD_TYPE_XBOXONE:                      return Type::XboxOne;
+            case SDL_GAMEPAD_TYPE_PS3:                          return Type::Ps3;
+            case SDL_GAMEPAD_TYPE_PS4:                          return Type::Ps4;
+            case SDL_GAMEPAD_TYPE_PS5:                          return Type::Ps5;
+            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO:          return Type::Switch;
+            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT:  return Type::JoyconLeft;
+            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT: return Type::JoyconRight;
+            case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:  return Type::JoyconPair;
+            case SDL_GAMEPAD_TYPE_GAMECUBE:                     return Type::GameCube;
         }
     }
 
-    GamepadButtonLabel Gamepad::get_button_label(const GamepadButton button) const noexcept {
+    Gamepad::ButtonLabel Gamepad::get_button_label(const Button button) const noexcept {
         switch (SDL_GetGamepadButtonLabel(m_impl->sdl_gamepad, Impl::to_sdl_gamepad_button(button))) {
-            default: return GamepadButtonLabel::Unknown;
-            case SDL_GAMEPAD_BUTTON_LABEL_A: return GamepadButtonLabel::A;
-            case SDL_GAMEPAD_BUTTON_LABEL_B: return GamepadButtonLabel::B;
-            case SDL_GAMEPAD_BUTTON_LABEL_X: return GamepadButtonLabel::X;
-            case SDL_GAMEPAD_BUTTON_LABEL_Y: return GamepadButtonLabel::Y;
-            case SDL_GAMEPAD_BUTTON_LABEL_CROSS: return GamepadButtonLabel::Cross;
-            case SDL_GAMEPAD_BUTTON_LABEL_CIRCLE: return GamepadButtonLabel::Circle;
-            case SDL_GAMEPAD_BUTTON_LABEL_SQUARE: return GamepadButtonLabel::Square;
-            case SDL_GAMEPAD_BUTTON_LABEL_TRIANGLE: return GamepadButtonLabel::Triangle;
+            default: return ButtonLabel::Unknown;
+            case SDL_GAMEPAD_BUTTON_LABEL_A: return ButtonLabel::A;
+            case SDL_GAMEPAD_BUTTON_LABEL_B: return ButtonLabel::B;
+            case SDL_GAMEPAD_BUTTON_LABEL_X: return ButtonLabel::X;
+            case SDL_GAMEPAD_BUTTON_LABEL_Y: return ButtonLabel::Y;
+            case SDL_GAMEPAD_BUTTON_LABEL_CROSS: return ButtonLabel::Cross;
+            case SDL_GAMEPAD_BUTTON_LABEL_CIRCLE: return ButtonLabel::Circle;
+            case SDL_GAMEPAD_BUTTON_LABEL_SQUARE: return ButtonLabel::Square;
+            case SDL_GAMEPAD_BUTTON_LABEL_TRIANGLE: return ButtonLabel::Triangle;
         }
     }
 
-    bool Gamepad::is_button_pressed(const GamepadButton button) const noexcept {
+    bool Gamepad::is_button_pressed(const Button button) const noexcept {
         return m_impl->buttons.is_pressed(Impl::to_sdl_gamepad_button(button));
     }
-    bool Gamepad::is_button_just_pressed(const GamepadButton button) const noexcept {
+    bool Gamepad::is_button_just_pressed(const Button button) const noexcept {
         return m_impl->buttons.is_just_pressed(Impl::to_sdl_gamepad_button(button));
     }
-    bool Gamepad::is_button_just_released(const GamepadButton button) const noexcept {
+    bool Gamepad::is_button_just_released(const Button button) const noexcept {
         return m_impl->buttons.is_just_released(Impl::to_sdl_gamepad_button(button));
     }
 

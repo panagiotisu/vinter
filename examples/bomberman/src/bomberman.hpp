@@ -9,10 +9,10 @@ public:
 
 protected:
     void load() override {
-        input->bind("set_bg_color_red", vn::MouseButton::Left);
-        input->bind("set_bg_color_red", vn::Key::Space);
-        input->bind("set_bg_color_blue", vn::Key::T);
-        input->bind("set_bg_color_blue", vn::GamepadButton::Start);
+        input->bind("set_bg_color_red", vn::Mouse::Button::Left);
+        input->bind("set_bg_color_red", vn::Keyboard::Key::Space);
+        input->bind("set_bg_color_blue", vn::Keyboard::Key::T);
+        input->bind("set_bg_color_blue", vn::Gamepad::Button::Start);
     }
 
     void update(float delta) override {

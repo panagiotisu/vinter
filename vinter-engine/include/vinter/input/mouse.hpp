@@ -5,17 +5,17 @@
 #include "vinter/input/buttons.hpp"
 
 namespace vn {
-    enum class MouseButton {
-        Left, Right, Middle, X1, X2,
-    };
-
     class Mouse {
         friend class Engine;
 
     public:
-        [[nodiscard]] bool is_button_pressed(MouseButton button) const;
-        [[nodiscard]] bool is_button_just_pressed(MouseButton button) const;
-        [[nodiscard]] bool is_button_just_released(MouseButton button) const;
+        enum class Button {
+            Left, Right, Middle, X1, X2,
+        };
+
+        [[nodiscard]] bool is_button_pressed(Button button) const;
+        [[nodiscard]] bool is_button_just_pressed(Button button) const;
+        [[nodiscard]] bool is_button_just_released(Button button) const;
 
         [[nodiscard]] glm::vec2 get_position() const;
         [[nodiscard]] glm::vec2 get_delta() const;

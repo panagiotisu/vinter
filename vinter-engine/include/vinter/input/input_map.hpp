@@ -13,7 +13,7 @@
 
 namespace vn {
     using ActionID = std::uint64_t;
-    using Input = std::variant<Key, MouseButton, GamepadButton>;
+    using Input = std::variant<Keyboard::Key, Mouse::Button, Gamepad::Button>;
 
     class InputMap {
     public:
@@ -25,13 +25,13 @@ namespace vn {
             return fnv1a_64(name);
         }
 
-        void bind(std::string_view action_name, const Key key) {
+        void bind(std::string_view action_name, const Keyboard::Key key) {
             m_bindings[action_id(action_name)].emplace_back(key);
         }
-        void bind(std::string_view action_name, const MouseButton mouse_button) {
+        void bind(std::string_view action_name, const Mouse::Button mouse_button) {
             m_bindings[action_id(action_name)].emplace_back(mouse_button);
         }
-        void bind(std::string_view action_name, const GamepadButton gamepad_button) {
+        void bind(std::string_view action_name, const Gamepad::Button gamepad_button) {
             m_bindings[action_id(action_name)].emplace_back(gamepad_button);
         }
 
@@ -69,17 +69,17 @@ namespace vn {
             return std::visit([&](auto input_visitor) {
                 using T = std::decay_t<decltype(input_visitor)>;
 
-                if constexpr (std::is_same_v<T, Key>) {
+                if constexpr (std::is_same_v<T, Keyboard::Key>) {
                     return eval_key(input_visitor, state);
-                } else if constexpr (std::is_same_v<T, MouseButton>) {
+                } else if constexpr (std::is_same_v<T, Mouse::Button>) {
                     return eval_mouse(input_visitor, state);
-                } else if constexpr (std::is_same_v<T, GamepadButton>) {
+                } else if constexpr (std::is_same_v<T, Gamepad::Button>) {
                     return eval_gamepad(input_visitor, state);
                 }
             }, input);
         }
 
-        bool eval_key(const Key key, const ActionState state) const {
+        bool eval_key(const Keyboard::Key key, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
                     return m_keyboard.is_key_pressed(key);
@@ -91,7 +91,7 @@ namespace vn {
             return false;
         }
 
-        bool eval_mouse(const MouseButton button, const ActionState state) const {
+        bool eval_mouse(const Mouse::Button button, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
                     return m_mouse.is_button_pressed(button);
@@ -103,7 +103,7 @@ namespace vn {
             return false;
         }
 
-        bool eval_gamepad(const GamepadButton button, const ActionState state) const {
+        bool eval_gamepad(const Gamepad::Button button, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
                     return m_gamepad.is_button_pressed(button);
