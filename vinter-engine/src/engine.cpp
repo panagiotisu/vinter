@@ -1,7 +1,5 @@
 #include "vinter/engine.hpp"
 
-#include <iostream>
-
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
 namespace vn {

@@ -35,6 +35,11 @@ namespace vn {
             Misc6,
         };
 
+        enum class Axis {
+            LeftX, LeftY, RightX, RightY,
+            LeftTrigger, RightTrigger,
+        };
+
         enum class ButtonLabel {
             Unknown,
             A, B, X, Y,
@@ -59,6 +64,8 @@ namespace vn {
         [[nodiscard]] bool is_button_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_released(Button button) const noexcept;
+        [[nodiscard]] float get_axis_raw_strength(Axis axis) const noexcept;
+        [[nodiscard]] float get_axis_strength(Axis axis) const noexcept;
 
     private:
         void handle_events(const SDL_Event& event);

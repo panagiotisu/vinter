@@ -1,5 +1,6 @@
 #pragma once
 #include <vinter/engine.hpp>
+#include <iostream>
 
 class Bomberman : public vn::Engine {
 public:
@@ -34,6 +35,9 @@ protected:
         else if (input->is_action_just_pressed("quit")) {
             quit();
         }
+
+        const float axis_str = devices->get_gamepads()[0]->get_axis_strength(vn::Gamepad::Axis::LeftY);
+        std::cout << axis_str << std::endl;
     }
 
     void render() override {

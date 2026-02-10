@@ -1,5 +1,7 @@
 #include "vinter/input/gamepad.hpp"
 
+#include <algorithm>
+
 #include <SDL3/SDL.h>
 
 #include "vinter/input/buttons.hpp"
@@ -19,7 +21,7 @@ namespace vn {
             SDL_CloseGamepad(sdl_gamepad);
         }
 
-        static SDL_GamepadButton to_sdl_gamepad_button(const Button button) noexcept {
+        [[nodiscard]] static SDL_GamepadButton to_sdl_gamepad_button(const Button button) noexcept {
             switch (button) {
                 default: return SDL_GAMEPAD_BUTTON_INVALID;
 
@@ -56,6 +58,18 @@ namespace vn {
                 case Button::Misc4:            return SDL_GAMEPAD_BUTTON_MISC4;
                 case Button::Misc5:            return SDL_GAMEPAD_BUTTON_MISC5;
                 case Button::Misc6:            return SDL_GAMEPAD_BUTTON_MISC6;
+            }
+        }
+
+        [[nodiscard]] static SDL_GamepadAxis to_sdl_gamepad_axis(const Axis axis) noexcept {
+            switch (axis) {
+                default: return SDL_GAMEPAD_AXIS_INVALID;
+                case Axis::LeftX:        return SDL_GAMEPAD_AXIS_LEFTX;
+                case Axis::LeftY:        return SDL_GAMEPAD_AXIS_LEFTY;
+                case Axis::RightX:       return SDL_GAMEPAD_AXIS_RIGHTX;
+                case Axis::RightY:       return SDL_GAMEPAD_AXIS_RIGHTY;
+                case Axis::LeftTrigger:  return SDL_GAMEPAD_AXIS_LEFT_TRIGGER;
+                case Axis::RightTrigger: return SDL_GAMEPAD_AXIS_RIGHT_TRIGGER;
             }
         }
     };
@@ -123,6 +137,15 @@ namespace vn {
     }
     bool Gamepad::is_button_just_released(const Button button) const noexcept {
         return m_impl->buttons.is_just_released(Impl::to_sdl_gamepad_button(button));
+    }
+    float Gamepad::get_axis_raw_strength(const Axis axis) const noexcept {
+        return SDL_GetGamepadAxis(m_impl->sdl_gamepad, Impl::to_sdl_gamepad_axis(axis));
+    }
+    float Gamepad::get_axis_strength(const Axis axis) const noexcept {
+        const auto max_axis_strength = static_cast<float>(std::abs(SDL_JOYSTICK_AXIS_MIN));
+        const float unbounded_axis_strength = get_axis_raw_strength(axis) / max_axis_strength;
+
+        return std::clamp(unbounded_axis_strength, -1.f, 1.f);
     }
 
     void Gamepad::handle_events(const SDL_Event& event) {

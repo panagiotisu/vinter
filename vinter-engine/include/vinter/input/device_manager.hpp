@@ -30,6 +30,7 @@ namespace vn {
 
         std::unique_ptr<Keyboard> m_keyboard;
         std::unique_ptr<Mouse> m_mouse;
+        // TODO: Make connection / disconnection error-proof.
         std::unordered_map<unsigned int, std::unique_ptr<Gamepad>> m_gamepads;
     };
 } // vn
