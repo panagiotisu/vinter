@@ -13,6 +13,8 @@ protected:
         input->bind("set_bg_color_red", vn::Keyboard::Key::Space);
         input->bind("set_bg_color_blue", vn::Keyboard::Key::T);
         input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
+        input->bind("set_bg_color_white", vn::Mouse::Wheel::Up);
+        input->bind("set_bg_color_black", vn::Mouse::Wheel::Down);
     }
 
     void update(float delta) override {
@@ -22,10 +24,10 @@ protected:
         else if (input->is_action_just_pressed("set_bg_color_blue")) {
             m_background_color = vn::colors::GREEN;
         }
-        else if (devices->get_mouse().get_scroll_vertical() > 0) {
+        else if (input->is_action_just_pressed("set_bg_color_white")) {
             m_background_color = vn::colors::RAYWHITE;
         }
-        else if (devices->get_mouse().get_scroll_vertical() < 0) {
+        else if (input->is_action_just_pressed("set_bg_color_black")) {
             m_background_color = vn::colors::BLACK;
         }
     }

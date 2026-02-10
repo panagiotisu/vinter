@@ -22,6 +22,7 @@ namespace vn {
         [[nodiscard]] bool is_button_pressed(Button button) const;
         [[nodiscard]] bool is_button_just_pressed(Button button) const;
         [[nodiscard]] bool is_button_just_released(Button button) const;
+        [[nodiscard]] bool is_wheel_triggered(Wheel wheel) const;
 
         [[nodiscard]] glm::vec2 get_position() const;
         [[nodiscard]] glm::vec2 get_delta() const;

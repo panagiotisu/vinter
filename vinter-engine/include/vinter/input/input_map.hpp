@@ -13,7 +13,11 @@
 
 namespace vn {
     using ActionID = std::uint64_t;
-    using Input = std::variant<Keyboard::Key, Mouse::Button, Gamepad::Button>;
+    using Input = std::variant<
+        Keyboard::Key,
+        Mouse::Button, Mouse::Wheel,
+        Gamepad::Button
+    >;
 
     class InputMap {
     public:
@@ -30,6 +34,9 @@ namespace vn {
         }
         void bind(std::string_view action_name, const Mouse::Button mouse_button) {
             m_bindings[action_id(action_name)].emplace_back(mouse_button);
+        }
+        void bind(std::string_view action_name, const Mouse::Wheel mouse_wheel) {
+            m_bindings[action_id(action_name)].emplace_back(mouse_wheel);
         }
         void bind(std::string_view action_name, const Gamepad::Button gamepad_button) {
             m_bindings[action_id(action_name)].emplace_back(gamepad_button);
@@ -72,7 +79,9 @@ namespace vn {
                 if constexpr (std::is_same_v<T, Keyboard::Key>) {
                     return eval_key(input_visitor, state);
                 } else if constexpr (std::is_same_v<T, Mouse::Button>) {
-                    return eval_mouse(input_visitor, state);
+                    return eval_mouse_button(input_visitor, state);
+                } else if constexpr (std::is_same_v<T, Mouse::Wheel>) {
+                    return eval_mouse_wheel(input_visitor, state);
                 } else if constexpr (std::is_same_v<T, Gamepad::Button>) {
                     return eval_gamepads(input_visitor, state);
                 }
@@ -91,7 +100,7 @@ namespace vn {
             return false;
         }
 
-        bool eval_mouse(const Mouse::Button button, const ActionState state) const {
+        bool eval_mouse_button(const Mouse::Button button, const ActionState state) const {
             switch (state) {
                 case ActionState::Pressed:
                     return m_devices.get_mouse().is_button_pressed(button);
@@ -99,6 +108,20 @@ namespace vn {
                     return m_devices.get_mouse().is_button_just_pressed(button);
                 case ActionState::JustReleased:
                     return m_devices.get_mouse().is_button_just_released(button);
+            }
+            return false;
+        }
+
+        bool eval_mouse_wheel(const Mouse::Wheel wheel, const ActionState state) const {
+            switch (state) {
+                /* Since mouse wheel scrolling is not inherently stateful between frames, but is instead a delta,
+                   it is treated as a uniform action for convenience. Alternatively, mouse wheel scrolling could
+                   give false values in Pressed and JustReleased queries. */
+                case ActionState::Pressed:
+                case ActionState::JustReleased:
+                    // return false;
+                case ActionState::JustPressed:
+                    return m_devices.get_mouse().is_wheel_triggered(wheel);
             }
             return false;
         }

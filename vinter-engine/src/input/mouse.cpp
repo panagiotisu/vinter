@@ -16,6 +16,15 @@ namespace vn {
     [[nodiscard]] bool Mouse::is_button_just_released(const Button button) const {
         return m_buttons.is_just_released(to_sdl_mouse_button(button));
     }
+    bool Mouse::is_wheel_triggered(const Wheel wheel) const {
+        switch (wheel) {
+            case Wheel::Up:    return m_scroll.y > 0;
+            case Wheel::Down:  return m_scroll.y < 0;
+            case Wheel::Right: return m_scroll.x > 0;
+            case Wheel::Left:  return m_scroll.x < 0;
+        }
+        return false;
+    }
 
     glm::vec2 Mouse::get_position() const {
         return m_position;
