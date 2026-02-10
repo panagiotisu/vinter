@@ -147,7 +147,7 @@ namespace vn {
     }
 
     void Keyboard::update() {
-        m_impl->keys.update();
+        m_impl->keys.refresh();
 
         // Synchronize with actual sdl state.
         for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++) {

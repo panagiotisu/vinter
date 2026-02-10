@@ -60,9 +60,9 @@ namespace vn {
     }
 
     void Mouse::update() {
-        m_buttons.update();
-
+        m_buttons.refresh();
         m_position_previous = m_position;
+        m_scroll = { 0.f, 0.f };
 
         const SDL_MouseButtonFlags sdl_buttons = SDL_GetMouseState(&m_position.x, &m_position.y);
         m_buttons.state_current[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
@@ -70,7 +70,5 @@ namespace vn {
         m_buttons.state_current[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
         m_buttons.state_current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
         m_buttons.state_current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
-
-        m_scroll = { 0.f, 0.f };
     }
 } // vn

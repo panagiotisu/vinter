@@ -8,7 +8,7 @@ namespace vn {
         std::array<bool, N> state_current {};
         std::array<bool, N> state_previous {};
 
-        void update() {
+        void refresh() {
             state_previous = state_current;
         }
 

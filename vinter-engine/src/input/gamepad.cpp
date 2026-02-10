@@ -129,7 +129,7 @@ namespace vn {
     }
 
     void Gamepad::update() {
-        m_impl->buttons.update();
+        m_impl->buttons.refresh();
 
         // Synchronize with actual sdl state.
         for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
