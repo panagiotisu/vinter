@@ -47,4 +47,8 @@ namespace vn {
             renderer->end_frame();
         }
     }
+
+    void Engine::quit() {
+        m_running = false;
+    }
 } // vn

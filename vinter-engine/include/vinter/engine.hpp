@@ -36,6 +36,8 @@ namespace vn {
         virtual void update(float delta) {}
         virtual void render() {}
 
+        void quit();
+
     private:
         bool m_running { false };
     };

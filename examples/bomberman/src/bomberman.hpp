@@ -15,6 +15,7 @@ protected:
         input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
         input->bind("set_bg_color_white", vn::Mouse::Wheel::Up);
         input->bind("set_bg_color_black", vn::Mouse::Wheel::Down);
+        input->bind("quit", vn::Keyboard::Key::Esc);
     }
 
     void update(float delta) override {
@@ -29,6 +30,9 @@ protected:
         }
         else if (input->is_action_just_pressed("set_bg_color_black")) {
             m_background_color = vn::colors::BLACK;
+        }
+        else if (input->is_action_just_pressed("quit")) {
+            quit();
         }
     }
 
