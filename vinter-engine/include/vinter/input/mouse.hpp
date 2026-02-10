@@ -25,7 +25,9 @@ namespace vn {
 
         [[nodiscard]] glm::vec2 get_position() const;
         [[nodiscard]] glm::vec2 get_delta() const;
-        [[nodiscard]] glm::vec2 get_scroll_delta() const;
+        [[nodiscard]] glm::vec2 get_scroll() const;
+        [[nodiscard]] float get_scroll_vertical() const;
+        [[nodiscard]] float get_scroll_horizontal() const;
 
         [[nodiscard]] bool is_cursor_visible() const;
         void set_cursor_visible(bool visible) const;
@@ -38,6 +40,5 @@ namespace vn {
         glm::vec2 m_position {};
         glm::vec2 m_position_previous {};
         glm::vec2 m_scroll {};
-        glm::vec2 m_scroll_delta {};
     };
 } // vn

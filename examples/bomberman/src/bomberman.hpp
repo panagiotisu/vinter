@@ -22,6 +22,12 @@ protected:
         else if (input->is_action_just_pressed("set_bg_color_blue")) {
             m_background_color = vn::colors::GREEN;
         }
+        else if (devices->get_mouse().get_scroll_vertical() > 0) {
+            m_background_color = vn::colors::RAYWHITE;
+        }
+        else if (devices->get_mouse().get_scroll_vertical() < 0) {
+            m_background_color = vn::colors::BLACK;
+        }
     }
 
     void render() override {

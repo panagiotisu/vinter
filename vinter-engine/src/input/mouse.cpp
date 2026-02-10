@@ -25,8 +25,14 @@ namespace vn {
         return m_position - m_position_previous;
     }
 
-    glm::vec2 Mouse::get_scroll_delta() const {
-        return m_scroll_delta;
+    glm::vec2 Mouse::get_scroll() const {
+        return m_scroll;
+    }
+    float Mouse::get_scroll_vertical() const {
+        return m_scroll.y;
+    }
+    float Mouse::get_scroll_horizontal() const {
+        return m_scroll.x;
     }
 
     bool Mouse::is_cursor_visible() const {
@@ -40,8 +46,7 @@ namespace vn {
 
     void Mouse::handle_events(const SDL_Event& event) {
         if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-            m_scroll_delta.y += event.wheel.y;
-            m_scroll_delta.x += event.wheel.x;
+            m_scroll += glm::vec2(event.wheel.x, event.wheel.y);
         }
     }
 
@@ -57,7 +62,6 @@ namespace vn {
         m_buttons.state_current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
         m_buttons.state_current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
 
-        m_scroll_delta = m_scroll; // Delta since last frame.
         m_scroll = { 0.f, 0.f };
     }
 } // vn
