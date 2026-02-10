@@ -15,13 +15,17 @@ namespace vn {
             Left, Right, Middle, X1, X2,
         };
 
+        enum class Wheel {
+            Up, Down, Left, Right,
+        };
+
         [[nodiscard]] bool is_button_pressed(Button button) const;
         [[nodiscard]] bool is_button_just_pressed(Button button) const;
         [[nodiscard]] bool is_button_just_released(Button button) const;
 
         [[nodiscard]] glm::vec2 get_position() const;
         [[nodiscard]] glm::vec2 get_delta() const;
-        [[nodiscard]] float get_scroll_delta() const;
+        [[nodiscard]] glm::vec2 get_scroll_delta() const;
 
         [[nodiscard]] bool is_cursor_visible() const;
         void set_cursor_visible(bool visible) const;
@@ -31,9 +35,9 @@ namespace vn {
         void update();
 
         Buttons<5> m_buttons {};
-        glm::vec2 m_position;
-        glm::vec2 m_position_previous;
-        float m_scroll;
-        float m_scroll_delta;
+        glm::vec2 m_position {};
+        glm::vec2 m_position_previous {};
+        glm::vec2 m_scroll {};
+        glm::vec2 m_scroll_delta {};
     };
 } // vn

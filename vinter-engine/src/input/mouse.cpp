@@ -10,11 +10,9 @@ namespace vn {
     [[nodiscard]] bool Mouse::is_button_pressed(const Button button) const {
         return m_buttons.is_pressed(to_sdl_mouse_button(button));
     }
-
     [[nodiscard]] bool Mouse::is_button_just_pressed(const Button button) const {
         return m_buttons.is_just_pressed(to_sdl_mouse_button(button));
     }
-
     [[nodiscard]] bool Mouse::is_button_just_released(const Button button) const {
         return m_buttons.is_just_released(to_sdl_mouse_button(button));
     }
@@ -27,7 +25,7 @@ namespace vn {
         return m_position - m_position_previous;
     }
 
-    float Mouse::get_scroll_delta() const {
+    glm::vec2 Mouse::get_scroll_delta() const {
         return m_scroll_delta;
     }
 
@@ -42,7 +40,8 @@ namespace vn {
 
     void Mouse::handle_events(const SDL_Event& event) {
         if (event.type == SDL_EVENT_MOUSE_WHEEL) {
-            m_scroll_delta += event.wheel.y;
+            m_scroll_delta.y += event.wheel.y;
+            m_scroll_delta.x += event.wheel.x;
         }
     }
 
@@ -59,6 +58,6 @@ namespace vn {
         m_buttons.state_current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
 
         m_scroll_delta = m_scroll; // Delta since last frame.
-        m_scroll = 0;
+        m_scroll = { 0.f, 0.f };
     }
 } // vn
