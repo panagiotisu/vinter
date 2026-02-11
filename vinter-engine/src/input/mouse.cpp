@@ -65,10 +65,10 @@ namespace vn {
         m_scroll = { 0.f, 0.f };
 
         const SDL_MouseButtonFlags sdl_buttons = SDL_GetMouseState(&m_position.x, &m_position.y);
-        m_buttons.state_current[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
-        m_buttons.state_current[1] = (sdl_buttons & SDL_BUTTON_RMASK)  != 0;
-        m_buttons.state_current[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
-        m_buttons.state_current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
-        m_buttons.state_current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
+        m_buttons.current[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
+        m_buttons.current[1] = (sdl_buttons & SDL_BUTTON_RMASK)  != 0;
+        m_buttons.current[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
+        m_buttons.current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
+        m_buttons.current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
     }
 } // vn

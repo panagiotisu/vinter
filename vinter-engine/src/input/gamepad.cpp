@@ -5,7 +5,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "vinter/input/buttons.hpp"
+#include "vinter/input/button_states.hpp"
 
 namespace vn {
     static float normalize_stick(const float stick) noexcept {
@@ -15,7 +15,7 @@ namespace vn {
 
     struct Gamepad::Impl {
         SDL_Gamepad* sdl_gamepad { nullptr };
-        Buttons<SDL_GAMEPAD_BUTTON_COUNT> buttons {};
+        ButtonStates<SDL_GAMEPAD_BUTTON_COUNT> button_states {};
 
         explicit Impl(const unsigned int joystick_id)
             : sdl_gamepad(SDL_OpenGamepad(joystick_id)) {
@@ -122,13 +122,13 @@ namespace vn {
     }
 
     bool Gamepad::is_button_pressed(const Button button) const noexcept {
-        return m_impl->buttons.is_pressed(Impl::to_sdl_gamepad_button(button));
+        return m_impl->button_states.is_pressed(Impl::to_sdl_gamepad_button(button));
     }
     bool Gamepad::is_button_just_pressed(const Button button) const noexcept {
-        return m_impl->buttons.is_just_pressed(Impl::to_sdl_gamepad_button(button));
+        return m_impl->button_states.is_just_pressed(Impl::to_sdl_gamepad_button(button));
     }
     bool Gamepad::is_button_just_released(const Button button) const noexcept {
-        return m_impl->buttons.is_just_released(Impl::to_sdl_gamepad_button(button));
+        return m_impl->button_states.is_just_released(Impl::to_sdl_gamepad_button(button));
     }
 
     float Gamepad::get_axis_strength(const Axis axis) const noexcept {
@@ -156,11 +156,11 @@ namespace vn {
     }
 
     void Gamepad::update() {
-        m_impl->buttons.refresh();
+        m_impl->button_states.refresh();
 
         // Synchronize buttons with sdl buttons.
         for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
-            m_impl->buttons.state_current[i] = SDL_GetGamepadButton(m_impl->sdl_gamepad, static_cast<SDL_GamepadButton>(i));
+            m_impl->button_states.current[i] = SDL_GetGamepadButton(m_impl->sdl_gamepad, static_cast<SDL_GamepadButton>(i));
         }
 
         // Synchronize axes with raw sdl axes.
