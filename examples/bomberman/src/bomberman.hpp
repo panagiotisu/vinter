@@ -36,7 +36,7 @@ protected:
             quit();
         }
 
-        const float axis_str = devices->get_gamepads()[0]->get_axis_strength(vn::Gamepad::Axis::LeftY);
+        const float axis_str = devices->get_gamepads()[0]->get_axis_strength(vn::Gamepad::Axis::LeftStickDown);
         std::cout << axis_str << std::endl;
     }
 

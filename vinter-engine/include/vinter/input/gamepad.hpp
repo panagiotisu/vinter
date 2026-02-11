@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+#include <glm/glm.hpp>
+
 union SDL_Event;
 
 namespace vn {
@@ -36,7 +38,8 @@ namespace vn {
         };
 
         enum class Axis {
-            LeftX, LeftY, RightX, RightY,
+            LeftStickLeft, LeftStickRight, LeftStickUp, LeftStickDown,
+            RightStickLeft, RightStickRight, RightStickUp, RightStickDown,
             LeftTrigger, RightTrigger,
         };
 
@@ -64,12 +67,17 @@ namespace vn {
         [[nodiscard]] bool is_button_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_released(Button button) const noexcept;
-        [[nodiscard]] float get_axis_raw_strength(Axis axis) const noexcept;
         [[nodiscard]] float get_axis_strength(Axis axis) const noexcept;
 
     private:
         void handle_events(const SDL_Event& event);
         void update();
+
+        // Caches axes values.
+        glm::vec2 m_left_stick { 0.f, 0.f };
+        glm::vec2 m_right_stick { 0.f, 0.f };
+        float m_left_trigger { 0.f };
+        float m_right_trigger { 0.f };
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;
