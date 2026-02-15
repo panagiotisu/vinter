@@ -4,7 +4,7 @@
 // https://github.com/Minimuino/thumbstick-deadzones/blob/master/README.md
 
 namespace vn::deadzone {
-    void axial(float& axis, float& deadzone);
+    void axial(float& axis, float deadzone);
 
     void axial(float& axis_x, float& axis_y, float deadzone);
 
