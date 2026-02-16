@@ -35,9 +35,12 @@ protected:
         else if (input->is_action_just_pressed("quit")) {
             quit();
         }
-
-        const bool axis = devices->get_gamepads()[0]->is_axis_pressed(vn::Gamepad::Axis::LeftStickLeft);
-        std::cout << std::boolalpha << axis << std::endl;
+        else if (devices->get_gamepads()[0]->is_axis_just_pressed(vn::Gamepad::Axis::LeftTrigger)) {
+            devices->get_gamepads()[0]->begin_vibrate(0.f, 1.f);
+        }
+        else if (devices->get_gamepads()[0]->is_axis_just_pressed(vn::Gamepad::Axis::RightTrigger)) {
+            devices->get_gamepads()[0]->stop_vibrate();
+        }
     }
 
     void render() override {

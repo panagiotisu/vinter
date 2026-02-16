@@ -197,6 +197,28 @@ namespace vn {
         return m_impl->axis_states_current[axis_to_index(axis)];
     }
 
+    void Gamepad::begin_vibrate(
+        const float weak_percent_magnitude,
+        const float strong_percent_magnitude,
+        const float duration_sec
+    ) const {
+        constexpr std::uint16_t max_motor_magnitude { 0xFFFF };
+        const auto weak_magnitude = static_cast<std::uint16_t>(std::clamp(weak_percent_magnitude, 0.f, 1.f) * max_motor_magnitude);
+        const auto strong_magnitude = static_cast<std::uint16_t>(std::clamp(strong_percent_magnitude, 0.f, 1.f) * max_motor_magnitude);
+        const auto duration_ms = static_cast<std::uint32_t>(duration_sec) * 1000;
+
+        SDL_RumbleGamepad(
+            m_impl->sdl_gamepad,
+            weak_magnitude,
+            strong_magnitude,
+            duration_ms
+        );
+    }
+
+    void Gamepad::stop_vibrate() const {
+        SDL_RumbleGamepad(m_impl->sdl_gamepad, 0, 0, 0);
+    }
+
     void Gamepad::handle_events(const SDL_Event& event) {
     }
 

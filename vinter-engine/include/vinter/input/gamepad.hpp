@@ -66,10 +66,14 @@ namespace vn {
         [[nodiscard]] bool is_button_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_pressed(Button button) const noexcept;
         [[nodiscard]] bool is_button_just_released(Button button) const noexcept;
+
         [[nodiscard]] bool is_axis_pressed(Axis axis) const noexcept;
         [[nodiscard]] bool is_axis_just_pressed(Axis axis) const noexcept;
         [[nodiscard]] bool is_axis_just_released(Axis axis) const noexcept;
         [[nodiscard]] float get_axis_strength(Axis axis) const noexcept;
+
+        void begin_vibrate(float weak_percent_magnitude, float strong_percent_magnitude, float duration_sec = 0.f) const;
+        void stop_vibrate() const;
 
     private:
         void handle_events(const SDL_Event& event);
