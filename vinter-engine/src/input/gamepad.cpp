@@ -3,19 +3,49 @@
 #include <algorithm>
 #include <cmath>
 
+#include <array>
+
 #include <SDL3/SDL.h>
 
 #include "vinter/input/button_states.hpp"
 
 namespace vn {
-    static float normalize_stick(const float stick) noexcept {
-        if (stick < 0.f) return -stick / SDL_JOYSTICK_AXIS_MIN;
-        return stick / SDL_JOYSTICK_AXIS_MAX;
+    static float normalize_axis(const float axis) noexcept {
+        if (axis < 0.f) return -axis / SDL_JOYSTICK_AXIS_MIN;
+        return axis / SDL_JOYSTICK_AXIS_MAX;
+    }
+
+    static void apply_trigger_deadzone(float& trigger_value, const float deadzone) {
+        if (trigger_value < deadzone) {
+            trigger_value = 0.f;
+        } else {
+            trigger_value = (trigger_value - deadzone) / (1.f - deadzone);
+        }
+    }
+
+    static void apply_stick_deadzone(float& stick_x, float& stick_y, const float deadzone) {
+        const float magnitude_squared = stick_x * stick_x + stick_y * stick_y;
+        if (magnitude_squared < deadzone * deadzone) {
+            stick_x = 0.f;
+            stick_y = 0.f;
+        } else {
+            const float magnitude = std::sqrt(magnitude_squared);
+            const float magnitude_scaled = (magnitude - deadzone) / (1.f - deadzone);
+
+            stick_x *= magnitude_scaled / magnitude;
+            stick_y *= magnitude_scaled / magnitude;
+        }
+    }
+
+    static std::size_t axis_to_index(const Gamepad::Axis axis) {
+        return static_cast<std::size_t>(axis);
     }
 
     struct Gamepad::Impl {
         SDL_Gamepad* sdl_gamepad { nullptr };
         ButtonStates<SDL_GAMEPAD_BUTTON_COUNT> button_states {};
+        std::array<float, SDL_GAMEPAD_AXIS_COUNT> sdl_axis_states_current {}, sdl_axis_states_previous {};
+        std::array<float, static_cast<std::size_t>(Axis::Count)> axis_states_current {}, axis_states_previous {};
 
         explicit Impl(const unsigned int joystick_id)
             : sdl_gamepad(SDL_OpenGamepad(joystick_id)) {
@@ -63,6 +93,26 @@ namespace vn {
                 case Button::Misc5:            return SDL_GAMEPAD_BUTTON_MISC5;
                 case Button::Misc6:            return SDL_GAMEPAD_BUTTON_MISC6;
             }
+        }
+
+        static void remap_sdl_axes(
+            std::array<float, static_cast<std::size_t>(Axis::Count)>& axes,
+            const std::array<float, SDL_GAMEPAD_AXIS_COUNT>& sdl_axes
+        ) {
+            // Split and remap stick axes so that they are always between [0, 1] instead of [-1, 1].
+            axes[axis_to_index(Axis::LeftStickLeft)]  = std::max(0.f, -sdl_axes[SDL_GAMEPAD_AXIS_LEFTX]);
+            axes[axis_to_index(Axis::LeftStickRight)] = std::max(0.f,  sdl_axes[SDL_GAMEPAD_AXIS_LEFTX]);
+            axes[axis_to_index(Axis::LeftStickUp)]    = std::max(0.f, -sdl_axes[SDL_GAMEPAD_AXIS_LEFTY]);
+            axes[axis_to_index(Axis::LeftStickDown)]  = std::max(0.f,  sdl_axes[SDL_GAMEPAD_AXIS_LEFTY]);
+
+            axes[axis_to_index(Axis::RightStickLeft)]  = std::max(0.f, -sdl_axes[SDL_GAMEPAD_AXIS_RIGHTX]);
+            axes[axis_to_index(Axis::RightStickRight)] = std::max(0.f,  sdl_axes[SDL_GAMEPAD_AXIS_RIGHTX]);
+            axes[axis_to_index(Axis::RightStickUp)]    = std::max(0.f, -sdl_axes[SDL_GAMEPAD_AXIS_RIGHTY]);
+            axes[axis_to_index(Axis::RightStickDown)]  = std::max(0.f,  sdl_axes[SDL_GAMEPAD_AXIS_RIGHTY]);
+
+            // Trigger axes do not require remapping since they are already between [0, 1].
+            axes[axis_to_index(Axis::LeftTrigger)]  = sdl_axes[SDL_GAMEPAD_AXIS_LEFT_TRIGGER];
+            axes[axis_to_index(Axis::RightTrigger)] = sdl_axes[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER];
         }
     };
 
@@ -130,26 +180,21 @@ namespace vn {
     bool Gamepad::is_button_just_released(const Button button) const noexcept {
         return m_impl->button_states.is_just_released(Impl::to_sdl_gamepad_button(button));
     }
+    bool Gamepad::is_axis_pressed(const Axis axis) const noexcept {
+        const std::size_t i = axis_to_index(axis);
+        return m_impl->axis_states_current[i] > 0;
+    }
+    bool Gamepad::is_axis_just_pressed(const Axis axis) const noexcept {
+        const std::size_t i = axis_to_index(axis);
+        return m_impl->axis_states_current[i] > 0 && !(m_impl->axis_states_previous[i] > 0);
+    }
+    bool Gamepad::is_axis_just_released(const Axis axis) const noexcept {
+        const std::size_t i = axis_to_index(axis);
+        return !(m_impl->axis_states_current[i] > 0) && m_impl->axis_states_previous[i] > 0;
+    }
 
     float Gamepad::get_axis_strength(const Axis axis) const noexcept {
-        switch (axis) {
-            default: return 0.f;
-
-            // Split and remap stick axes so that they are always between [0, 1] instead of [-1, 1].
-            case Axis::LeftStickLeft:   return std::max(0.f, -m_left_stick.x);
-            case Axis::LeftStickRight:  return std::max(0.f,  m_left_stick.x);
-            case Axis::LeftStickUp:     return std::max(0.f, -m_left_stick.y);
-            case Axis::LeftStickDown:   return std::max(0.f,  m_left_stick.y);
-
-            case Axis::RightStickLeft:  return std::max(0.f, -m_right_stick.x);
-            case Axis::RightStickRight: return std::max(0.f,  m_right_stick.x);
-            case Axis::RightStickUp:    return std::max(0.f, -m_right_stick.y);
-            case Axis::RightStickDown:  return std::max(0.f,  m_right_stick.y);
-
-            // Trigger axes do not require remapping since they are already between [0, 1].
-            case Axis::LeftTrigger:     return m_left_trigger;
-            case Axis::RightTrigger:    return m_right_trigger;
-        }
+        return m_impl->axis_states_current[axis_to_index(axis)];
     }
 
     void Gamepad::handle_events(const SDL_Event& event) {
@@ -157,18 +202,40 @@ namespace vn {
 
     void Gamepad::update() {
         m_impl->button_states.refresh();
+        m_impl->sdl_axis_states_previous = m_impl->sdl_axis_states_current;
+        m_impl->axis_states_previous = m_impl->axis_states_current;
 
         // Synchronize buttons with sdl buttons.
         for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
-            m_impl->button_states.current[i] = SDL_GetGamepadButton(m_impl->sdl_gamepad, static_cast<SDL_GamepadButton>(i));
+            m_impl->button_states.current[i] = SDL_GetGamepadButton(
+                m_impl->sdl_gamepad,
+                static_cast<SDL_GamepadButton>(i)
+            );
         }
 
-        // Synchronize axes with raw sdl axes.
-        m_left_stick.x  = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_LEFTX));
-        m_left_stick.y  = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_LEFTY));
-        m_right_stick.x = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_RIGHTX));
-        m_right_stick.y = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_RIGHTY));
-        m_left_trigger  = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_LEFT_TRIGGER));
-        m_right_trigger = normalize_stick(SDL_GetGamepadAxis(m_impl->sdl_gamepad, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER));
+        // Normalize and store sdl axes.
+        for (std::size_t i = 0; i < SDL_GAMEPAD_AXIS_COUNT; i++) {
+            m_impl->sdl_axis_states_current[i] = normalize_axis(SDL_GetGamepadAxis(
+                m_impl->sdl_gamepad,
+                static_cast<SDL_GamepadAxis>(i)
+            ));
+        }
+
+        // Deadzone sdl axes.
+        apply_stick_deadzone(
+            m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTX],
+            m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTY],
+            m_stick_deadzone
+        );
+        apply_stick_deadzone(
+            m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTX],
+            m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTY],
+            m_stick_deadzone
+        );
+        apply_trigger_deadzone(m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFT_TRIGGER], m_trigger_deadzone);
+        apply_trigger_deadzone(m_impl->sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER], m_trigger_deadzone);
+
+        // Remap sdl axes to axes.
+        Impl::remap_sdl_axes(m_impl->axis_states_current, m_impl->sdl_axis_states_current);
     }
 } // vn

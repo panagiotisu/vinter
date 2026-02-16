@@ -36,8 +36,8 @@ protected:
             quit();
         }
 
-        const float axis_str = devices->get_gamepads()[0]->get_axis_strength(vn::Gamepad::Axis::LeftStickDown);
-        std::cout << axis_str << std::endl;
+        const bool axis = devices->get_gamepads()[0]->is_axis_pressed(vn::Gamepad::Axis::LeftStickLeft);
+        std::cout << std::boolalpha << axis << std::endl;
     }
 
     void render() override {
