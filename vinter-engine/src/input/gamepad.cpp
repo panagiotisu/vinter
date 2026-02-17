@@ -137,7 +137,8 @@ namespace vn {
     }
 
     std::string Gamepad::get_name() const noexcept {
-        return std::string { SDL_GetGamepadName(m_impl->sdl_gamepad) };
+        const char* name = SDL_GetGamepadName(m_impl->sdl_gamepad);
+        return name ? std::string{name} : std::string{};
     }
 
     Gamepad::Type Gamepad::get_type() const noexcept {
