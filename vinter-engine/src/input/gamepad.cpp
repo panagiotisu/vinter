@@ -52,7 +52,7 @@ namespace vn {
         }
 
         ~Impl() {
-            SDL_CloseGamepad(sdl_gamepad);
+            if (sdl_gamepad) SDL_CloseGamepad(sdl_gamepad);
         }
 
         [[nodiscard]] static SDL_GamepadButton to_sdl_gamepad_button(const Button button) noexcept {
