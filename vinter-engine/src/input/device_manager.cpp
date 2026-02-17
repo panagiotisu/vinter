@@ -13,11 +13,12 @@ namespace vn {
         m_mouse = std::make_unique<Mouse>();
 
         // Scan existing gamepads on startup.
-        int num_gamepads = 0;
-        SDL_GetJoysticks(&num_gamepads);
-        for (int i = 0; i < num_gamepads; i++) {
-            handle_gamepad_added(i);
+        int joystick_count = 0;
+        SDL_JoystickID* joystick_ids = SDL_GetJoysticks(&joystick_count);
+        for (int i = 0; i < joystick_count; ++i) {
+            handle_gamepad_added(joystick_ids[i]);
         }
+        SDL_free(joystick_ids);
     }
 
     Keyboard& DeviceManager::get_keyboard() const noexcept {
