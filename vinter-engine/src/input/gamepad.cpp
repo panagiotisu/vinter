@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <cmath>
-
 #include <array>
+#include <cassert>
 
 #include <SDL3/SDL.h>
 
@@ -47,8 +47,9 @@ namespace vn {
         std::array<float, SDL_GAMEPAD_AXIS_COUNT> sdl_axis_states_current {}, sdl_axis_states_previous {};
         std::array<float, static_cast<std::size_t>(Axis::Count)> axis_states_current {}, axis_states_previous {};
 
-        explicit Impl(const unsigned int joystick_id)
-            : sdl_gamepad(SDL_OpenGamepad(joystick_id)) {
+        explicit Impl(const unsigned int joystick_id) {
+            sdl_gamepad = SDL_OpenGamepad(joystick_id);
+            assert(sdl_gamepad && "Failed to open SDL gamepad.");
         }
 
         ~Impl() {
