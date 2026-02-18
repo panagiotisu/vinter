@@ -3,6 +3,7 @@
 #include <memory>
 
 // TODO: Place these in a fwd.hpp.
+#include "vinter/logger.hpp"
 #include "vinter/settings/project_settings.hpp"
 #include "vinter/window.hpp"
 #include "vinter/color.hpp"
