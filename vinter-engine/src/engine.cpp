@@ -32,6 +32,7 @@ namespace vn {
                 if (sdl_event.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
+                window->handle_events(sdl_event);
                 devices->handle_events(sdl_event);
             }
             poll_events();

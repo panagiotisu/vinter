@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 
 #include "vinter/settings/window_settings.hpp"
+#include "vinter/logger.hpp"
 
 namespace vn {
     struct Window::Impl {
@@ -50,5 +51,12 @@ namespace vn {
 
     SDL_Window* Window::get_native_handle() const {
         return m_impl->sdl_window_backend;
+    }
+
+    void Window::handle_events(const SDL_Event& event) {
+        if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+            m_width  = event.window.data1;
+            m_height = event.window.data2;
+        }
     }
 } // vn
