@@ -4,7 +4,7 @@ namespace vn {
     void Logger::log(const Level level, std::string_view message) {
         std::ostream& out = (level == Level::Error) ? std::cerr : std::cout;
 
-        out << "[" << to_string(level) << "] " < message << std::endl;
+        out << "[" << to_string(level) << "] " << message << std::endl;
     }
 
     void Logger::debug(std::string_view msg)   { log(Level::Debug,   msg); }
