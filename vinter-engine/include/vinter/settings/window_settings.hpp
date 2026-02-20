@@ -6,11 +6,11 @@ namespace vn {
     struct WindowSettings {
         std::string title { "Vinter App" };
 
-        struct WindowSize {
+        struct Size {
             int width, height;
         };
-        WindowSize initial_size { 1280, 720 };
-        WindowSize virtual_size { 640,  360 };
+        Size initial_size { 1280, 720 };
+        Size virtual_size { 640,  360 };
 
         struct Flags {
             bool
