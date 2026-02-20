@@ -127,14 +127,15 @@ namespace vn {
         }
 
         bool eval_gamepads(const Gamepad::Button button, const ActionState state) const {
-            for (const auto gamepad : m_devices.get_gamepads())
-            switch (state) {
-                case ActionState::Pressed:
-                    return gamepad->is_button_pressed(button);
-                case ActionState::JustPressed:
-                    return gamepad->is_button_just_pressed(button);
-                case ActionState::JustReleased:
-                    return gamepad->is_button_just_released(button);
+            for (const auto gamepad : m_devices.get_gamepads()) {
+                switch (state) {
+                    case ActionState::Pressed:
+                        return gamepad->is_button_pressed(button);
+                    case ActionState::JustPressed:
+                        return gamepad->is_button_just_pressed(button);
+                    case ActionState::JustReleased:
+                        return gamepad->is_button_just_released(button);
+                }
             }
             return false;
         }
