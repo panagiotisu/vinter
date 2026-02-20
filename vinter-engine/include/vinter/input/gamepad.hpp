@@ -6,6 +6,8 @@
 union SDL_Event;
 
 namespace vn {
+    struct Color;
+
     class Gamepad {
         friend class DeviceManager;
 
@@ -74,6 +76,8 @@ namespace vn {
 
         void begin_vibrate(float weak_percent_magnitude, float strong_percent_magnitude, float duration_sec = 0.f) const;
         void stop_vibrate() const;
+
+        void set_led_color(Color color) const;
 
     private:
         void handle_events(const SDL_Event& event);

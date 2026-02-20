@@ -7,6 +7,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/color.hpp"
 #include "vinter/input/button_states.hpp"
 
 namespace vn {
@@ -219,6 +220,10 @@ namespace vn {
 
     void Gamepad::stop_vibrate() const {
         SDL_RumbleGamepad(m_impl->sdl_gamepad, 0, 0, 0);
+    }
+
+    void Gamepad::set_led_color(const Color color) const {
+        SDL_SetGamepadLED(m_impl->sdl_gamepad, color.r, color.g, color.b);
     }
 
     void Gamepad::handle_events(const SDL_Event& event) {

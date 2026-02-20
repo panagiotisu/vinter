@@ -24,7 +24,7 @@ protected:
             m_background_color = vn::colors::RED;
         }
         else if (input->is_action_just_pressed("set_bg_color_blue")) {
-            m_background_color = vn::colors::GREEN;
+            m_background_color = vn::colors::BLUE;
         }
         else if (input->is_action_just_pressed("set_bg_color_white")) {
             m_background_color = vn::colors::RAYWHITE;
