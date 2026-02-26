@@ -1,12 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include <vector>
-#include <string_view>
-#include <cstdint>
 #include <variant>
 #include <optional>
-#include <algorithm>
 
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
@@ -14,79 +10,179 @@
 #include "vinter/utils/hash.hpp"
 
 namespace vn {
+    class DeviceManager;
+
+    /**
+     * The unique hashed identifier corresponding to an action name.
+     */
     using ActionID = std::uint64_t;
 
-    using Input = std::variant<
+    /**
+     * The type of device-specific input method to bind to a generic input action.
+     */
+    using InputMethod = std::variant<
         Keyboard::Key,
         Mouse::Button, Mouse::Wheel,
         Gamepad::Button, Gamepad::Axis
     >;
 
-    // Represents a binding of an input to an action, optionally for a specific gamepad slot.
+    /**
+     * Represents a binding of an input method to an action, optionally for a specific gamepad slot.
+     *
+     * @note If the gamepad slot is nullopt, then it corresponds to either a non-gamepad device,
+     * or all gamepad slots simultaneously.
+     */
     struct Binding {
-        Input input;
-        std::optional<std::size_t> gamepad_slot; // nullopt = all gamepads
+        InputMethod input_method;
+        std::optional<std::size_t> gamepad_slot;
     };
 
+    /**
+     * Maps named actions to input devices and queries their state.
+     *
+     * InputMap allows the registration of logical actions (like "jump", "shoot", "punch")
+     * and their binding to one or more physical inputs, such as keyboard keys, mouse buttons,
+     * mouse wheel directions, or gamepad buttons and axes.
+     *
+     * The class provides:
+     * - Continuous pressed state queries (`is_action_pressed`)
+     * - Single-frame events (`is_action_just_pressed`, `is_action_just_released`)
+     * - Action strength queries (`get_action_strength`) for analog inputs like gamepad axes.
+     *
+     * Each binding can be device-agnostic (applies to all connected gamepads) or tied
+     * to a specific device slot. InputMap queries all active devices safely, even if
+     * some gamepads are disconnected.
+     *
+     * Typical usage:
+     * @code{.cpp}
+     * auto devices = std::make_unique<DeviceManager>();
+     * auto input = std::make_unique<InputMap>(*devices);
+     *
+     * // Binding actions to physical input device methods.
+     * input->bind("jump", Keyboard::Key::T);              // Binds to keyboard's 'T' key.
+     * input->bind("jump", Mouse::Button::Middle);         // Binds to mouse's 'Middle' button.
+     * input->bind("jump", Mouse::Wheel::Up);              // Binds to mousewheel's 'Up' scroll.
+     * input->bind("jump", Gamepad::Button::East);         // Binds to all gamepads' 'East' button.
+     * input->bind("jump", Gamepad::Axis::LeftStickUp, 0); // Binds to 'Left Stick Up Axis' of gamepad at slot '0'.
+     *
+     * // Querying registered actions.
+     * if (input->is_action_just_pressed("jump")) {
+     *      player.jump();
+     * }
+     *
+     * player.jump_initial_velocity.y = input->get_action_strength("jump");
+     * @endcode
+     *
+     * @note InputMap requires a valid DeviceManager reference for querying device states.
+     */
     class InputMap {
     public:
-        explicit InputMap(DeviceManager& devices)
-            : m_devices(devices) {}
+        /**
+         * Constructs an InputMap object after taking in a reference to a DeviceManager object.
+         *
+         * @param devices The reference to the DeviceManager object.
+         */
+        explicit InputMap(DeviceManager& devices);
 
-        [[nodiscard]] static constexpr ActionID to_action_id(std::string_view name) noexcept {
-            return fnv1a_64(name);
-        }
+        /**
+         * Binds a registered action to a key.
+         *
+         * @param action_name The name of a registered action.
+         * @param key The key to be bound.
+         */
+        void bind(std::string_view action_name, Keyboard::Key key);
 
-        // Keyboard / Mouse bindings.
-        void bind(std::string_view action_name, Keyboard::Key key) {
-            m_bindings[to_action_id(action_name)].push_back({key, std::nullopt});
-        }
-        void bind(std::string_view action_name, Mouse::Button button) {
-            m_bindings[to_action_id(action_name)].push_back({button, std::nullopt});
-        }
-        void bind(std::string_view action_name, Mouse::Wheel wheel) {
-            m_bindings[to_action_id(action_name)].push_back({wheel, std::nullopt});
-        }
+        /**
+         *  Binds a registered action to a mouse button.
+         *
+         * @param action_name The name of a registered action.
+         * @param button The mouse button to be bound.
+         */
+        void bind(std::string_view action_name, Mouse::Button button);
 
-        // Gamepad bindings (all gamepads).
-        void bind(std::string_view action_name, Gamepad::Button button) {
-            m_bindings[to_action_id(action_name)].push_back({button, std::nullopt});
-        }
-        void bind(std::string_view action_name, Gamepad::Axis axis) {
-            m_bindings[to_action_id(action_name)].push_back({axis, std::nullopt});
-        }
+        /**
+         *  Binds a registered action to a mouse wheel input.
+         *
+         * @param action_name The name of a registered action.
+         * @param wheel The mouse wheel input to be bound.
+         */
+        void bind(std::string_view action_name, Mouse::Wheel wheel);
 
-        // Gamepad bindings (specific slot).
-        void bind(std::string_view action_name, Gamepad::Button button, std::size_t slot) {
-            m_bindings[to_action_id(action_name)].push_back({button, slot});
-        }
-        void bind(std::string_view action_name, Gamepad::Axis axis, std::size_t slot) {
-            m_bindings[to_action_id(action_name)].push_back({axis, slot});
-        }
+        /**
+         *  Binds a registered action to a gamepad button, for all gamepads.
+         *
+         * @param action_name The name of a registered action.
+         * @param button The gamepad button to be bound.
+         */
+        void bind(std::string_view action_name, Gamepad::Button button);
 
-        // Pressed state queries.
-        [[nodiscard]] bool is_action_pressed(std::string_view action_name) const {
-            return check_action_pressed_state(action_name, PressedState::Pressed);
-        }
-        [[nodiscard]] bool is_action_just_pressed(std::string_view action_name) const {
-            return check_action_pressed_state(action_name, PressedState::JustPressed);
-        }
-        [[nodiscard]] bool is_action_just_released(std::string_view action_name) const {
-            return check_action_pressed_state(action_name, PressedState::JustReleased);
-        }
+        /**
+         *  Binds a registered action to a gamepad axis, for all gamepads.
+         *
+         * @param action_name The name of a registered action.
+         * @param axis The gamepad axis to be bound.
+         */
+        void bind(std::string_view action_name, Gamepad::Axis axis);
 
-        // Returns strength of action mapped to gamepad axes in the range [0.0 - 1.0], and either 0 or 1 for discrete
-        // input methods like keys, buttons and mouse wheels.
-        [[nodiscard]] float get_action_strength(std::string_view action_name) const {
-            const auto it = m_bindings.find(to_action_id(action_name));
-            if (it == m_bindings.end()) return 0.f;
+        /**
+         *  Binds a registered action to a gamepad button, for a specified gamepad.
+         *
+         * @param action_name The name of a registered action.
+         * @param button The gamepad button to be bound.
+         * @param slot The slot number of the gamepad to be bound.
+         */
+        void bind(std::string_view action_name, Gamepad::Button button, std::size_t slot);
 
-            float max_strength = 0.f;
-            for (const Binding& binding : it->second) {
-                max_strength = std::max(max_strength, evaluate_input_strength(binding));
-            }
-            return max_strength;
-        }
+        /**
+         *  Binds a registered action to a gamepad axis, for a specified gamepad.
+         *
+         * @param action_name The name of a registered action.
+         * @param axis The gamepad axis to be bound.
+         * @param slot The slot number of the gamepad to be bound.
+         */
+        void bind(std::string_view action_name, Gamepad::Axis axis, std::size_t slot);
+
+        /**
+         * Checks if a registered action is actively pressed during the current frame.
+         *
+         * @param action_name The name of a registered action.
+         * @return `true` if the action is currently pressed, `false` otherwise.
+         */
+        [[nodiscard]] bool is_action_pressed(std::string_view action_name) const;
+
+        /**
+         * Checks if a registered action was pressed this frame but not in the previous frame.
+         *
+         * This is useful for detecting a single press event rather than continuous holding.
+         *
+         * @param action_name The name of a registered action.
+         * @return `true` if the action was just pressed in the current frame, `false` otherwise.
+         */
+        [[nodiscard]] bool is_action_just_pressed(std::string_view action_name) const;
+
+        /**
+         * Checks if a registered action was released this frame but was pressed in the previous frame.
+         *
+         * This is useful for detecting a single release event.
+         *
+         * @param action_name The name of a registered action.
+         * @return `true` if the action was just released in the current frame, `false` otherwise.
+         */
+        [[nodiscard]] bool is_action_just_released(std::string_view action_name) const;
+
+        /**
+         * Returns the normalized strength of the specified action in the range [0.0, 1.0].
+         *
+         * Actions mapped to analog inputs (e.g., gamepad axes) produce continuous values
+         * within [0.0, 1.0], while actions mapped to digital inputs (e.g., buttons)
+         * return 1.0 when pressed and 0.0 otherwise.
+         *
+         * If the action is not registered, this function returns 0.0.
+         *
+         * @param action_name The name of the action.
+         * @return The normalized strength of the action in the range [0.0, 1.0].
+         */
+        [[nodiscard]] float get_action_strength(std::string_view action_name) const;
 
     private:
         enum class PressedState {
@@ -95,136 +191,19 @@ namespace vn {
             JustReleased
         };
 
-        bool check_action_pressed_state(std::string_view action_name, PressedState state) const {
-            const auto it = m_bindings.find(to_action_id(action_name));
-            if (it == m_bindings.end()) return false;
-
-            for (const Binding& binding : it->second) {
-                if (evaluate_binding_pressed(binding, state))
-                    return true;
-            }
-            return false;
+        [[nodiscard]] static constexpr ActionID to_action_id(const std::string_view name) noexcept {
+            return fnv1a_64(name);
         }
 
-        bool evaluate_binding_pressed(const Binding& binding, PressedState state) const {
-            return std::visit([&]<typename T>(T input_val) -> bool {
-                using InputT = std::decay_t<T>;
+        bool check_action_pressed_state(std::string_view action_name, PressedState state) const;
+        bool evaluate_binding_pressed(const Binding& binding, PressedState state) const;
+        float evaluate_input_strength(const Binding& binding) const;
 
-                if constexpr (std::is_same_v<InputT, Keyboard::Key>) {
-                    return evaluate_key_pressed_state(input_val, state);
-                } else if constexpr (std::is_same_v<InputT, Mouse::Button>) {
-                    return evaluate_mouse_button_pressed_state(input_val, state);
-                } else if constexpr (std::is_same_v<InputT, Mouse::Wheel>) {
-                    return evaluate_mouse_wheel_pressed_state(input_val, state);
-                } else if constexpr (std::is_same_v<InputT, Gamepad::Button>) {
-                    if (binding.gamepad_slot) {
-                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
-                        if (!g) return false; // SAFE: null slot
-                        switch (state) {
-                            case PressedState::Pressed: return g->is_button_pressed(input_val);
-                            case PressedState::JustPressed: return g->is_button_just_pressed(input_val);
-                            case PressedState::JustReleased: return g->is_button_just_released(input_val);
-                        }
-                    } else {
-                        for (auto* g : m_devices.get_gamepads()) {
-                            if (!g) continue; // skip null
-                            switch (state) {
-                                case PressedState::Pressed: if (g->is_button_pressed(input_val)) return true;
-                                case PressedState::JustPressed: if (g->is_button_just_pressed(input_val)) return true;
-                                case PressedState::JustReleased: if (g->is_button_just_released(input_val)) return true;
-                            }
-                        }
-                        return false;
-                    }
-                } else if constexpr (std::is_same_v<InputT, Gamepad::Axis>) {
-                    if (binding.gamepad_slot) {
-                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
-                        if (!g) return false; // SAFE: null slot
-                        switch (state) {
-                            case PressedState::Pressed: return g->is_axis_pressed(input_val);
-                            case PressedState::JustPressed: return g->is_axis_just_pressed(input_val);
-                            case PressedState::JustReleased: return g->is_axis_just_released(input_val);
-                        }
-                    } else {
-                        for (auto* g : m_devices.get_gamepads()) {
-                            if (!g) continue; // skip null
-                            switch (state) {
-                                case PressedState::Pressed: if (g->is_axis_pressed(input_val)) return true;
-                                case PressedState::JustPressed: if (g->is_axis_just_pressed(input_val)) return true;
-                                case PressedState::JustReleased: if (g->is_axis_just_released(input_val)) return true;
-                            }
-                        }
-                        return false;
-                    }
-                }
-            }, binding.input);
-        }
-
-        float evaluate_input_strength(const Binding& binding) const {
-            return std::visit([&]<typename T>(T input_val) -> float {
-                using InputT = std::decay_t<T>;
-
-                if constexpr (std::is_same_v<InputT, Keyboard::Key>) {
-                    return m_devices.get_keyboard().is_key_pressed(input_val) ? 1.f : 0.f;
-                } else if constexpr (std::is_same_v<InputT, Mouse::Button>) {
-                    return m_devices.get_mouse().is_button_pressed(input_val) ? 1.f : 0.f;
-                } else if constexpr (std::is_same_v<InputT, Mouse::Wheel>) {
-                    return m_devices.get_mouse().is_wheel_triggered(input_val) ? 1.f : 0.f;
-                } else if constexpr (std::is_same_v<InputT, Gamepad::Button>) {
-                    if (binding.gamepad_slot) {
-                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
-                        if (!g) return 0.f; // SAFE
-                        return g->is_button_pressed(input_val) ? 1.f : 0.f;
-                    }
-                    float max_strength = 0.f;
-                    for (auto* g : m_devices.get_gamepads()) {
-                        if (!g) continue;
-                        max_strength = std::max(max_strength, g->is_button_pressed(input_val) ? 1.f : 0.f);
-                    }
-                    return max_strength;
-                } else if constexpr (std::is_same_v<InputT, Gamepad::Axis>) {
-                    if (binding.gamepad_slot) {
-                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
-                        if (!g) return 0.f; // SAFE
-                        return g->get_axis_strength(input_val);
-                    }
-                    float max_strength = 0.f;
-                    for (auto* g : m_devices.get_gamepads()) {
-                        if (!g) continue;
-                        max_strength = std::max(max_strength, g->get_axis_strength(input_val));
-                    }
-                    return max_strength;
-                }
-            }, binding.input);
-        }
-
-        bool evaluate_key_pressed_state(const Keyboard::Key key, const PressedState state) const {
-            switch (state) {
-                case PressedState::Pressed: return m_devices.get_keyboard().is_key_pressed(key);
-                case PressedState::JustPressed: return m_devices.get_keyboard().is_key_just_pressed(key);
-                case PressedState::JustReleased: return m_devices.get_keyboard().is_key_just_released(key);
-            }
-            return false;
-        }
-
-        bool evaluate_mouse_button_pressed_state(const Mouse::Button button, const PressedState state) const {
-            switch (state) {
-                case PressedState::Pressed: return m_devices.get_mouse().is_button_pressed(button);
-                case PressedState::JustPressed: return m_devices.get_mouse().is_button_just_pressed(button);
-                case PressedState::JustReleased: return m_devices.get_mouse().is_button_just_released(button);
-            }
-            return false;
-        }
-
-        bool evaluate_mouse_wheel_pressed_state(const Mouse::Wheel wheel, const PressedState state) const {
-            switch (state) {
-                case PressedState::JustPressed: return m_devices.get_mouse().is_wheel_triggered(wheel);
-                case PressedState::Pressed:
-                case PressedState::JustReleased:
-                    return false;
-            }
-            return false;
-        }
+        bool evaluate_key_pressed_state(Keyboard::Key key, PressedState state) const;
+        bool evaluate_mouse_button_pressed_state(Mouse::Button button, PressedState state) const;
+        bool evaluate_mouse_wheel_pressed_state(Mouse::Wheel wheel, PressedState state) const;
+        bool evaluate_gamepad_button_pressed_state(Gamepad::Button button, const Binding& binding, PressedState state) const;
+        bool evaluate_gamepad_axis_pressed_state(Gamepad::Axis axis, const Binding& binding, PressedState state) const;
 
         DeviceManager& m_devices;
         std::unordered_map<ActionID, std::vector<Binding>> m_bindings;
