@@ -12,10 +12,11 @@ protected:
     void load() override {
         input->bind("set_bg_color_red", vn::Mouse::Button::Left);
         input->bind("set_bg_color_red", vn::Keyboard::Key::Space);
-        input->bind("set_bg_color_blue", vn::Keyboard::Key::T);
-        input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
-        input->bind("set_bg_color_white", vn::Mouse::Wheel::Up);
-        input->bind("set_bg_color_black", vn::Mouse::Wheel::Down);
+
+        // input->bind("set_bg_color_blue", vn::Mouse::Button::Right);
+        // input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
+        // input->bind("set_bg_color_blue", vn::Gamepad::Axis::LeftStickLeft);
+
         input->bind("quit", vn::Keyboard::Key::Esc);
     }
 
@@ -23,24 +24,12 @@ protected:
         if (input->is_action_just_pressed("set_bg_color_red")) {
             m_background_color = vn::colors::RED;
         }
-        else if (input->is_action_just_pressed("set_bg_color_blue")) {
-            m_background_color = vn::colors::BLUE;
-        }
-        else if (input->is_action_just_pressed("set_bg_color_white")) {
-            m_background_color = vn::colors::RAYWHITE;
-        }
-        else if (input->is_action_just_pressed("set_bg_color_black")) {
-            m_background_color = vn::colors::BLACK;
-        }
-        else if (input->is_action_just_pressed("quit")) {
-            quit();
-        }
-        // else if (devices->get_gamepads()[0]->is_axis_just_pressed(vn::Gamepad::Axis::LeftTrigger)) {
-        //     devices->get_gamepads()[0]->begin_vibrate(0.f, 1.f);
+        // else if (input->is_action_just_pressed("set_bg_color_blue")) {
+        //     m_background_color = vn::colors::BLUE;
         // }
-        // else if (devices->get_gamepads()[0]->is_axis_just_pressed(vn::Gamepad::Axis::RightTrigger)) {
-        //     devices->get_gamepads()[0]->stop_vibrate();
-        // }
+        //
+        // // Check action strengths.
+        std::cout << devices->get_gamepad()->get_axis_strength(vn::Gamepad::Axis::LeftStickLeft) << std::endl;
     }
 
     void render() override {

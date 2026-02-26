@@ -26,7 +26,7 @@ namespace vn {
         [[nodiscard]] Keyboard& get_keyboard() const noexcept;
         [[nodiscard]] Mouse& get_mouse() const noexcept;
         [[nodiscard]] Gamepad* get_gamepad_by_id(DeviceID id) const noexcept;
-        [[nodiscard]] Gamepad* get_gamepad(std::size_t slot) const noexcept;
+        [[nodiscard]] Gamepad* get_gamepad(std::size_t slot = 0) const noexcept;
         [[nodiscard]] std::array<Gamepad*, MaxGamepadCount> get_gamepads() const noexcept;
         [[nodiscard]] std::vector<Gamepad*> get_active_gamepads() const noexcept;
 
