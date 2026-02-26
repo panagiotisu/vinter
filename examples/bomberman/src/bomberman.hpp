@@ -13,9 +13,9 @@ protected:
         input->bind("set_bg_color_red", vn::Mouse::Button::Left);
         input->bind("set_bg_color_red", vn::Keyboard::Key::Space);
 
-        // input->bind("set_bg_color_blue", vn::Mouse::Button::Right);
-        // input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
-        // input->bind("set_bg_color_blue", vn::Gamepad::Axis::LeftStickLeft);
+        input->bind("set_bg_color_blue", vn::Mouse::Button::Right);
+        input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
+        input->bind("set_bg_color_blue", vn::Gamepad::Axis::LeftStickLeft, 1);
 
         input->bind("quit", vn::Keyboard::Key::Esc);
     }
@@ -24,12 +24,15 @@ protected:
         if (input->is_action_just_pressed("set_bg_color_red")) {
             m_background_color = vn::colors::RED;
         }
-        // else if (input->is_action_just_pressed("set_bg_color_blue")) {
-        //     m_background_color = vn::colors::BLUE;
-        // }
-        //
+        else if (input->is_action_just_pressed("set_bg_color_blue")) {
+            m_background_color = vn::colors::BLUE;
+        }
+
+        else if (input->is_action_just_pressed("quit")) {
+            quit();
+        }
         // // Check action strengths.
-        std::cout << devices->get_gamepad()->get_axis_strength(vn::Gamepad::Axis::LeftStickLeft) << std::endl;
+        std::cout << input->get_action_strength("set_bg_color_blue") << std::endl;
     }
 
     void render() override {
