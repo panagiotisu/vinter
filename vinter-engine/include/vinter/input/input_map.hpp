@@ -25,21 +25,21 @@ namespace vn {
             : m_devices(devices) {
         }
 
-        [[nodiscard]] static constexpr ActionID action_id(std::string_view name) noexcept {
+        [[nodiscard]] static constexpr ActionID to_action_id(std::string_view name) noexcept {
             return fnv1a_64(name);
         }
 
         void bind(std::string_view action_name, const Keyboard::Key key) {
-            m_bindings[action_id(action_name)].emplace_back(key);
+            m_bindings[to_action_id(action_name)].emplace_back(key);
         }
         void bind(std::string_view action_name, const Mouse::Button mouse_button) {
-            m_bindings[action_id(action_name)].emplace_back(mouse_button);
+            m_bindings[to_action_id(action_name)].emplace_back(mouse_button);
         }
         void bind(std::string_view action_name, const Mouse::Wheel mouse_wheel) {
-            m_bindings[action_id(action_name)].emplace_back(mouse_wheel);
+            m_bindings[to_action_id(action_name)].emplace_back(mouse_wheel);
         }
         void bind(std::string_view action_name, const Gamepad::Button gamepad_button) {
-            m_bindings[action_id(action_name)].emplace_back(gamepad_button);
+            m_bindings[to_action_id(action_name)].emplace_back(gamepad_button);
         }
 
         [[nodiscard]] bool is_action_pressed(std::string_view action_name) const {
@@ -60,7 +60,7 @@ namespace vn {
         };
 
         bool check_action_state(std::string_view action_name, const ActionState state) const {
-            const auto it = m_bindings.find(action_id(action_name));
+            const auto it = m_bindings.find(to_action_id(action_name));
             if (it == m_bindings.end())
                 return false;
 
