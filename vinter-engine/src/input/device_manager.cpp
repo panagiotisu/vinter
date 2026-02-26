@@ -1,11 +1,13 @@
 #include "vinter/input/device_manager.hpp"
 
 #include <ranges>
+#include <cassert>
+
 #include <SDL3/SDL.h>
 
-#include <vinter/input/keyboard.hpp>
-#include <vinter/input/mouse.hpp>
-#include <vinter/input/gamepad.hpp>
+#include "vinter/input/keyboard.hpp"
+#include "vinter/input/mouse.hpp"
+#include "vinter/input/gamepad.hpp"
 
 namespace vn {
     DeviceManager::DeviceManager() {
@@ -29,17 +31,43 @@ namespace vn {
         return *m_mouse;
     }
 
-    std::vector<Gamepad*> DeviceManager::get_gamepads() const noexcept {
-        std::vector<Gamepad*> result;
-        result.reserve(m_gamepads.size());
-        for (const auto& gamepad : m_gamepads | std::views::values)
-            result.push_back(gamepad.get());
+    std::array<Gamepad*, DeviceManager::MaxGamepadCount> DeviceManager::get_gamepads() const noexcept {
+        // NOTE: We could cache this but the construction cost is minimal.
+        std::array<Gamepad*, MaxGamepadCount> result {};
+
+        for (std::size_t i = 0; i < MaxGamepadCount; i++)
+            if (const auto& optional_id = m_gamepad_slots[i]; optional_id) {
+                if (auto it = m_gamepads.find(*optional_id); it != m_gamepads.end()) {
+                    result[i] = it->second.get();
+                }
+            }
         return result;
     }
 
-    Gamepad* DeviceManager::get_gamepad(const unsigned int gamepad_id) const noexcept {
-        const auto it = m_gamepads.find(gamepad_id);
-        return it != m_gamepads.end() ? it->second.get() : nullptr;
+    std::vector<Gamepad*> DeviceManager::get_active_gamepads() const noexcept {
+        std::vector<Gamepad*> result;
+        result.reserve(MaxGamepadCount);
+
+        for (const auto& gamepad : get_gamepads()) {
+            if (gamepad) result.push_back(gamepad);
+        }
+        return result;
+    }
+
+    Gamepad* DeviceManager::get_gamepad_by_id(DeviceID id) const noexcept {
+        if (const auto it = m_gamepads.find(id); it != m_gamepads.end()) {
+            return it->second.get();
+        }
+        return nullptr;
+    }
+
+    Gamepad* DeviceManager::get_gamepad(const std::size_t slot) const noexcept {
+        assert(slot < MaxGamepadCount && "Gamepad slot out of range.");
+
+        if (const auto& optional_id = m_gamepad_slots[slot]; optional_id) {
+            return get_gamepad_by_id(*optional_id);
+        }
+        return nullptr;
     }
 
     void DeviceManager::handle_events(const SDL_Event& event) {
@@ -50,7 +78,7 @@ namespace vn {
             handle_gamepad_added(event.gdevice.which);
         }
         if (event.type == SDL_EVENT_GAMEPAD_REMOVED) {
-            m_gamepads.erase(event.gdevice.which);
+            handle_gamepad_removed(event.gdevice.which);
         }
 
         for (const auto& gamepad : m_gamepads | std::views::values) {
@@ -66,9 +94,32 @@ namespace vn {
         }
     }
 
-    void DeviceManager::handle_gamepad_added(unsigned int gamepad_id) {
-        if (SDL_IsGamepad(gamepad_id)) {
-            m_gamepads.try_emplace(gamepad_id, std::make_unique<Gamepad>(gamepad_id));
+    void DeviceManager::handle_gamepad_added(const DeviceID id) {
+        if (!SDL_IsGamepad(id)) return;
+
+        const auto [it, inserted] = m_gamepads.try_emplace(id, std::make_unique<Gamepad>(id));
+
+        if (!inserted) return;
+
+        // Assign to first free slot.
+        for (auto& slot : m_gamepad_slots) {
+            if (!slot) {
+                slot = id;
+                break;
+            }
+        }
+    }
+
+    void DeviceManager::handle_gamepad_removed(const DeviceID id) {
+        // Erase from map, stop if not present.
+        if (m_gamepads.erase(id) == 0) return;
+
+        // Remove from slot assignment.
+        for (auto& slot : m_gamepad_slots) {
+            if (slot && *slot == id) {
+                slot.reset();
+                break;
+            }
         }
     }
 } // vn
