@@ -14,8 +14,6 @@
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/device_manager.hpp"
 #include "vinter/input/input_map.hpp"
-// #include "vinter/component.hpp"
-// #include "vinter/game_object.hpp"
 
 namespace vn {
     class Engine {
