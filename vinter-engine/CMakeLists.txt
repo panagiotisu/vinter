@@ -19,18 +19,23 @@ function(include_dependency libName gitURL gitTag)
     FetchContent_MakeAvailable(${libName})
 endfunction()
 
-# --- SDL3 ---
+# --- SDL3 --- #
 # Shared build (default is usually shared if not forced static)
 set(SDL_SHARED ON  CACHE BOOL "Build SDL3 as shared" FORCE)
 set(SDL_STATIC OFF CACHE BOOL "Disable static SDL3" FORCE)
 include_dependency(SDL3 https://github.com/libsdl-org/SDL.git release-3.4.0)
 
-# --- SDL3_ttf ---
+# --- SDL3_ttf --- #
 set(SDLTTF_VENDORED ON)
 include_dependency(SDL3_ttf https://github.com/libsdl-org/SDL_ttf.git release-3.2.2)
 
-# --- glm Math ---
+# --- glm Math --- #
 include_dependency(glm https://github.com/g-truc/glm.git 1.0.2)
+
+# --- EnTT ECS --- #
+set(ENTT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(ENTT_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+include_dependency(EnTT https://github.com/skypjack/entt.git v3.15.0)
 
 ######################################################################################################################
 # Library
@@ -60,6 +65,7 @@ target_sources(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
+        EnTT::EnTT  # Public until suitable wrapper.
         glm::glm    # Fundamental, no reason to hide.
     PRIVATE
         SDL3::SDL3
