@@ -22,10 +22,10 @@ protected:
 
     void update(float delta) override {
         if (input->is_action_just_pressed("set_bg_color_red")) {
-            m_background_color = vn::colors::RED;
+            m_background_color = vn::colors::Red;
         }
         else if (input->is_action_just_pressed("set_bg_color_blue")) {
-            m_background_color = vn::colors::BLUE;
+            m_background_color = vn::colors::Blue;
         }
 
         else if (input->is_action_just_pressed("quit")) {
@@ -40,5 +40,5 @@ protected:
     }
 
 private:
-    vn::Color m_background_color { vn::colors::DARK_BLUE };
+    vn::Color m_background_color { vn::colors::DarkBlue };
 };

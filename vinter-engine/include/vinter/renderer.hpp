@@ -21,7 +21,7 @@ namespace vn {
         [[nodiscard]] Color get_clear_color() const;
 
     private:
-        Color m_clear_color { colors::BLACK };
+        Color m_clear_color { colors::Black };
 
         virtual void begin_frame() = 0;
         virtual void end_frame() = 0;
