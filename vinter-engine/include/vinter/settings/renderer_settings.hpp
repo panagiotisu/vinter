@@ -5,6 +5,7 @@ namespace vn {
         enum class Backend {
             SDL,
             SDL_GPU,
+            OpenGL,
         };
         Backend backend { Backend::SDL };
 
