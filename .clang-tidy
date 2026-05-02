@@ -1,0 +1,91 @@
+---
+Checks: >
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  clang-diagnostic-*,
+  cppcoreguidelines-*,
+  google-build-*,
+  google-explicit-constructor,
+  google-global-names-in-headers,
+  google-readability-avoid-underscore-in-googletest-name,
+  google-readability-casting,
+  google-runtime-int,
+  google-upgrade-googletest-case,
+  hicpp-multiway-paths-covered,
+  llvm-namespace-comment,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cert-msc51-cpp,
+  -cert-err58-cpp,
+  -cppcoreguidelines-avoid-const-or-ref-data-members,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -google-build-using-namespace,
+  -google-readability-avoid-underscore-in-googletest-name,
+  -misc-no-recursion,
+  -misc-use-anonymous-namespace,
+  -misc-header-include-cycle,
+  -misc-include-cleaner,
+  -modernize-use-nodiscard,
+  -performance-no-int-to-ptr,
+  -clang-diagnostic-reorder-ctor,
+  -readability-identifier-length,
+  -readability-identifier-naming,
+  -readability-magic-numbers,
+  -readability-static-accessed-through-instance,
+  -readability-uppercase-literal-suffix
+WarningsAsErrors: true
+FormatStyle: file
+CheckOptions:
+  - { key: cppcoreguidelines-special-member-functions.AllowImplicitlyDeletedCopyOrMove,                 value: true }
+  - { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted,       value: true }
+  - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor,                             value: true }
+  - { key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: true }
+  - { key: portability-simd-intrinsics.Suggest,                                                         value: true }
+  - { key: readability-braces-around-statements.ShortStatementLines,                                    value: 1 }
+  - { key: readability-function-cognitive-complexity.DescribeBasicIncrements,                           value: false }
+  - { key: readability-function-cognitive-complexity.IgnoreMacros,                                      value: true }
+  - { key: readability-identifier-naming.ClassCase,                                                     value: CamelCase }
+  - { key: readability-identifier-naming.ClassMemberCase,                                               value: lower_case }
+  - { key: readability-identifier-naming.ConstexprVariableCase,                                         value: CamelCase }
+  - { key: readability-identifier-naming.ConstexprVariablePrefix,                                       value: k }
+  - { key: readability-identifier-naming.EnumCase,                                                      value: CamelCase }
+  - { key: readability-identifier-naming.EnumConstantCase,                                              value: CamelCase }
+  - { key: readability-identifier-naming.EnumConstantPrefix,                                            value: k }
+  - { key: readability-identifier-naming.FunctionCase,                                                  value: lower_case }
+  - { key: readability-identifier-naming.GlobalConstantCase,                                            value: lower_case }
+  - { key: readability-identifier-naming.GlobalConstantPrefix,                                          value: g }
+  - { key: readability-identifier-naming.IgnoreMainLikeFunctions,                                       value: 1 }
+  - { key: readability-identifier-naming.MacroDefinitionCase,                                           value: UPPER_CASE }
+  - { key: readability-identifier-naming.MacroDefinitionIgnoredRegexp,                                  value: '^[A-Z]+(_[A-Z]+)*_$' }
+  - { key: readability-identifier-naming.MemberCase,                                                    value: lower_case }
+  - { key: readability-identifier-naming.NamespaceCase,                                                 value: lower_case }
+  - { key: readability-identifier-naming.PrivateMemberSuffix,                                           value: _ }
+  - { key: readability-identifier-naming.ProtectedMemberSuffix,                                         value: _ }
+  - { key: readability-identifier-naming.PublicMemberSuffix,                                            value: '' }
+  - { key: readability-identifier-naming.ParameterCase,                                                 value: lower_case }
+  - { key: readability-identifier-naming.ParameterPackCase,                                             value: lower_case }
+  - { key: readability-identifier-naming.StructCase,                                                    value: CamelCase }
+  - { key: readability-identifier-naming.ScopedEnumCase,                                                value: CamelCase }
+  - { key: readability-identifier-naming.ScopedEnumConstantCase,                                        value: CamelCase }
+  - { key: readability-identifier-naming.ScopedEnumConstantIgnoredRegexp,                               value: "_[0-9]+"}
+  - { key: readability-identifier-naming.StaticConstantCase,                                            value: lower_case }
+  - { key: readability-identifier-naming.StaticConstantPrefix,                                          value: k }
+  - { key: readability-identifier-naming.StaticVariableCase,                                            value: lower_case }
+  - { key: readability-identifier-naming.TemplateParameterCase,                                         value: CamelCase }
+  - { key: readability-identifier-naming.TypedefCase,                                                   value: CamelCase }
+  - { key: readability-identifier-naming.TypeAliasCase,                                                 value: CamelCase }
+  - { key: readability-identifier-naming.TypedefCase,                                                   value: CamelCase }
+  - { key: readability-identifier-naming.UnionCase,                                                     value: CamelCase }
+  - { key: readability-identifier-naming.VariableCase,                                                  value: lower_case }
+  - { key: readability-namespace-comments.ShortNamespaceLines,                                          value: 10 }
+  - { key: readability-namespace-comments.SpacesBeforeComments,                                         value: 2 }
