@@ -7,14 +7,47 @@
 #include <typeindex>
 #include <type_traits>
 
-#include "vinter/component.hpp"
-
 namespace vn {
+    class GameObject;
+
+    class Component {
+        friend class GameObject;
+
+    public:
+        Component() = default;
+    
+        [[nodiscard]] constexpr GameObject* get_owner() const noexcept {
+            return m_owner;
+        }
+
+    protected:
+        template<typename T>
+        requires std::derived_from<T, Component>
+        [[nodiscard]] T* get_component();
+
+        template<typename T>
+        requires std::derived_from<T, Component>
+        [[nodiscard]] const T* get_component();
+
+        template<typename T>
+        [[nodiscard]] bool has_component() const;
+
+        template<typename T>
+        void remove_component() const;
+
+        virtual void on_register() {}
+        virtual void ready() {}
+        virtual void update(float delta) {}
+        virtual void on_remove() {}
+
+    private:
+        GameObject* m_owner {};
+    };
+
     class GameObject {
     public:
-        // ======================================================================================================== //
-        // GameObject API
-        // ======================================================================================================== //
+        GameObject() = default;
+
         void update(float delta) {
             for (const auto& component : m_components | std::views::values) {
                 component->update(delta);
@@ -26,9 +59,6 @@ namespace vn {
             m_children.emplace_back(game_object);
         }
 
-        // ======================================================================================================== //
-        // Component API
-        // ======================================================================================================== //
         template<typename T>
         T& add_component(T&& component) {
             assert_is_base_of_component<T>();
@@ -107,6 +137,28 @@ namespace vn {
             return *static_cast<T*>(base);
         }
     };
-} // vn
 
-#include "component.inl"
+    template<typename T>
+    requires std::derived_from<T, Component>
+    T* Component::get_component() {
+        return m_owner ? m_owner->get_component<T>() : nullptr;
+    }
+
+    template<typename T>
+    requires std::derived_from<T, Component>
+    const T* Component::get_component() {
+        return m_owner ? m_owner->get_component<T>() : nullptr;
+    }
+
+    template<typename T>
+    bool Component::has_component() const {
+        return m_owner && m_owner->has_component<T>();
+    }
+
+    template<typename T>
+    void Component::remove_component() const {
+        if (m_owner) {
+            m_owner->remove_component<T>();
+        }
+    }
+} // vn
