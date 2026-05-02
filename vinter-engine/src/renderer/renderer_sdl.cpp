@@ -2,62 +2,66 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
-#include "vinter/color.hpp"
 
 namespace vn {
     struct RendererSDL::Impl {
-        SDL_Renderer* sdl_renderer_backend { nullptr };
+        SDL_Renderer* sdlRendererBackend {nullptr};
 
-        Impl(const RendererSettings &renderer_settings, const Window &window)
-            : sdl_renderer_backend(SDL_CreateRenderer(window.get_native_handle(), "")) {
-            if (!sdl_renderer_backend) throw std::runtime_error(SDL_GetError());
+        Impl(const Impl&) = default;
+        Impl(Impl&&) = delete;
+        auto operator=(const Impl&) -> Impl& = default;
+        auto operator=(Impl&&) -> Impl& = delete;
 
-            SDL_SetRenderVSync(sdl_renderer_backend, to_sdl_vsync_mode(renderer_settings.vsync_mode));
+        Impl(const RendererSettings& rendererSettings, const Window& window)
+            : sdlRendererBackend(SDL_CreateRenderer(window.GetNativeHandle(), "")) {
+            if (sdlRendererBackend == nullptr) {
+                throw std::runtime_error(SDL_GetError());
+            }
+
+            SDL_SetRenderVSync(sdlRendererBackend, ToSdlVsyncMode(rendererSettings.vsync_mode));
         }
 
         ~Impl() {
-            if (sdl_renderer_backend) SDL_DestroyRenderer(sdl_renderer_backend);
+            if (sdlRendererBackend != nullptr) {
+                SDL_DestroyRenderer(sdlRendererBackend);
+            }
         }
 
-        static int to_sdl_vsync_mode(const RendererSettings::VSyncMode vsync_mode) {
-            switch (vsync_mode) {
-                case RendererSettings::VSyncMode::Disabled:
-                    return SDL_RENDERER_VSYNC_DISABLED;
+        static auto ToSdlVsyncMode(const RendererSettings::VSyncMode vsyncMode) -> int {
+            switch (vsyncMode) {
+                case RendererSettings::VSyncMode::Disabled: return SDL_RENDERER_VSYNC_DISABLED;
 
-                case RendererSettings::VSyncMode::Enabled:
-                    return 1;
+                case RendererSettings::VSyncMode::Enabled: return 1;
 
-                case RendererSettings::VSyncMode::Adaptive:
-                    return SDL_RENDERER_VSYNC_ADAPTIVE;
+                case RendererSettings::VSyncMode::Adaptive: return SDL_RENDERER_VSYNC_ADAPTIVE;
             }
 
             return SDL_RENDERER_VSYNC_DISABLED;
         }
     };
 
-    RendererSDL::RendererSDL(const RendererSettings &renderer_settings, const Window &window)
-        : m_impl(std::make_unique<Impl>(renderer_settings, window)) {
-
+    RendererSDL::RendererSDL(const RendererSettings& rendererSettings, const Window& window)
+        : m_impl(std::make_unique<Impl>(rendererSettings, window)) {
         // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
         // the window does not show blank state due to non-existent renderer.
-        SDL_ShowWindow(window.get_native_handle());
+        SDL_ShowWindow(window.GetNativeHandle());
     }
 
     RendererSDL::~RendererSDL() = default;
 
-    void RendererSDL::begin_frame() {
-        const auto clear_color = get_clear_color();
+    void RendererSDL::BeginFrame() {
+        const auto clearColor = GetClearColor();
 
         SDL_SetRenderDrawColor(
-            m_impl->sdl_renderer_backend,
-            clear_color.r, clear_color.g, clear_color.b, clear_color.a
+            m_impl->sdlRendererBackend, clearColor.r, clearColor.g, clearColor.b, clearColor.a
         );
-        SDL_RenderClear(m_impl->sdl_renderer_backend);
+        SDL_RenderClear(m_impl->sdlRendererBackend);
     }
 
-    void RendererSDL::end_frame() {
-        SDL_RenderPresent(m_impl->sdl_renderer_backend);
+    void RendererSDL::EndFrame() {
+        SDL_RenderPresent(m_impl->sdlRendererBackend);
     }
-} // vn
+} // namespace vn

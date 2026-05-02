@@ -1,19 +1,21 @@
 #pragma once
 
+#include <cstdint>
+
 namespace vn {
     struct RendererSettings {
-        enum class Backend {
+        enum class Backend : std::uint8_t {
             SDL,
-            SDL_GPU,
+            SdlGpu,
             OpenGL,
         };
-        Backend backend { Backend::SDL };
+        Backend backend {Backend::SDL};
 
-        enum class VSyncMode {
+        enum class VSyncMode : std::uint8_t {
             Disabled,
             Enabled,
             Adaptive,
         };
-        VSyncMode vsync_mode { VSyncMode::Disabled };
+        VSyncMode vsync_mode {VSyncMode::Disabled};
     };
-} // vn
+} // namespace vn

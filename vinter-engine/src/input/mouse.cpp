@@ -3,72 +3,83 @@
 #include <SDL3/SDL.h>
 
 namespace vn {
-    static std::size_t to_sdl_mouse_button(Mouse::Button button) {
+    static auto ToSdlMouseButton(Mouse::Button button) -> std::size_t {
         return static_cast<std::size_t>(button);
     }
 
-    [[nodiscard]] bool Mouse::is_button_pressed(const Button button) const {
-        return m_buttons.is_pressed(to_sdl_mouse_button(button));
+    [[nodiscard]]
+    auto Mouse::IsButtonPressed(const Button button) const -> bool {
+        return m_buttons.IsPressed(ToSdlMouseButton(button));
     }
-    [[nodiscard]] bool Mouse::is_button_just_pressed(const Button button) const {
-        return m_buttons.is_just_pressed(to_sdl_mouse_button(button));
+
+    [[nodiscard]]
+    auto Mouse::IsButtonJustPressed(const Button button) const -> bool {
+        return m_buttons.IsJustPressed(ToSdlMouseButton(button));
     }
-    [[nodiscard]] bool Mouse::is_button_just_released(const Button button) const {
-        return m_buttons.is_just_released(to_sdl_mouse_button(button));
+
+    [[nodiscard]]
+    auto Mouse::IsButtonJustReleased(const Button button) const -> bool {
+        return m_buttons.IsJustReleased(ToSdlMouseButton(button));
     }
-    bool Mouse::is_wheel_triggered(const Wheel wheel) const {
+
+    auto Mouse::IsWheelTriggered(const Wheel wheel) const -> bool {
         switch (wheel) {
-            case Wheel::Up:    return m_scroll.y > 0;
-            case Wheel::Down:  return m_scroll.y < 0;
+            case Wheel::Up: return m_scroll.y > 0;
+            case Wheel::Down: return m_scroll.y < 0;
             case Wheel::Right: return m_scroll.x > 0;
-            case Wheel::Left:  return m_scroll.x < 0;
+            case Wheel::Left: return m_scroll.x < 0;
         }
         return false;
     }
 
-    glm::vec2 Mouse::get_position() const {
+    auto Mouse::GetPosition() const -> glm::vec2 {
         return m_position;
     }
 
-    glm::vec2 Mouse::get_delta() const {
-        return m_position - m_position_previous;
+    auto Mouse::GetDelta() const -> glm::vec2 {
+        return m_position - m_positionPrevious;
     }
 
-    glm::vec2 Mouse::get_scroll() const {
+    auto Mouse::GetScroll() const -> glm::vec2 {
         return m_scroll;
     }
-    float Mouse::get_scroll_vertical() const {
+
+    auto Mouse::GetScrollVertical() const -> float {
         return m_scroll.y;
     }
-    float Mouse::get_scroll_horizontal() const {
+
+    auto Mouse::GetScrollHorizontal() const -> float {
         return m_scroll.x;
     }
 
-    bool Mouse::is_cursor_visible() const {
+    auto Mouse::IsCursorVisible() const -> bool {
         return SDL_CursorVisible();
     }
 
-    void Mouse::set_cursor_visible(const bool visible) const {
-        if (visible) SDL_ShowCursor();
-        else SDL_HideCursor();
+    void Mouse::SetCursorVisible(const bool visible) const {
+        if (visible) {
+            SDL_ShowCursor();
+        } else {
+            SDL_HideCursor();
+        }
     }
 
-    void Mouse::handle_events(const SDL_Event& event) {
+    void Mouse::HandleEvents(const SDL_Event& event) {
         if (event.type == SDL_EVENT_MOUSE_WHEEL) {
             m_scroll += glm::vec2(event.wheel.x, event.wheel.y);
         }
     }
 
-    void Mouse::update() {
-        m_buttons.refresh();
-        m_position_previous = m_position;
-        m_scroll = { 0.f, 0.f };
+    void Mouse::Update() {
+        m_buttons.Refresh();
+        m_positionPrevious = m_position;
+        m_scroll = {0.f, 0.f};
 
-        const SDL_MouseButtonFlags sdl_buttons = SDL_GetMouseState(&m_position.x, &m_position.y);
-        m_buttons.current[0] = (sdl_buttons & SDL_BUTTON_LMASK)  != 0;
-        m_buttons.current[1] = (sdl_buttons & SDL_BUTTON_RMASK)  != 0;
-        m_buttons.current[2] = (sdl_buttons & SDL_BUTTON_MMASK)  != 0;
-        m_buttons.current[3] = (sdl_buttons & SDL_BUTTON_X1MASK) != 0;
-        m_buttons.current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
+        const SDL_MouseButtonFlags sdlButtons = SDL_GetMouseState(&m_position.x, &m_position.y);
+        m_buttons.current[0] = (sdlButtons & SDL_BUTTON_LMASK) != 0;
+        m_buttons.current[1] = (sdlButtons & SDL_BUTTON_RMASK) != 0;
+        m_buttons.current[2] = (sdlButtons & SDL_BUTTON_MMASK) != 0;
+        m_buttons.current[3] = (sdlButtons & SDL_BUTTON_X1MASK) != 0;
+        m_buttons.current[4] = (sdlButtons & SDL_BUTTON_X2MASK) != 0;
     }
-} // vn
+} // namespace vn

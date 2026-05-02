@@ -1,51 +1,52 @@
 #pragma once
 
-#include "vinter/color.hpp"
-
-#include <glm/glm.hpp>
 #include <memory>
 
+#include <glm/glm.hpp>
+
+#include "vinter/color.hpp"
+
 namespace vn {
-struct RendererSettings;
-class Window;
+    struct RendererSettings;
+    class Window;
 
-class Renderer
-{
-    friend class Engine;
+    class Renderer {
+        friend class Engine;
 
-public:
-    static std::unique_ptr<Renderer>
-    create(RendererSettings const & renderer_settings, Window const & window);
+    public:
+        static auto Create(const RendererSettings& rendererSettings, const Window& window)
+            -> std::unique_ptr<Renderer>;
 
-    virtual ~Renderer() = 0;
+        virtual ~Renderer() = 0;
 
-    void set_clear_color(Color color);
+        void SetClearColor(Color color);
 
-protected:
-    [[nodiscard]] Color get_clear_color() const;
+    protected:
+        [[nodiscard]]
+        auto GetClearColor() const -> Color;
 
-private:
-    Color m_clear_color{colors::BLACK};
+    private:
+        Color m_clearColor {Color::Black()};
 
-    virtual void begin_frame() = 0;
+        virtual void BeginFrame() = 0;
 
-    virtual void end_frame() = 0;
+        virtual void EndFrame() = 0;
 
-    virtual void draw_pixel(glm::vec2 position, Color color) = 0;
+        virtual void DrawPixel(glm::vec2 position, Color color) = 0;
 
-    // TODO: Implement geometry submodule.
-    virtual void draw_line(glm::vec2 start, glm::vec2 end, Color color, float weight = 1.f) = 0;
+        // TODO: Implement geometry submodule.
+        virtual void DrawLine(glm::vec2 start, glm::vec2 end, Color color, float weight = 1.f) = 0;
 
-    virtual void draw_rectangle(
-        glm::vec2 position,
-        glm::vec2 size,
-        Color color,
-        float weight = 1.f,
-        bool filled = true
-    ) = 0;
+        virtual void DrawRectangle(
+            glm::vec2 position,
+            glm::vec2 size,
+            Color color,
+            float weight = 1.f,
+            bool filled = true
+        ) = 0;
 
-    virtual void draw_polygon(std::vector<glm::vec2> vertices, Color color) = 0;
+        virtual void DrawPolygon(std::vector<glm::vec2> vertices, Color color) = 0;
 
-    virtual void draw_circle(glm::vec2 center, float radius) = 0;
-};
+        virtual void DrawCircle(glm::vec2 center, float radius) = 0;
+    };
 } // namespace vn

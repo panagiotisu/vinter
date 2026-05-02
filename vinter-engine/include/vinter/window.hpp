@@ -10,18 +10,20 @@ namespace vn {
 
     class Window {
         friend class Engine;
+
     public:
-        explicit Window(const WindowSettings& window_settings);
+        explicit Window(const WindowSettings& windowSettings);
         ~Window();
 
-        [[nodiscard]] SDL_Window* get_native_handle() const;
+        [[nodiscard]]
+        auto GetNativeHandle() const -> SDL_Window*;
 
     private:
-        int m_width { 0 }, m_height { 0 };
+        int m_width {0}, m_height {0};
 
-        void handle_events(const SDL_Event& event);
+        void HandleEvents(const SDL_Event& event);
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;
     };
-} // vn
+} // namespace vn

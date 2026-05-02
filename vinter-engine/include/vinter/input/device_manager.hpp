@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <array>
-#include <vector>
-#include <unordered_map>
+#include <memory>
 #include <optional>
+#include <unordered_map>
+#include <vector>
 
 union SDL_Event;
 
@@ -21,25 +21,36 @@ namespace vn {
     public:
         DeviceManager();
 
-        static constexpr std::size_t MaxGamepadCount { 8 };
+        static constexpr std::size_t k_MaxGamepadCount {8};
 
-        [[nodiscard]] Keyboard& get_keyboard() const noexcept;
-        [[nodiscard]] Mouse& get_mouse() const noexcept;
-        [[nodiscard]] Gamepad* get_gamepad_by_id(DeviceID id) const noexcept;
-        [[nodiscard]] Gamepad* get_gamepad(std::size_t slot = 0) const noexcept;
-        [[nodiscard]] std::array<Gamepad*, MaxGamepadCount> get_gamepads() const noexcept;
-        [[nodiscard]] std::vector<Gamepad*> get_active_gamepads() const noexcept;
+        [[nodiscard]]
+        auto GetKeyboard() const noexcept -> Keyboard&;
+
+        [[nodiscard]]
+        auto GetMouse() const noexcept -> Mouse&;
+
+        [[nodiscard]]
+        auto GetGamepadById(DeviceID id) const noexcept -> Gamepad*;
+
+        [[nodiscard]]
+        auto GetGamepad(std::size_t slot = 0) const noexcept -> Gamepad*;
+
+        [[nodiscard]]
+        auto GetGamepads() const noexcept -> std::array<Gamepad*, k_MaxGamepadCount>;
+
+        [[nodiscard]]
+        auto GetActiveGamepads() const noexcept -> std::vector<Gamepad*>;
 
     private:
-        void handle_events(const SDL_Event& event);
-        void update();
+        void HandleEvents(const SDL_Event& event);
+        void Update();
 
-        void handle_gamepad_added(DeviceID id);
-        void handle_gamepad_removed(DeviceID id);
+        void HandleGamepadAdded(DeviceID id);
+        void HandleGamepadRemoved(DeviceID id);
 
         std::unique_ptr<Keyboard> m_keyboard;
         std::unique_ptr<Mouse> m_mouse;
-        std::array<std::optional<DeviceID>, MaxGamepadCount> m_gamepad_slots;
+        std::array<std::optional<DeviceID>, k_MaxGamepadCount> m_gamepadSlots;
         std::unordered_map<DeviceID, std::unique_ptr<Gamepad>> m_gamepads;
     };
-} // vn
+} // namespace vn

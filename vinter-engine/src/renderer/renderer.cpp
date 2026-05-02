@@ -1,29 +1,30 @@
 #include "vinter/renderer.hpp"
 
-#include "vinter/settings/renderer_settings.hpp"
 #include "renderer_sdl.hpp"
+#include "vinter/settings/renderer_settings.hpp"
 
 namespace vn {
-    std::unique_ptr<Renderer> Renderer::create(
-        const RendererSettings& renderer_settings, 
-        const Window& window
-    ) {
-        switch (renderer_settings.backend) {
+    auto Renderer::Create(const RendererSettings& rendererSettings, const Window& window)
+        -> std::unique_ptr<Renderer> {
+        switch (rendererSettings.backend) {
             case RendererSettings::Backend::SDL:
-                return std::make_unique<RendererSDL>(renderer_settings, window);
+                return std::make_unique<RendererSDL>(rendererSettings, window);
 
-            case RendererSettings::Backend::SDL_GPU:
-                break;
-            
-            case RendererSettings::Backend::OpenGL:
-                break;
-            }
+            case RendererSettings::Backend::SdlGpu:
+            case RendererSettings::Backend::OpenGL: break;
+        }
 
         return nullptr;
     }
 
-    Renderer::~Renderer() {}
+    Renderer::~Renderer() {
+    }
 
-    Color Renderer::get_clear_color() const { return m_clear_color; }
-    void Renderer::set_clear_color(const Color color) { m_clear_color = color; }
-}
+    auto Renderer::GetClearColor() const -> Color {
+        return m_clearColor;
+    }
+
+    void Renderer::SetClearColor(const Color color) {
+        m_clearColor = color;
+    }
+} // namespace vn

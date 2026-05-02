@@ -3,51 +3,54 @@
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
 namespace vn {
-    Engine::Engine(const ProjectSettings& project_settings) {
+    Engine::Engine(const ProjectSettings& projectSettings) {
         if (!SDL_Init(
-            SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD | SDL_INIT_JOYSTICK
-        )) {
+                SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD
+                | SDL_INIT_JOYSTICK
+            )) {
             throw std::runtime_error(SDL_GetError());
         }
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
-        window = std::make_unique<Window>(project_settings.window);
-        renderer = Renderer::create(project_settings.renderer, *window);
-        time = std::make_unique<Time>();
-        devices = std::make_unique<DeviceManager>();
-        input = std::make_unique<InputMap>(*devices);
+        m_window = std::make_unique<Window>(projectSettings.window);
+        m_renderer = Renderer::Create(projectSettings.renderer, *m_window);
+        m_time = std::make_unique<Time>();
+        m_devices = std::make_unique<DeviceManager>();
+        m_input = std::make_unique<InputMap>(*m_devices);
     }
 
-    Engine::~Engine() { SDL_Quit(); }
+    Engine::~Engine() {
+        SDL_Quit();
+    }
 
-    void Engine::run() {
+    void Engine::Run() {
         m_running = true;
 
-        load();
+        Load();
 
         while (m_running) {
-            SDL_Event sdl_event;
-            while (SDL_PollEvent(&sdl_event)) {
-                if (sdl_event.type == SDL_EVENT_QUIT) {
+            SDL_Event sdlEvent;
+            while (SDL_PollEvent(&sdlEvent)) {
+                if (sdlEvent.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
-                window->handle_events(sdl_event);
-                devices->handle_events(sdl_event);
+                m_window->HandleEvents(sdlEvent);
+                m_devices->HandleEvents(sdlEvent);
             }
-            poll_events();
+            PollEvents();
 
-            time->update();
-            update(time->get_delta());
-            devices->update();
+            m_time->Update();
+            Update(m_time->GetDelta());
+            m_devices->Update();
 
-            renderer->begin_frame();
-            render();
-            renderer->end_frame();
+            m_renderer->BeginFrame();
+            Render();
+            m_renderer->EndFrame();
         }
     }
 
-    void Engine::quit() {
+    void Engine::Quit() {
         m_running = false;
     }
-} // vn
+} // namespace vn

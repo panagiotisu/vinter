@@ -9,15 +9,18 @@ namespace vn {
     public:
         Time();
 
-        [[nodiscard]] float get_delta() const;
-        [[nodiscard]] float get_fps() const;
+        [[nodiscard]]
+        auto GetDelta() const -> float;
+
+        [[nodiscard]]
+        auto GetFps() const -> float;
 
     private:
-        void update();
+        void Update();
 
-        std::uint64_t m_tick_previous { 0 };
-        std::uint64_t m_tick_current { 0 };
-        std::uint64_t m_frequency { 0 };
-        float m_delta { 0.f };
+        std::uint64_t m_tickPrevious {0};
+        std::uint64_t m_tickCurrent {0};
+        std::uint64_t m_frequency {0};
+        float m_delta {0.f};
     };
-} // vn
+} // namespace vn

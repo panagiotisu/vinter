@@ -11,35 +11,60 @@ namespace vn {
         friend class DeviceManager;
 
     public:
-        enum class Button {
-            Left, Right, Middle, X1, X2,
+        enum class Button : std::uint8_t {
+            Left,
+            Right,
+            Middle,
+            X1,
+            X2,
         };
 
-        enum class Wheel {
-            Up, Down, Left, Right,
+        enum class Wheel : std::uint8_t {
+            Up,
+            Down,
+            Left,
+            Right,
         };
 
-        [[nodiscard]] bool is_button_pressed(Button button) const;
-        [[nodiscard]] bool is_button_just_pressed(Button button) const;
-        [[nodiscard]] bool is_button_just_released(Button button) const;
-        [[nodiscard]] bool is_wheel_triggered(Wheel wheel) const;
+        [[nodiscard]]
+        auto IsButtonPressed(Button button) const -> bool;
 
-        [[nodiscard]] glm::vec2 get_position() const;
-        [[nodiscard]] glm::vec2 get_delta() const;
-        [[nodiscard]] glm::vec2 get_scroll() const;
-        [[nodiscard]] float get_scroll_vertical() const;
-        [[nodiscard]] float get_scroll_horizontal() const;
+        [[nodiscard]]
+        auto IsButtonJustPressed(Button button) const -> bool;
 
-        [[nodiscard]] bool is_cursor_visible() const;
-        void set_cursor_visible(bool visible) const;
+        [[nodiscard]]
+        auto IsButtonJustReleased(Button button) const -> bool;
+
+        [[nodiscard]]
+        auto IsWheelTriggered(Wheel wheel) const -> bool;
+
+        [[nodiscard]]
+        auto GetPosition() const -> glm::vec2;
+
+        [[nodiscard]]
+        auto GetDelta() const -> glm::vec2;
+
+        [[nodiscard]]
+        auto GetScroll() const -> glm::vec2;
+
+        [[nodiscard]]
+        auto GetScrollVertical() const -> float;
+
+        [[nodiscard]]
+        auto GetScrollHorizontal() const -> float;
+
+        [[nodiscard]]
+        auto IsCursorVisible() const -> bool;
+
+        void SetCursorVisible(bool visible) const;
 
     private:
-        void handle_events(const SDL_Event& event);
-        void update();
+        void HandleEvents(const SDL_Event& event);
+        void Update();
 
         ButtonStates<5> m_buttons {};
         glm::vec2 m_position {};
-        glm::vec2 m_position_previous {};
+        glm::vec2 m_positionPrevious {};
         glm::vec2 m_scroll {};
     };
-} // vn
+} // namespace vn

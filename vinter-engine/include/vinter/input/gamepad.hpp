@@ -12,15 +12,26 @@ namespace vn {
         friend class DeviceManager;
 
     public:
-        explicit Gamepad(unsigned int joystick_id);
+        explicit Gamepad(unsigned int joystickId);
         ~Gamepad();
 
-        enum class Button {
+        enum class Button : std::uint8_t {
             // Common Buttons.
-            South, East, West, North,
-            Back, Guide, Start,
-            LeftStick, RightStick, LeftShoulder, RightShoulder,
-            DpadUp, DpadDown, DpadLeft, DpadRight,
+            South,
+            East,
+            West,
+            North,
+            Back,
+            Guide,
+            Start,
+            LeftStick,
+            RightStick,
+            LeftShoulder,
+            RightShoulder,
+            DpadUp,
+            DpadDown,
+            DpadLeft,
+            DpadRight,
 
             // Specialized Buttons that depend on gamepad company and model.
             RightPaddle1,
@@ -28,65 +39,110 @@ namespace vn {
             RightPaddle2,
             LeftPaddle2,
             Touchpad,
-            Misc1, /* Additional button (e.g. Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro
-                      capture button, Amazon Luna microphone button, Google Stadia capture button). */
+            Misc1, /* Additional button (e.g. Xbox Series X share button, PS5 microphone button,
+                      Nintendo Switch Pro capture button, Amazon Luna microphone button, Google
+                      Stadia capture button). */
             Misc2,
-            Misc3,  // Additional button (e.g. Nintendo GameCube left trigger click).
-            Misc4,  // Additional button (e.g. Nintendo GameCube right trigger click).
+            Misc3, // Additional button (e.g. Nintendo GameCube left trigger click).
+            Misc4, // Additional button (e.g. Nintendo GameCube right trigger click).
             Misc5,
             Misc6,
         };
 
-        enum class Axis {
-            LeftStickLeft, LeftStickRight, LeftStickUp, LeftStickDown,
-            RightStickLeft, RightStickRight, RightStickUp, RightStickDown,
-            LeftTrigger, RightTrigger,
+        enum class Axis : std::uint8_t {
+            LeftStickLeft,
+            LeftStickRight,
+            LeftStickUp,
+            LeftStickDown,
+            RightStickLeft,
+            RightStickRight,
+            RightStickUp,
+            RightStickDown,
+            LeftTrigger,
+            RightTrigger,
             Count,
         };
 
-        enum class ButtonLabel {
+        enum class ButtonLabel : std::uint8_t {
             Unknown,
-            A, B, X, Y,
-            Cross, Circle, Square, Triangle,
+            A,
+            B,
+            X,
+            Y,
+            Cross,
+            Circle,
+            Square,
+            Triangle,
         };
 
-        enum class Type {
+        enum class Type : std::uint8_t {
             Unknown,
             Standard,
-            Xbox360, XboxOne,
-            Ps3, Ps4, Ps5,
-            Switch, JoyconLeft, JoyconRight, JoyconPair,
+            Xbox360,
+            XboxOne,
+            Ps3,
+            Ps4,
+            Ps5,
+            Switch,
+            JoyconLeft,
+            JoyconRight,
+            JoyconPair,
             GameCube,
         };
 
-        [[nodiscard]] unsigned int get_id() const noexcept;
-        [[nodiscard]] std::string get_guid_string() const noexcept;
-        [[nodiscard]] std::string get_name() const noexcept;
-        [[nodiscard]] Type get_type() const noexcept;
-        [[nodiscard]] ButtonLabel get_button_label(Button button) const noexcept;
+        [[nodiscard]]
+        auto GetId() const noexcept -> unsigned int;
 
-        [[nodiscard]] bool is_button_pressed(Button button) const noexcept;
-        [[nodiscard]] bool is_button_just_pressed(Button button) const noexcept;
-        [[nodiscard]] bool is_button_just_released(Button button) const noexcept;
+        [[nodiscard]]
+        auto GetGuidString() const noexcept -> std::string;
 
-        [[nodiscard]] bool is_axis_pressed(Axis axis) const noexcept;
-        [[nodiscard]] bool is_axis_just_pressed(Axis axis) const noexcept;
-        [[nodiscard]] bool is_axis_just_released(Axis axis) const noexcept;
-        [[nodiscard]] float get_axis_strength(Axis axis) const noexcept;
+        [[nodiscard]]
+        auto GetName() const noexcept -> std::string;
 
-        void begin_vibrate(float weak_percent_magnitude, float strong_percent_magnitude, float duration_sec = 0.f) const;
-        void stop_vibrate() const;
+        [[nodiscard]]
+        auto GetType() const noexcept -> Type;
 
-        void set_led_color(Color color) const;
+        [[nodiscard]]
+        auto GetButtonLabel(Button button) const noexcept -> ButtonLabel;
+
+        [[nodiscard]]
+        auto IsButtonPressed(Button button) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto IsButtonJustPressed(Button button) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto IsButtonJustReleased(Button button) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto IsAxisPressed(Axis axis) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto IsAxisJustPressed(Axis axis) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto IsAxisJustReleased(Axis axis) const noexcept -> bool;
+
+        [[nodiscard]]
+        auto GetAxisStrength(Axis axis) const noexcept -> float;
+
+        void BeginVibrate(
+            float weakPercentMagnitude,
+            float strongPercentMagnitude,
+            float durationSec = 0.f
+        ) const;
+        void StopVibrate() const;
+
+        void SetLedColor(Color color) const;
 
     private:
-        void handle_events(const SDL_Event& event);
-        void update();
+        void HandleEvents(const SDL_Event& event);
+        void Update();
 
-        float m_stick_deadzone { 0.1f };
-        float m_trigger_deadzone { 0.05f };
+        float m_stickDeadzone {0.1f};
+        float m_triggerDeadzone {0.05f};
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;
     };
-} // vn
+} // namespace vn

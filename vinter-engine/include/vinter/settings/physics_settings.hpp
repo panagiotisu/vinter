@@ -1,7 +1,5 @@
 #pragma once
 
 namespace vn {
-    struct PhysicsSettings {
-
-    };
-} // vn
+    struct PhysicsSettings {};
+} // namespace vn

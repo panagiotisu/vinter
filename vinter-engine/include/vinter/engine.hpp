@@ -3,42 +3,48 @@
 #include <memory>
 
 // TODO: Place these in a fwd.hpp.
-#include "vinter/logger.hpp"
-#include "vinter/settings/project_settings.hpp"
-#include "vinter/window.hpp"
 #include "vinter/color.hpp"
-#include "vinter/renderer.hpp"
-#include "vinter/time.hpp"
+#include "vinter/game_object.hpp"
+#include "vinter/input/device_manager.hpp"
+#include "vinter/input/gamepad.hpp"
+#include "vinter/input/input_map.hpp"
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
-#include "vinter/input/gamepad.hpp"
-#include "vinter/input/device_manager.hpp"
-#include "vinter/input/input_map.hpp"
-#include "vinter/game_object.hpp"
+#include "vinter/renderer.hpp"
+#include "vinter/settings/project_settings.hpp"
+#include "vinter/time.hpp"
+#include "vinter/window.hpp"
 
 namespace vn {
     class Engine {
     public:
-        explicit Engine(const ProjectSettings& project_settings);
+        explicit Engine(const ProjectSettings& projectSettings);
         virtual ~Engine();
 
-        void run();
+        void Run();
 
     protected:
-        std::unique_ptr<Window> window;
-        std::unique_ptr<Renderer> renderer;
-        std::unique_ptr<Time> time;
-        std::unique_ptr<DeviceManager> devices;
-        std::unique_ptr<InputMap> input;
+        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Renderer> m_renderer;
+        std::unique_ptr<Time> m_time;
+        std::unique_ptr<DeviceManager> m_devices;
+        std::unique_ptr<InputMap> m_input;
 
-        virtual void load() {}
-        virtual void poll_events() {}
-        virtual void update(float delta) {}
-        virtual void render() {}
+        virtual void Load() {
+        }
 
-        void quit();
+        virtual void PollEvents() {
+        }
+
+        virtual void Update(float delta) {
+        }
+
+        virtual void Render() {
+        }
+
+        void Quit();
 
     private:
-        bool m_running { false };
+        bool m_running {false};
     };
-} // vn
+} // namespace vn

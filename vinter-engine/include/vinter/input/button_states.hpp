@@ -3,23 +3,28 @@
 #include <array>
 
 namespace vn {
-    template<std::size_t N>
+    template <std::size_t N>
     struct ButtonStates {
         std::array<bool, N> current {};
         std::array<bool, N> previous {};
 
-        void refresh() {
+        void Refresh() {
             previous = current;
         }
 
-        [[nodiscard]] bool is_pressed(std::size_t button_idx) const {
-            return current[button_idx];
+        [[nodiscard]]
+        auto IsPressed(std::size_t buttonIdx) const -> bool {
+            return current[buttonIdx];
         }
-        [[nodiscard]] bool is_just_pressed(std::size_t button_idx) const {
-            return current[button_idx] && !previous[button_idx];
+
+        [[nodiscard]]
+        auto IsJustPressed(std::size_t buttonIdx) const -> bool {
+            return current[buttonIdx] && !previous[buttonIdx];
         }
-        [[nodiscard]] bool is_just_released(std::size_t button_idx) const {
-            return !current[button_idx] && previous[button_idx];
+
+        [[nodiscard]]
+        auto IsJustReleased(std::size_t buttonIdx) const -> bool {
+            return !current[buttonIdx] && previous[buttonIdx];
         }
     };
-} // vn
+} // namespace vn
