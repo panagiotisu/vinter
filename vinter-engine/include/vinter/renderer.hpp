@@ -1,29 +1,51 @@
 #pragma once
 
-#include <memory>
-
 #include "vinter/color.hpp"
 
+#include <glm/glm.hpp>
+#include <memory>
+
 namespace vn {
-    struct RendererSettings;
-    class Window;
+struct RendererSettings;
+class Window;
 
-    class Renderer {
-        friend class Engine;
+class Renderer
+{
+    friend class Engine;
 
-    public:
-        static std::unique_ptr<Renderer> create(const RendererSettings& renderer_settings, const Window& window);
-        virtual ~Renderer() = 0;
+public:
+    static std::unique_ptr<Renderer>
+    create(RendererSettings const & renderer_settings, Window const & window);
 
-        void set_clear_color(Color color);
+    virtual ~Renderer() = 0;
 
-    protected:
-        [[nodiscard]] Color get_clear_color() const;
+    void set_clear_color(Color color);
 
-    private:
-        Color m_clear_color { colors::BLACK };
+protected:
+    [[nodiscard]] Color get_clear_color() const;
 
-        virtual void begin_frame() = 0;
-        virtual void end_frame() = 0;
-    };
-} // vn
+private:
+    Color m_clear_color{colors::BLACK};
+
+    virtual void begin_frame() = 0;
+
+    virtual void end_frame() = 0;
+
+    virtual void draw_pixel(glm::vec2 position, Color color) = 0;
+
+    // TODO: Implement geometry submodule.
+    virtual void draw_line(glm::vec2 start, glm::vec2 end, Color color, float weight = 1.f) = 0;
+
+    virtual void draw_rectangle(
+        glm::vec2 position,
+        glm::vec2 size,
+        Color color,
+        float weight = 1.f,
+        bool filled = true
+    ) = 0;
+
+    virtual void draw_polygon(std::vector<glm::vec2> vertices, Color color) = 0;
+
+    virtual void draw_circle(glm::vec2 center, float radius) = 0;
+};
+} // namespace vn
