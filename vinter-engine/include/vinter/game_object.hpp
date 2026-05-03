@@ -64,9 +64,14 @@ namespace vn {
             }
         }
 
-        void AddChild(GameObject& gameObject) {
-            gameObject.m_parent = this;
-            m_children.emplace_back(gameObject);
+        GameObject& AddChild(GameObject child) {
+            child.m_parent = this;
+
+            auto ptr = std::make_unique<GameObject>(std::move(child));
+            GameObject& ref = *ptr;
+
+            m_children.emplace_back(std::move(ptr));
+            return ref;
         }
 
         template <typename T>
@@ -122,7 +127,7 @@ namespace vn {
 
     private:
         std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components;
-        std::vector<GameObject> m_children;
+        std::vector<std::unique_ptr<GameObject>> m_children;
         GameObject* m_parent {nullptr};
 
         template <typename T>
