@@ -64,4 +64,33 @@ namespace vn {
     void RendererSDL::EndFrame() {
         SDL_RenderPresent(m_impl->sdlRendererBackend);
     }
+
+    void RendererSDL::DrawPixel(glm::vec2 position, Color color) {
+        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        SDL_RenderPoint(m_impl->sdlRendererBackend, position.x, position.y);
+    }
+
+    void RendererSDL::DrawLine(glm::vec2 start, glm::vec2 end, Color color, float /*weight*/) {
+        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        SDL_RenderLine(m_impl->sdlRendererBackend, start.x, start.y, end.x, end.y);
+    }
+
+    void
+    RendererSDL::DrawRectangle(glm::vec2 position, glm::vec2 size, Color color, float /*weight*/) {
+        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        const SDL_FRect sdlRectangle = {.x = position.x, .y = position.y, .w = size.x, .h = size.y};
+        SDL_RenderRect(m_impl->sdlRendererBackend, &sdlRectangle);
+    }
+
+    void RendererSDL::DrawRectangleFilled(glm::vec2 position, glm::vec2 size, Color color) {
+        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        const SDL_FRect sdlRectangle = {.x = position.x, .y = position.y, .w = size.x, .h = size.y};
+        SDL_RenderFillRect(m_impl->sdlRendererBackend, &sdlRectangle);
+    }
+
+    void RendererSDL::DrawPolygon(std::vector<glm::vec2> vertices, Color color) {
+    }
+
+    void RendererSDL::DrawCircle(glm::vec2 center, float radius) {
+    }
 } // namespace vn

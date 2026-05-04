@@ -36,6 +36,11 @@ protected:
 
     void Render() override {
         m_renderer->SetClearColor(m_backgroundColor);
+
+        m_renderer->DrawPixel({300.f, 300.f}, vn::Color::Red());
+        m_renderer->DrawLine({0.f, 0.f}, {400.f, 500.f}, vn::Color::Yellow());
+        m_renderer->DrawRectangle({200.f, 200.f}, {200.f, 100.f}, vn::Color::White());
+        m_renderer->DrawRectangleFilled({100.f, 100.f}, {100.f, 200.f}, vn::Color::Magenta());
     }
 
 private:
