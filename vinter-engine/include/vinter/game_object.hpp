@@ -64,7 +64,7 @@ namespace vn {
             }
         }
 
-        GameObject& AddChild(GameObject child) {
+        auto AddChild(GameObject child) -> GameObject& {
             child.m_parent = this;
 
             auto ptr = std::make_unique<GameObject>(std::move(child));
