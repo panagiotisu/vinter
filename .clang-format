@@ -67,3 +67,5 @@ TabWidth: 4
 NamespaceIndentation: All
 SpaceBeforeCpp11BracedList: true
 BreakAfterAttributes: Always
+PenaltyBreakScopeResolution: 500
+PenaltyBreakOpenParenthesis: 0
