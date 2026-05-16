@@ -44,7 +44,8 @@ Checks: >
   -readability-identifier-length,
   -readability-magic-numbers,
   -readability-static-accessed-through-instance,
-  -readability-uppercase-literal-suffix
+  -readability-uppercase-literal-suffix,
+    -cppcoreguidelines-avoid-do-while,
 WarningsAsErrors: true
 FormatStyle: file
 CheckOptions:
