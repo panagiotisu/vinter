@@ -151,15 +151,13 @@ namespace vn {
         }
     };
 
-    template <typename T> // clang-format off
-    requires std::derived_from<T, Component>
-    auto Component::GetComponent() -> T* { // clang-format on
+    template <typename T>
+    requires std::derived_from<T, Component> auto Component::GetComponent() -> T* {
         return m_owner ? m_owner->GetComponent<T>() : nullptr;
     }
 
-    template <typename T> // clang-format off
-    requires std::derived_from<T, Component>
-    auto Component::GetComponent() -> const T* { // clang-format on
+    template <typename T>
+    requires std::derived_from<T, Component> auto Component::GetComponent() -> const T* {
         return m_owner ? m_owner->GetComponent<T>() : nullptr;
     }
 
