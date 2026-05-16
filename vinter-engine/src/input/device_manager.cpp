@@ -1,10 +1,10 @@
 #include "vinter/input/device_manager.hpp"
 
-#include <cassert>
 #include <ranges>
 
 #include <SDL3/SDL.h>
 
+#include "vinter/assert.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
@@ -65,7 +65,7 @@ namespace vn {
     }
 
     auto DeviceManager::GetGamepad(const std::size_t slot) const noexcept -> Gamepad* {
-        assert(slot < k_MaxGamepadCount && "Gamepad slot out of range.");
+        VN_ASSERT(slot < k_MaxGamepadCount, "Gamepad slot out of range.");
 
         if (const auto& optionalId = m_gamepadSlots[slot]; optionalId) {
             return GetGamepadById(*optionalId);

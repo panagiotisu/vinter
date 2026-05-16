@@ -2,11 +2,11 @@
 
 #include <algorithm>
 #include <array>
-#include <cassert>
 #include <cmath>
 
 #include <SDL3/SDL.h>
 
+#include "vinter/assert.hpp"
 #include "vinter/color.hpp"
 #include "vinter/input/button_states.hpp"
 
@@ -57,7 +57,7 @@ namespace vn {
         auto operator=(Impl&&) -> Impl& = delete;
 
         explicit Impl(const unsigned int joystickId) : sdlGamepad(SDL_OpenGamepad(joystickId)) {
-            assert(sdlGamepad && "Failed to open SDL gamepad.");
+            VN_ASSERT(sdlGamepad, "Failed to open SDL gamepad.");
         }
 
         ~Impl() {
