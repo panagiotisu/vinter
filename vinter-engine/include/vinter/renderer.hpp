@@ -26,21 +26,25 @@ namespace vn {
         // TODO: Implement geometry submodule.
         virtual void DrawLine(glm::vec2 start, glm::vec2 end, Color color, float weight = 1.f) = 0;
 
-        virtual void
-        DrawRectangle(glm::vec2 position, glm::vec2 size, Color color, float weight = 1.f) = 0;
+        virtual void DrawRectangle(glm::vec2 position, glm::vec2 size, Color color) = 0;
 
-        virtual void DrawRectangleFilled(glm::vec2 position, glm::vec2 size, Color color) = 0;
+        virtual void
+        DrawRectangleLine(glm::vec2 position, glm::vec2 size, Color color, float weight = 1.f) = 0;
+
+        virtual void
+        DrawCircle(glm::vec2 center, float radius, Color color, unsigned int segments) = 0;
+
+        virtual void
+        DrawCircleLine(glm::vec2 center, float radius, Color color, float weight = 1.f) = 0;
 
         virtual void DrawPolygon(std::vector<glm::vec2> vertices, Color color) = 0;
-
-        virtual void DrawCircle(glm::vec2 center, float radius) = 0;
 
     protected:
         [[nodiscard]]
         auto GetClearColor() const -> Color;
 
     private:
-        Color m_clearColor {Color::Black()};
+        Color m_clearColor {colors::Black};
 
         virtual void BeginFrame() = 0;
 
