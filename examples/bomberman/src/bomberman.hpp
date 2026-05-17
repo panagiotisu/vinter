@@ -22,9 +22,9 @@ protected:
 
     void Update(float /*delta*/) override {
         if (m_input->IsActionJustPressed("set_bg_color_red")) {
-            m_backgroundColor = vn::Color::Red();
+            m_backgroundColor = vn::colors::Red;
         } else if (m_input->IsActionJustPressed("set_bg_color_blue")) {
-            m_backgroundColor = vn::Color::Blue();
+            m_backgroundColor = vn::colors::Blue;
         }
 
         else if (m_input->IsActionJustPressed("quit")) {
@@ -37,12 +37,12 @@ protected:
     void Render() override {
         m_renderer->SetClearColor(m_backgroundColor);
 
-        m_renderer->DrawPixel({300.f, 300.f}, vn::Color::Red());
-        m_renderer->DrawLine({0.f, 0.f}, {400.f, 500.f}, vn::Color::Yellow());
-        m_renderer->DrawRectangle({200.f, 200.f}, {200.f, 100.f}, vn::Color::White());
-        m_renderer->DrawRectangleFilled({100.f, 100.f}, {100.f, 200.f}, vn::Color::Magenta());
+        m_renderer->DrawPixel({300.f, 300.f}, vn::colors::Red);
+        m_renderer->DrawLine({0.f, 0.f}, {400.f, 500.f}, vn::colors::Yellow);
+        m_renderer->DrawRectangleLine({200.f, 200.f}, {200.f, 100.f}, vn::colors::White);
+        m_renderer->DrawRectangle({100.f, 100.f}, {100.f, 200.f}, vn::colors::Magenta);
     }
 
 private:
-    vn::Color m_backgroundColor {vn::Color::DarkBlue()};
+    vn::Color m_backgroundColor {vn::colors::DarkBlue};
 };

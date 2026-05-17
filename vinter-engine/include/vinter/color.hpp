@@ -1,156 +1,106 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 
 namespace vn {
-    struct Color {
+    struct ColorRGBA {
         std::uint8_t r, g, b, a;
-
-        constexpr Color(
-            std::uint8_t red,
-            std::uint8_t green,
-            std::uint8_t blue,
-            std::uint8_t alpha = 255
-        )
-            : r(red)
-            , g(green)
-            , b(blue)
-            , a(alpha) {
-        }
-
-        [[nodiscard]]
-        static constexpr auto Red() -> Color {
-            return {255, 0, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Green() -> Color {
-            return {0, 255, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Blue() -> Color {
-            return {0, 0, 255};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Black() -> Color {
-            return {0, 0, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto White() -> Color {
-            return {255, 255, 255};
-        }
-
-        [[nodiscard]]
-        static constexpr auto CornflowerBlue() -> Color {
-            return {100, 149, 237};
-        }
-
-        [[nodiscard]]
-        static constexpr auto DarkBlue() -> Color {
-            return {0, 82, 172};
-        }
-
-        [[nodiscard]]
-        static constexpr auto LightGray() -> Color {
-            return {200, 200, 200};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Gray() -> Color {
-            return {130, 130, 130};
-        }
-
-        [[nodiscard]]
-        static constexpr auto DarkGray() -> Color {
-            return {80, 80, 80};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Yellow() -> Color {
-            return {253, 249, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Gold() -> Color {
-            return {255, 203, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Orange() -> Color {
-            return {255, 161, 0};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Pink() -> Color {
-            return {255, 109, 194};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Maroon() -> Color {
-            return {190, 33, 55};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Lime() -> Color {
-            return {0, 158, 47};
-        }
-
-        [[nodiscard]]
-        static constexpr auto DarkGreen() -> Color {
-            return {0, 117, 44};
-        }
-
-        [[nodiscard]]
-        static constexpr auto SkyBlue() -> Color {
-            return {102, 191, 255};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Purple() -> Color {
-            return {200, 122, 255};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Violet() -> Color {
-            return {135, 60, 190};
-        }
-
-        [[nodiscard]]
-        static constexpr auto DarkPurple() -> Color {
-            return {112, 31, 126};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Beige() -> Color {
-            return {211, 176, 131};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Brown() -> Color {
-            return {127, 106, 79};
-        }
-
-        [[nodiscard]]
-        static constexpr auto DarkBrown() -> Color {
-            return {76, 63, 47};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Magenta() -> Color {
-            return {255, 0, 255};
-        }
-
-        [[nodiscard]]
-        static constexpr auto RayWhite() -> Color {
-            return {245, 245, 245};
-        }
-
-        [[nodiscard]]
-        static constexpr auto Blank() -> Color {
-            return {0, 0, 0, 0};
-        }
     };
+
+    class Color {
+    public:
+        constexpr Color(float red, float green, float blue, float alpha = 1.f)
+            : m_r(std::max(0.0f, red))
+            , m_g(std::max(0.0f, green))
+            , m_b(std::max(0.0f, blue))
+            , m_a(std::max(0.0f, alpha)) {
+        }
+
+        static constexpr auto FromHDR(float red, float green, float blue, float alpha = 1.f)
+            -> Color {
+            return {red, green, blue, alpha};
+        }
+
+        static constexpr auto
+        FromRGBA(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) -> Color {
+            return {
+                static_cast<float>(r) / 255.0f,
+                static_cast<float>(g) / 255.0f,
+                static_cast<float>(b) / 255.0f,
+                static_cast<float>(a) / 255.0f
+            };
+        }
+
+        static constexpr auto FromRGBA(ColorRGBA rgba) -> Color {
+            return FromRGBA(rgba.r, rgba.g, rgba.b, rgba.a);
+        }
+
+        [[nodiscard]]
+        constexpr auto ToRGBA() const -> ColorRGBA {
+            return {
+                .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
+                .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
+                .b = static_cast<std::uint8_t>(std::min(m_b, 1.0f) * 255.0f),
+                .a = static_cast<std::uint8_t>(std::min(m_a, 1.0f) * 255.0f)
+            };
+        }
+
+        [[nodiscard]]
+        constexpr auto R() const -> float {
+            return m_r;
+        }
+
+        [[nodiscard]]
+        constexpr auto G() const -> float {
+            return m_g;
+        }
+
+        [[nodiscard]]
+        constexpr auto B() const -> float {
+            return m_b;
+        }
+
+        [[nodiscard]]
+        constexpr auto A() const -> float {
+            return m_a;
+        }
+
+    private:
+        float m_r, m_g, m_b, m_a;
+    };
+
+    // NOLINTBEGIN(readability-identifier-naming)
+    namespace colors {
+        inline constexpr Color Red = Color::FromRGBA(255, 0, 0);
+        inline constexpr Color Green = Color::FromRGBA(0, 255, 0);
+        inline constexpr Color Blue = Color::FromRGBA(0, 0, 255);
+        inline constexpr Color Black = Color::FromRGBA(0, 0, 0);
+        inline constexpr Color White = Color::FromRGBA(255, 255, 255);
+        inline constexpr Color Blank = Color::FromRGBA(0, 0, 0, 0);
+        inline constexpr Color CornflowerBlue = Color::FromRGBA(100, 149, 237);
+        inline constexpr Color DarkBlue = Color::FromRGBA(0, 82, 172);
+        inline constexpr Color LightGray = Color::FromRGBA(200, 200, 200);
+        inline constexpr Color Gray = Color::FromRGBA(130, 130, 130);
+        inline constexpr Color DarkGray = Color::FromRGBA(80, 80, 80);
+        inline constexpr Color Yellow = Color::FromRGBA(253, 249, 0);
+        inline constexpr Color Gold = Color::FromRGBA(255, 203, 0);
+        inline constexpr Color Orange = Color::FromRGBA(255, 161, 0);
+        inline constexpr Color Pink = Color::FromRGBA(255, 109, 194);
+        inline constexpr Color Maroon = Color::FromRGBA(190, 33, 55);
+        inline constexpr Color Lime = Color::FromRGBA(0, 158, 47);
+        inline constexpr Color DarkGreen = Color::FromRGBA(0, 117, 44);
+        inline constexpr Color SkyBlue = Color::FromRGBA(102, 191, 255);
+        inline constexpr Color Purple = Color::FromRGBA(200, 122, 255);
+        inline constexpr Color Violet = Color::FromRGBA(135, 60, 190);
+        inline constexpr Color DarkPurple = Color::FromRGBA(112, 31, 126);
+        inline constexpr Color Beige = Color::FromRGBA(211, 176, 131);
+        inline constexpr Color Brown = Color::FromRGBA(127, 106, 79);
+        inline constexpr Color DarkBrown = Color::FromRGBA(76, 63, 47);
+        inline constexpr Color Magenta = Color::FromRGBA(255, 0, 255);
+        inline constexpr Color RayWhite = Color::FromRGBA(245, 245, 245);
+    } // namespace colors
+
+    // NOLINTEND(readability-identifier-naming)
+
 } // namespace vn
