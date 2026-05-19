@@ -244,7 +244,8 @@ namespace vn {
     }
 
     void Gamepad::SetLedColor(const Color color) const {
-        SDL_SetGamepadLED(m_impl->sdlGamepad, color.r, color.g, color.b);
+        const ColorRGBA8 rgba8 = color.ToRGBA8();
+        SDL_SetGamepadLED(m_impl->sdlGamepad, rgba8.r, rgba8.g, rgba8.b);
     }
 
     void Gamepad::HandleEvents(const SDL_Event& event) {

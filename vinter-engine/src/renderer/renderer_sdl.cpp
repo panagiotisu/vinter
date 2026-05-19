@@ -1,7 +1,10 @@
 #include "renderer_sdl.hpp"
 
+#include <algorithm>
+
 #include <SDL3/SDL.h>
 
+#include "vinter/assert.hpp"
 #include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
@@ -55,8 +58,12 @@ namespace vn {
     void RendererSDL::BeginFrame() {
         const auto clearColor = GetClearColor();
 
-        SDL_SetRenderDrawColor(
-            m_impl->sdlRendererBackend, clearColor.r, clearColor.g, clearColor.b, clearColor.a
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend,
+            clearColor.R(),
+            clearColor.G(),
+            clearColor.B(),
+            clearColor.A()
         );
         SDL_RenderClear(m_impl->sdlRendererBackend);
     }
@@ -66,31 +73,69 @@ namespace vn {
     }
 
     void RendererSDL::DrawPixel(glm::vec2 position, Color color) {
-        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
+        );
         SDL_RenderPoint(m_impl->sdlRendererBackend, position.x, position.y);
     }
 
     void RendererSDL::DrawLine(glm::vec2 start, glm::vec2 end, Color color, float /*weight*/) {
-        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
+        );
         SDL_RenderLine(m_impl->sdlRendererBackend, start.x, start.y, end.x, end.y);
     }
 
-    void
-    RendererSDL::DrawRectangle(glm::vec2 position, glm::vec2 size, Color color, float /*weight*/) {
-        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
-        const SDL_FRect sdlRectangle = {.x = position.x, .y = position.y, .w = size.x, .h = size.y};
-        SDL_RenderRect(m_impl->sdlRendererBackend, &sdlRectangle);
-    }
-
-    void RendererSDL::DrawRectangleFilled(glm::vec2 position, glm::vec2 size, Color color) {
-        SDL_SetRenderDrawColor(m_impl->sdlRendererBackend, color.r, color.g, color.b, color.a);
+    void RendererSDL::DrawRectangle(glm::vec2 position, glm::vec2 size, Color color) {
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
+        );
         const SDL_FRect sdlRectangle = {.x = position.x, .y = position.y, .w = size.x, .h = size.y};
         SDL_RenderFillRect(m_impl->sdlRendererBackend, &sdlRectangle);
+    }
+
+    void RendererSDL::DrawRectangleLine(
+        glm::vec2 position,
+        glm::vec2 size,
+        Color color,
+        float /*weight*/
+    ) {
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
+        );
+        const SDL_FRect sdlRectangle = {.x = position.x, .y = position.y, .w = size.x, .h = size.y};
+        SDL_RenderRect(m_impl->sdlRendererBackend, &sdlRectangle);
     }
 
     void RendererSDL::DrawPolygon(std::vector<glm::vec2> vertices, Color color) {
     }
 
-    void RendererSDL::DrawCircle(glm::vec2 center, float radius) {
+    void
+    RendererSDL::DrawCircle(glm::vec2 center, float radius, Color color, unsigned int segments) {
+        VN_ASSERT(radius > 0, "Radius must be positive.");
+        VN_ASSERT(segments > 2, "Need at least three segments to form a circle (closed chain).");
+
+        SDL_SetRenderDrawColorFloat(
+            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
+        );
+        // Ensure segments are larger than 3 (triangle).
+        segments = std::max<unsigned int>(segments, 3);
+
+        // Vertices: center + perimeter points + closing point.
+        const unsigned int vertexCount {segments + 2};
+        std::vector<SDL_Vertex> vertices(vertexCount);
+
+        // Indices for the triangle fan.
+        const unsigned int indexCount {segments * 3};
+        std::vector<unsigned int> indices(indexCount);
+
+        // Define center vertex (index 0).
+        vertices[0].position.x = center.x;
+        vertices[0].position.y = center.y;
+        vertices[0].color = {.r = color.R(), .g = color.G(), .b = color.B(), .a = color.A()};
     }
+
+    void RendererSDL::DrawCircleLine(glm::vec2 center, float radius, Color color, float weight) {
+    }
+
 } // namespace vn

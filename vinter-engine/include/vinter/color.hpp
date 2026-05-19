@@ -4,7 +4,7 @@
 #include <cstdint>
 
 namespace vn {
-    struct ColorRGBA {
+    struct ColorRGBA8 {
         std::uint8_t r, g, b, a;
     };
 
@@ -32,12 +32,12 @@ namespace vn {
             };
         }
 
-        static constexpr auto FromRGBA(ColorRGBA rgba) -> Color {
+        static constexpr auto FromRGBA(ColorRGBA8 rgba) -> Color {
             return FromRGBA(rgba.r, rgba.g, rgba.b, rgba.a);
         }
 
         [[nodiscard]]
-        constexpr auto ToRGBA() const -> ColorRGBA {
+        constexpr auto ToRGBA8() const -> ColorRGBA8 {
             return {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
                 .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
