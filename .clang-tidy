@@ -38,7 +38,7 @@ Checks: >
   -misc-header-include-cycle,
   -misc-include-cleaner,
   -misc-non-private-member-variables-in-classes,
-  -modernize-use-nodiscard,
+  -modernize-use-designated-initializers,
   -performance-no-int-to-ptr,
   -clang-diagnostic-reorder-ctor,
   -readability-identifier-length,
