@@ -112,21 +112,27 @@ namespace vn {
             const std::array<float, SDL_GAMEPAD_AXIS_COUNT>& sdlAxes
         ) {
             // Split and remap stick axes so that they are always between [0, 1] instead of [-1, 1].
-            axes[AxisToIndex(Axis::LeftStickLeft)] =
-                std::max(0.f, -sdlAxes[SDL_GAMEPAD_AXIS_LEFTX]);
-            axes[AxisToIndex(Axis::LeftStickRight)] =
-                std::max(0.f, sdlAxes[SDL_GAMEPAD_AXIS_LEFTX]);
+            axes[AxisToIndex(Axis::LeftStickLeft)] = std::max(
+                0.f, -sdlAxes[SDL_GAMEPAD_AXIS_LEFTX]
+            );
+            axes[AxisToIndex(Axis::LeftStickRight)] = std::max(
+                0.f, sdlAxes[SDL_GAMEPAD_AXIS_LEFTX]
+            );
             axes[AxisToIndex(Axis::LeftStickUp)] = std::max(0.f, -sdlAxes[SDL_GAMEPAD_AXIS_LEFTY]);
             axes[AxisToIndex(Axis::LeftStickDown)] = std::max(0.f, sdlAxes[SDL_GAMEPAD_AXIS_LEFTY]);
 
-            axes[AxisToIndex(Axis::RightStickLeft)] =
-                std::max(0.f, -sdlAxes[SDL_GAMEPAD_AXIS_RIGHTX]);
-            axes[AxisToIndex(Axis::RightStickRight)] =
-                std::max(0.f, sdlAxes[SDL_GAMEPAD_AXIS_RIGHTX]);
-            axes[AxisToIndex(Axis::RightStickUp)] =
-                std::max(0.f, -sdlAxes[SDL_GAMEPAD_AXIS_RIGHTY]);
-            axes[AxisToIndex(Axis::RightStickDown)] =
-                std::max(0.f, sdlAxes[SDL_GAMEPAD_AXIS_RIGHTY]);
+            axes[AxisToIndex(Axis::RightStickLeft)] = std::max(
+                0.f, -sdlAxes[SDL_GAMEPAD_AXIS_RIGHTX]
+            );
+            axes[AxisToIndex(Axis::RightStickRight)] = std::max(
+                0.f, sdlAxes[SDL_GAMEPAD_AXIS_RIGHTX]
+            );
+            axes[AxisToIndex(Axis::RightStickUp)] = std::max(
+                0.f, -sdlAxes[SDL_GAMEPAD_AXIS_RIGHTY]
+            );
+            axes[AxisToIndex(Axis::RightStickDown)] = std::max(
+                0.f, sdlAxes[SDL_GAMEPAD_AXIS_RIGHTY]
+            );
 
             // Trigger axes do not require remapping since they are already between [0, 1].
             axes[AxisToIndex(Axis::LeftTrigger)] = sdlAxes[SDL_GAMEPAD_AXIS_LEFT_TRIGGER];
@@ -258,8 +264,9 @@ namespace vn {
 
         // Synchronize buttons with sdl buttons.
         for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
-            m_impl->buttonStates.current[i] =
-                SDL_GetGamepadButton(m_impl->sdlGamepad, static_cast<SDL_GamepadButton>(i));
+            m_impl->buttonStates.current[i] = SDL_GetGamepadButton(
+                m_impl->sdlGamepad, static_cast<SDL_GamepadButton>(i)
+            );
         }
 
         // Normalize and store sdl axes.

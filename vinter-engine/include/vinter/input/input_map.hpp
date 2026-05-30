@@ -203,8 +203,8 @@ namespace vn {
 
         auto EvaluateKeyPressedState(Keyboard::Key key, PressedState state) const -> bool;
 
-        auto
-        EvaluateMouseButtonPressedState(Mouse::Button button, PressedState state) const -> bool;
+        auto EvaluateMouseButtonPressedState(Mouse::Button button, PressedState state) const
+            -> bool;
 
         auto EvaluateMouseWheelPressedState(Mouse::Wheel wheel, PressedState state) const -> bool;
 

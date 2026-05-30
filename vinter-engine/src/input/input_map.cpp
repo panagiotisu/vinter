@@ -31,7 +31,8 @@ namespace vn {
 
     void
     InputMap::Bind(const std::string_view actionName, Gamepad::Button button, std::size_t slot) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = button, .gamepad_slot = slot}
+        m_bindings[ToActionId(actionName)].push_back(
+            {.input_method = button, .gamepad_slot = slot}
         );
     }
 
@@ -127,8 +128,9 @@ namespace vn {
                         if (!g) {
                             continue;
                         }
-                        maxStrength =
-                            std::max(maxStrength, g->IsButtonPressed(inputVal) ? 1.f : 0.f);
+                        maxStrength = std::max(
+                            maxStrength, g->IsButtonPressed(inputVal) ? 1.f : 0.f
+                        );
                     }
                     return maxStrength;
                 } else if constexpr (std::is_same_v<InputT, Gamepad::Axis>) {

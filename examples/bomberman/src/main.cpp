@@ -2,11 +2,11 @@
 
 auto main() -> int {
     const vn::ProjectSettings projectSettings {
-        .window =
-            {.flags =
-                 {
-                     .resizeable = true,
-                 }}
+        .window = {
+            .flags = {
+                .resizeable = true,
+            }
+        }
     };
     Bomberman bomberman(projectSettings);
     bomberman.Run();

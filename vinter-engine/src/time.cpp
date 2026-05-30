@@ -12,8 +12,8 @@ namespace vn {
         m_tickPrevious = m_tickCurrent;
         m_tickCurrent = SDL_GetPerformanceCounter();
 
-        m_delta =
-            static_cast<float>(m_tickCurrent - m_tickPrevious) / static_cast<float>(m_frequency);
+        m_delta = static_cast<float>(m_tickCurrent - m_tickPrevious)
+                  / static_cast<float>(m_frequency);
     }
 
     auto Time::GetDelta() const -> float {
