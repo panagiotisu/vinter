@@ -24,11 +24,13 @@ namespace vn {
 
     protected:
         template <typename T>
-        requires std::derived_from<T, Component> [[nodiscard]]
+        requires std::derived_from<T, Component>
+        [[nodiscard]]
         auto GetComponent() -> T*;
 
         template <typename T>
-        requires std::derived_from<T, Component> [[nodiscard]]
+        requires std::derived_from<T, Component>
+        [[nodiscard]]
         auto GetComponent() -> const T*;
 
         template <typename T>
@@ -152,12 +154,14 @@ namespace vn {
     };
 
     template <typename T>
-    requires std::derived_from<T, Component> auto Component::GetComponent() -> T* {
+    requires std::derived_from<T, Component>
+    auto Component::GetComponent() -> T* {
         return m_owner ? m_owner->GetComponent<T>() : nullptr;
     }
 
     template <typename T>
-    requires std::derived_from<T, Component> auto Component::GetComponent() -> const T* {
+    requires std::derived_from<T, Component>
+    auto Component::GetComponent() -> const T* {
         return m_owner ? m_owner->GetComponent<T>() : nullptr;
     }
 
