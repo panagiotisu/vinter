@@ -47,22 +47,22 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto r() const -> float {
+        constexpr auto red() const -> float {
             return m_r;
         }
 
         [[nodiscard]]
-        constexpr auto g() const -> float {
+        constexpr auto green() const -> float {
             return m_g;
         }
 
         [[nodiscard]]
-        constexpr auto b() const -> float {
+        constexpr auto blue() const -> float {
             return m_b;
         }
 
         [[nodiscard]]
-        constexpr auto a() const -> float {
+        constexpr auto alpha() const -> float {
             return m_a;
         }
 
