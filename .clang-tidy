@@ -45,7 +45,7 @@ Checks: >
   -readability-magic-numbers,
   -readability-static-accessed-through-instance,
   -readability-uppercase-literal-suffix,
-    -cppcoreguidelines-avoid-do-while,
+  -cppcoreguidelines-avoid-do-while,
 WarningsAsErrors: true
 FormatStyle: file
 CheckOptions:
@@ -58,40 +58,41 @@ CheckOptions:
   - { key: readability-function-cognitive-complexity.DescribeBasicIncrements,                           value: false }
   - { key: readability-function-cognitive-complexity.IgnoreMacros,                                      value: true }
   - { key: readability-identifier-naming.ClassCase,                                                     value: CamelCase }
-  - { key: readability-identifier-naming.ClassMemberCase,                                               value: camelBack }
-  - { key: readability-identifier-naming.PrivateMemberCase,                                             value: camelBack }
-  - { key: readability-identifier-naming.ConstexprVariableCase,                                         value: CamelCase }
+  - { key: readability-identifier-naming.ClassMemberCase,                                               value: snake_case }
+  - { key: readability-identifier-naming.ClassMemberPrefix,                                             value: m_ }
+  - { key: readability-identifier-naming.ConstexprVariableCase,                                         value: snake_case }
   - { key: readability-identifier-naming.ConstexprVariablePrefix,                                       value: k_ }
   - { key: readability-identifier-naming.EnumCase,                                                      value: CamelCase }
   - { key: readability-identifier-naming.EnumConstantCase,                                              value: CamelCase }
   - { key: readability-identifier-naming.EnumConstantPrefix,                                            value: k_ }
-  - { key: readability-identifier-naming.FunctionCase,                                                  value: CamelCase }
-  - { key: readability-identifier-naming.GlobalConstantCase,                                            value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,                                                  value: snake_case }
+  - { key: readability-identifier-naming.GlobalConstantCase,                                            value: snake_case }
   - { key: readability-identifier-naming.GlobalConstantPrefix,                                          value: g_ }
   - { key: readability-identifier-naming.IgnoreMainLikeFunctions,                                       value: 1 }
   - { key: readability-identifier-naming.MacroDefinitionCase,                                           value: UPPER_CASE }
   - { key: readability-identifier-naming.MacroDefinitionIgnoredRegexp,                                  value: '^[A-Z]+(_[A-Z]+)*_$' }
-  - { key: readability-identifier-naming.MemberCase,                                                    value: camelBack }
-  - { key: readability-identifier-naming.NamespaceCase,                                                 value: lower_case }
-  - { key: readability-identifier-naming.PrivateMemberSuffix,                                           value: '' }
-  - { key: readability-identifier-naming.ProtectedMemberSuffix,                                         value: '' }
-  - { key: readability-identifier-naming.PublicMemberSuffix,                                            value: '' }
+  - { key: readability-identifier-naming.MemberCase,                                                    value: snake_case }
+  - { key: readability-identifier-naming.MemberPrefix,                                                  value: m_ }
+  - { key: readability-identifier-naming.NamespaceCase,                                                 value: snake_case }
+  - { key: readability-identifier-naming.ParameterCase,                                                 value: snake_case }
+  - { key: readability-identifier-naming.ParameterPackCase,                                             value: snake_case }
+  - { key: readability-identifier-naming.PrivateMemberCase,                                             value: snake_case }
   - { key: readability-identifier-naming.PrivateMemberPrefix,                                           value: m_ }
-  - { key: readability-identifier-naming.ProtectedMemberPrefix,                                         value: m_ }
-  - { key: readability-identifier-naming.ParameterCase,                                                 value: camelBack }
-  - { key: readability-identifier-naming.ParameterPackCase,                                             value: camelBack }
+  - { key: readability-identifier-naming.ProtectedMemberCase,                                           value: snake_case }
+  - { key: readability-identifier-naming.ProtectedMemberPrefix,                                         value: '' }
+  - { key: readability-identifier-naming.PublicMemberCase,                                              value: snake_case }
+  - { key: readability-identifier-naming.PublicMemberPrefix,                                            value: '' }
   - { key: readability-identifier-naming.StructCase,                                                    value: CamelCase }
   - { key: readability-identifier-naming.ScopedEnumCase,                                                value: CamelCase }
   - { key: readability-identifier-naming.ScopedEnumConstantCase,                                        value: CamelCase }
   - { key: readability-identifier-naming.ScopedEnumConstantIgnoredRegexp,                               value: "_[0-9]+"}
-  - { key: readability-identifier-naming.StaticConstantCase,                                            value: CamelCase }
+  - { key: readability-identifier-naming.StaticConstantCase,                                            value: snake_case }
   - { key: readability-identifier-naming.StaticConstantPrefix,                                          value: k_ }
-  - { key: readability-identifier-naming.StaticVariableCase,                                            value: CamelCase }
+  - { key: readability-identifier-naming.StaticVariableCase,                                            value: snake_case }
   - { key: readability-identifier-naming.TemplateParameterCase,                                         value: CamelCase }
   - { key: readability-identifier-naming.TypedefCase,                                                   value: CamelCase }
   - { key: readability-identifier-naming.TypeAliasCase,                                                 value: CamelCase }
-  - { key: readability-identifier-naming.TypedefCase,                                                   value: CamelCase }
   - { key: readability-identifier-naming.UnionCase,                                                     value: CamelCase }
-  - { key: readability-identifier-naming.VariableCase,                                                  value: camelBack }
+  - { key: readability-identifier-naming.VariableCase,                                                  value: snake_case }
   - { key: readability-namespace-comments.ShortNamespaceLines,                                          value: 10 }
   - { key: readability-namespace-comments.SpacesBeforeComments,                                         value: 2 }
