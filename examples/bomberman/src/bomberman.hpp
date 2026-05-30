@@ -3,6 +3,8 @@
 
 #include <vinter/engine.hpp>
 
+#include "vinter/color.hpp"
+
 class Bomberman : public vn::Engine {
 public:
     explicit Bomberman(const vn::ProjectSettings& project_settings) : Engine(project_settings) {
@@ -41,6 +43,8 @@ protected:
         renderer->draw_line({0.f, 0.f}, {400.f, 500.f}, vn::colors::Yellow);
         renderer->draw_rectangle_line({200.f, 200.f}, {200.f, 100.f}, vn::colors::White);
         renderer->draw_rectangle({100.f, 100.f}, {100.f, 200.f}, vn::colors::Magenta);
+
+        renderer->draw_circle({100.f, 100.f}, 40.f, vn::colors::Pink);
     }
 
 private:
