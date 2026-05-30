@@ -22,36 +22,36 @@ namespace vn {
     public:
         DeviceManager();
 
-        static constexpr std::size_t k_MaxGamepadCount {8};
+        static constexpr std::size_t k_max_gamepad_count {8};
 
         [[nodiscard]]
-        auto GetKeyboard() const noexcept -> Keyboard&;
+        auto get_keyboard() const noexcept -> Keyboard&;
 
         [[nodiscard]]
-        auto GetMouse() const noexcept -> Mouse&;
+        auto get_mouse() const noexcept -> Mouse&;
 
         [[nodiscard]]
-        auto GetGamepadById(DeviceID id) const noexcept -> Gamepad*;
+        auto get_gamepad_by_id(DeviceID id) const noexcept -> Gamepad*;
 
         [[nodiscard]]
-        auto GetGamepad(std::size_t slot = 0) const noexcept -> Gamepad*;
+        auto get_gamepad(std::size_t slot = 0) const noexcept -> Gamepad*;
 
         [[nodiscard]]
-        auto GetGamepads() const noexcept -> std::array<Gamepad*, k_MaxGamepadCount>;
+        auto get_gamepads() const noexcept -> std::array<Gamepad*, k_max_gamepad_count>;
 
         [[nodiscard]]
-        auto GetActiveGamepads() const noexcept -> std::vector<Gamepad*>;
+        auto get_active_gamepads() const noexcept -> std::vector<Gamepad*>;
 
     private:
-        void HandleEvents(const SDL_Event& event);
-        void Update();
+        void handle_events(const SDL_Event& event);
+        void update();
 
-        void HandleGamepadAdded(DeviceID id);
-        void HandleGamepadRemoved(DeviceID id);
+        void handle_gamepad_added(DeviceID id);
+        void handle_gamepad_removed(DeviceID id);
 
         std::unique_ptr<Keyboard> m_keyboard;
         std::unique_ptr<Mouse> m_mouse;
-        std::array<std::optional<DeviceID>, k_MaxGamepadCount> m_gamepadSlots;
+        std::array<std::optional<DeviceID>, k_max_gamepad_count> m_gamepad_slots;
         std::unordered_map<DeviceID, std::unique_ptr<Gamepad>> m_gamepads;
     };
 } // namespace vn

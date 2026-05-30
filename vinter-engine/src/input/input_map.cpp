@@ -9,220 +9,220 @@ namespace vn {
     InputMap::InputMap(DeviceManager& devices) : m_devices(devices) {
     }
 
-    void InputMap::Bind(const std::string_view actionName, Keyboard::Key key) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = key});
+    void InputMap::bind(const std::string_view action_name, Keyboard::Key key) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = key});
     }
 
-    void InputMap::Bind(const std::string_view actionName, Mouse::Button button) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = button});
+    void InputMap::bind(const std::string_view action_name, Mouse::Button button) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = button});
     }
 
-    void InputMap::Bind(const std::string_view actionName, Mouse::Wheel wheel) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = wheel});
+    void InputMap::bind(const std::string_view action_name, Mouse::Wheel wheel) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = wheel});
     }
 
-    void InputMap::Bind(const std::string_view actionName, Gamepad::Button button) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = button});
+    void InputMap::bind(const std::string_view action_name, Gamepad::Button button) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = button});
     }
 
-    void InputMap::Bind(const std::string_view actionName, Gamepad::Axis axis) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = axis});
+    void InputMap::bind(const std::string_view action_name, Gamepad::Axis axis) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = axis});
     }
 
     void
-    InputMap::Bind(const std::string_view actionName, Gamepad::Button button, std::size_t slot) {
-        m_bindings[ToActionId(actionName)].push_back(
+    InputMap::bind(const std::string_view action_name, Gamepad::Button button, std::size_t slot) {
+        m_bindings[to_action_id(action_name)].push_back(
             {.input_method = button, .gamepad_slot = slot}
         );
     }
 
-    void InputMap::Bind(const std::string_view actionName, Gamepad::Axis axis, std::size_t slot) {
-        m_bindings[ToActionId(actionName)].push_back({.input_method = axis, .gamepad_slot = slot});
+    void InputMap::bind(const std::string_view action_name, Gamepad::Axis axis, std::size_t slot) {
+        m_bindings[to_action_id(action_name)].push_back({.input_method = axis, .gamepad_slot = slot});
     }
 
-    auto InputMap::IsActionPressed(const std::string_view actionName) const -> bool {
-        return CheckActionPressedState(actionName, PressedState::Pressed);
+    auto InputMap::is_action_pressed(const std::string_view action_name) const -> bool {
+        return check_action_pressed_state(action_name, PressedState::Pressed);
     }
 
-    auto InputMap::IsActionJustPressed(const std::string_view actionName) const -> bool {
-        return CheckActionPressedState(actionName, PressedState::JustPressed);
+    auto InputMap::is_action_just_pressed(const std::string_view action_name) const -> bool {
+        return check_action_pressed_state(action_name, PressedState::JustPressed);
     }
 
-    auto InputMap::IsActionJustReleased(const std::string_view actionName) const -> bool {
-        return CheckActionPressedState(actionName, PressedState::JustReleased);
+    auto InputMap::is_action_just_released(const std::string_view action_name) const -> bool {
+        return check_action_pressed_state(action_name, PressedState::JustReleased);
     }
 
-    auto InputMap::GetActionStrength(const std::string_view actionName) const -> float {
-        const auto it = m_bindings.find(ToActionId(actionName));
+    auto InputMap::get_action_strength(const std::string_view action_name) const -> float {
+        const auto it = m_bindings.find(to_action_id(action_name));
         if (it == m_bindings.end()) {
             return 0.f;
         }
 
-        float maxStrength = 0.f;
+        float max_strength = 0.f;
         for (const Binding& binding : it->second) {
-            maxStrength = std::max(maxStrength, EvaluateInputStrength(binding));
+            max_strength = std::max(max_strength, evaluate_input_strength(binding));
         }
-        return maxStrength;
+        return max_strength;
     }
 
-    auto InputMap::CheckActionPressedState(
-        const std::string_view actionName,
+    auto InputMap::check_action_pressed_state(
+        const std::string_view action_name,
         const PressedState state
     ) const -> bool {
-        const auto it = m_bindings.find(ToActionId(actionName));
+        const auto it = m_bindings.find(to_action_id(action_name));
         if (it == m_bindings.end()) {
             return false;
         }
 
         for (const Binding& binding : it->second) {
-            if (EvaluateBindingPressed(binding, state)) {
+            if (evaluate_binding_pressed(binding, state)) {
                 return true;
             }
         }
         return false;
     }
 
-    auto InputMap::EvaluateBindingPressed(const Binding& binding, const PressedState state) const
+    auto InputMap::evaluate_binding_pressed(const Binding& binding, const PressedState state) const
         -> bool {
         return std::visit(
-            [&]<typename T>(T inputVisitor) -> bool {
+            [&]<typename T>(T input_visitor) -> bool {
                 using InputT = std::decay_t<T>;
 
                 if constexpr (std::is_same_v<InputT, Keyboard::Key>) {
-                    return EvaluateKeyPressedState(inputVisitor, state);
+                    return evaluate_key_pressed_state(input_visitor, state);
                 } else if constexpr (std::is_same_v<InputT, Mouse::Button>) {
-                    return EvaluateMouseButtonPressedState(inputVisitor, state);
+                    return evaluate_mouse_button_pressed_state(input_visitor, state);
                 } else if constexpr (std::is_same_v<InputT, Mouse::Wheel>) {
-                    return EvaluateMouseWheelPressedState(inputVisitor, state);
+                    return evaluate_mouse_wheel_pressed_state(input_visitor, state);
                 } else if constexpr (std::is_same_v<InputT, Gamepad::Button>) {
-                    return EvaluateGamepadButtonPressedState(inputVisitor, binding, state);
+                    return evaluate_gamepad_button_pressed_state(input_visitor, binding, state);
                 } else if constexpr (std::is_same_v<InputT, Gamepad::Axis>) {
-                    return EvaluateGamepadAxisPressedState(inputVisitor, binding, state);
+                    return evaluate_gamepad_axis_pressed_state(input_visitor, binding, state);
                 }
             },
             binding.input_method
         );
     }
 
-    auto InputMap::EvaluateInputStrength(const Binding& binding) const -> float {
+    auto InputMap::evaluate_input_strength(const Binding& binding) const -> float {
         return std::visit(
-            [&]<typename T>(T inputVal) -> float {
+            [&]<typename T>(T input_val) -> float {
                 using InputT = std::decay_t<T>;
 
                 if constexpr (std::is_same_v<InputT, Keyboard::Key>) {
-                    return m_devices.GetKeyboard().IsKeyPressed(inputVal) ? 1.f : 0.f;
+                    return m_devices.get_keyboard().is_key_pressed(input_val) ? 1.f : 0.f;
                 } else if constexpr (std::is_same_v<InputT, Mouse::Button>) {
-                    return m_devices.GetMouse().IsButtonPressed(inputVal) ? 1.f : 0.f;
+                    return m_devices.get_mouse().is_button_pressed(input_val) ? 1.f : 0.f;
                 } else if constexpr (std::is_same_v<InputT, Mouse::Wheel>) {
-                    return m_devices.GetMouse().IsWheelTriggered(inputVal) ? 1.f : 0.f;
+                    return m_devices.get_mouse().is_wheel_triggered(input_val) ? 1.f : 0.f;
                 } else if constexpr (std::is_same_v<InputT, Gamepad::Button>) {
                     if (binding.gamepad_slot) {
-                        auto* g = m_devices.GetGamepad(*binding.gamepad_slot);
+                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
                         if (!g) {
                             return 0.f; // SAFE
                         }
-                        return g->IsButtonPressed(inputVal) ? 1.f : 0.f;
+                        return g->is_button_pressed(input_val) ? 1.f : 0.f;
                     }
-                    float maxStrength = 0.f;
-                    for (auto* g : m_devices.GetGamepads()) {
+                    float max_strength = 0.f;
+                    for (auto* g : m_devices.get_gamepads()) {
                         if (!g) {
                             continue;
                         }
-                        maxStrength = std::max(
-                            maxStrength, g->IsButtonPressed(inputVal) ? 1.f : 0.f
+                        max_strength = std::max(
+                            max_strength, g->is_button_pressed(input_val) ? 1.f : 0.f
                         );
                     }
-                    return maxStrength;
+                    return max_strength;
                 } else if constexpr (std::is_same_v<InputT, Gamepad::Axis>) {
                     if (binding.gamepad_slot) {
-                        auto* g = m_devices.GetGamepad(*binding.gamepad_slot);
+                        auto* g = m_devices.get_gamepad(*binding.gamepad_slot);
                         if (!g) {
                             return 0.f; // SAFE
                         }
-                        return g->GetAxisStrength(inputVal);
+                        return g->get_axis_strength(input_val);
                     }
-                    float maxStrength = 0.f;
-                    for (auto* g : m_devices.GetGamepads()) {
+                    float max_strength = 0.f;
+                    for (auto* g : m_devices.get_gamepads()) {
                         if (!g) {
                             continue;
                         }
-                        maxStrength = std::max(maxStrength, g->GetAxisStrength(inputVal));
+                        max_strength = std::max(max_strength, g->get_axis_strength(input_val));
                     }
-                    return maxStrength;
+                    return max_strength;
                 }
             },
             binding.input_method
         );
     }
 
-    auto InputMap::EvaluateKeyPressedState(const Keyboard::Key key, const PressedState state) const
+    auto InputMap::evaluate_key_pressed_state(const Keyboard::Key key, const PressedState state) const
         -> bool {
         switch (state) {
-            case PressedState::Pressed: return m_devices.GetKeyboard().IsKeyPressed(key);
-            case PressedState::JustPressed: return m_devices.GetKeyboard().IsKeyJustPressed(key);
-            case PressedState::JustReleased: return m_devices.GetKeyboard().IsKeyJustReleased(key);
+            case PressedState::Pressed: return m_devices.get_keyboard().is_key_pressed(key);
+            case PressedState::JustPressed: return m_devices.get_keyboard().is_key_just_pressed(key);
+            case PressedState::JustReleased: return m_devices.get_keyboard().is_key_just_released(key);
         }
         return false;
     }
 
-    auto InputMap::EvaluateMouseButtonPressedState(
+    auto InputMap::evaluate_mouse_button_pressed_state(
         const Mouse::Button button,
         const PressedState state
     ) const -> bool {
         switch (state) {
-            case PressedState::Pressed: return m_devices.GetMouse().IsButtonPressed(button);
-            case PressedState::JustPressed: return m_devices.GetMouse().IsButtonJustPressed(button);
+            case PressedState::Pressed: return m_devices.get_mouse().is_button_pressed(button);
+            case PressedState::JustPressed: return m_devices.get_mouse().is_button_just_pressed(button);
             case PressedState::JustReleased:
-                return m_devices.GetMouse().IsButtonJustReleased(button);
+                return m_devices.get_mouse().is_button_just_released(button);
         }
         return false;
     }
 
-    auto InputMap::EvaluateMouseWheelPressedState(
+    auto InputMap::evaluate_mouse_wheel_pressed_state(
         const Mouse::Wheel wheel,
         const PressedState state
     ) const -> bool {
         switch (state) {
-            case PressedState::JustPressed: return m_devices.GetMouse().IsWheelTriggered(wheel);
+            case PressedState::JustPressed: return m_devices.get_mouse().is_wheel_triggered(wheel);
             case PressedState::Pressed:
             case PressedState::JustReleased: return false;
         }
         return false;
     }
 
-    auto InputMap::EvaluateGamepadButtonPressedState(
+    auto InputMap::evaluate_gamepad_button_pressed_state(
         const Gamepad::Button button,
         const Binding& binding,
         const PressedState state
     ) const -> bool {
         // Check slot specific pressed state.
         if (binding.gamepad_slot) {
-            const auto* gamepad = m_devices.GetGamepad(*binding.gamepad_slot);
+            const auto* gamepad = m_devices.get_gamepad(*binding.gamepad_slot);
             if (gamepad == nullptr) {
                 return false;
             }
             switch (state) {
-                case PressedState::Pressed: return gamepad->IsButtonPressed(button);
-                case PressedState::JustPressed: return gamepad->IsButtonJustPressed(button);
-                case PressedState::JustReleased: return gamepad->IsButtonJustReleased(button);
+                case PressedState::Pressed: return gamepad->is_button_pressed(button);
+                case PressedState::JustPressed: return gamepad->is_button_just_pressed(button);
+                case PressedState::JustReleased: return gamepad->is_button_just_released(button);
             }
             // Check all gamepads for pressed state.
         } else {
-            for (const auto* gamepad : m_devices.GetGamepads()) {
+            for (const auto* gamepad : m_devices.get_gamepads()) {
                 if (gamepad == nullptr) {
                     continue;
                 }
                 switch (state) {
                     case PressedState::Pressed:
-                        if (gamepad->IsButtonPressed(button)) {
+                        if (gamepad->is_button_pressed(button)) {
                             return true;
                         }
                     case PressedState::JustPressed:
-                        if (gamepad->IsButtonJustPressed(button)) {
+                        if (gamepad->is_button_just_pressed(button)) {
                             return true;
                         }
                     case PressedState::JustReleased:
-                        if (gamepad->IsButtonJustReleased(button)) {
+                        if (gamepad->is_button_just_released(button)) {
                             return true;
                         }
                 }
@@ -231,39 +231,39 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::EvaluateGamepadAxisPressedState(
+    auto InputMap::evaluate_gamepad_axis_pressed_state(
         const Gamepad::Axis axis,
         const Binding& binding,
         const PressedState state
     ) const -> bool {
         // Check slot specific pressed state.
         if (binding.gamepad_slot) {
-            const auto* gamepad = m_devices.GetGamepad(*binding.gamepad_slot);
+            const auto* gamepad = m_devices.get_gamepad(*binding.gamepad_slot);
             if (gamepad == nullptr) {
                 return false;
             }
             switch (state) {
-                case PressedState::Pressed: return gamepad->IsAxisPressed(axis);
-                case PressedState::JustPressed: return gamepad->IsAxisJustPressed(axis);
-                case PressedState::JustReleased: return gamepad->IsAxisJustReleased(axis);
+                case PressedState::Pressed: return gamepad->is_axis_pressed(axis);
+                case PressedState::JustPressed: return gamepad->is_axis_just_pressed(axis);
+                case PressedState::JustReleased: return gamepad->is_axis_just_released(axis);
             }
             // Check all gamepads for pressed state.
         } else {
-            for (const auto* gamepad : m_devices.GetGamepads()) {
+            for (const auto* gamepad : m_devices.get_gamepads()) {
                 if (gamepad == nullptr) {
                     continue;
                 }
                 switch (state) {
                     case PressedState::Pressed:
-                        if (gamepad->IsAxisPressed(axis)) {
+                        if (gamepad->is_axis_pressed(axis)) {
                             return true;
                         }
                     case PressedState::JustPressed:
-                        if (gamepad->IsAxisJustPressed(axis)) {
+                        if (gamepad->is_axis_just_pressed(axis)) {
                             return true;
                         }
                     case PressedState::JustReleased:
-                        if (gamepad->IsAxisJustReleased(axis)) {
+                        if (gamepad->is_axis_just_released(axis)) {
                             return true;
                         }
                 }

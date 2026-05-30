@@ -13,7 +13,7 @@ namespace vn {
         friend class DeviceManager;
 
     public:
-        explicit Gamepad(unsigned int joystickId);
+        explicit Gamepad(unsigned int joystick_id);
         ~Gamepad();
 
         enum class Button : std::uint8_t {
@@ -92,56 +92,56 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto GetId() const noexcept -> unsigned int;
+        auto get_id() const noexcept -> unsigned int;
 
         [[nodiscard]]
-        auto GetGuidString() const noexcept -> std::string;
+        auto get_guid_string() const noexcept -> std::string;
 
         [[nodiscard]]
-        auto GetName() const noexcept -> std::string;
+        auto get_name() const noexcept -> std::string;
 
         [[nodiscard]]
-        auto GetType() const noexcept -> Type;
+        auto get_type() const noexcept -> Type;
 
         [[nodiscard]]
-        auto GetButtonLabel(Button button) const noexcept -> ButtonLabel;
+        auto get_button_label(Button button) const noexcept -> ButtonLabel;
 
         [[nodiscard]]
-        auto IsButtonPressed(Button button) const noexcept -> bool;
+        auto is_button_pressed(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto IsButtonJustPressed(Button button) const noexcept -> bool;
+        auto is_button_just_pressed(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto IsButtonJustReleased(Button button) const noexcept -> bool;
+        auto is_button_just_released(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto IsAxisPressed(Axis axis) const noexcept -> bool;
+        auto is_axis_pressed(Axis axis) const noexcept -> bool;
 
         [[nodiscard]]
-        auto IsAxisJustPressed(Axis axis) const noexcept -> bool;
+        auto is_axis_just_pressed(Axis axis) const noexcept -> bool;
 
         [[nodiscard]]
-        auto IsAxisJustReleased(Axis axis) const noexcept -> bool;
+        auto is_axis_just_released(Axis axis) const noexcept -> bool;
 
         [[nodiscard]]
-        auto GetAxisStrength(Axis axis) const noexcept -> float;
+        auto get_axis_strength(Axis axis) const noexcept -> float;
 
-        void BeginVibrate(
-            float weakPercentMagnitude,
-            float strongPercentMagnitude,
-            float durationSec = 0.f
+        void begin_vibrate(
+            float weak_percent_magnitude,
+            float strong_percent_magnitude,
+            float duration_sec = 0.f
         ) const;
-        void StopVibrate() const;
+        void stop_vibrate() const;
 
-        void SetLedColor(Color color) const;
+        void set_led_color(Color color) const;
 
     private:
-        void HandleEvents(const SDL_Event& event);
-        void Update();
+        void handle_events(const SDL_Event& event);
+        void update();
 
-        float m_stickDeadzone {0.1f};
-        float m_triggerDeadzone {0.05f};
+        float m_stick_deadzone {0.1f};
+        float m_trigger_deadzone {0.05f};
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;

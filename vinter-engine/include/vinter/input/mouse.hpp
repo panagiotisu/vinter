@@ -27,44 +27,44 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto IsButtonPressed(Button button) const -> bool;
+        auto is_button_pressed(Button button) const -> bool;
 
         [[nodiscard]]
-        auto IsButtonJustPressed(Button button) const -> bool;
+        auto is_button_just_pressed(Button button) const -> bool;
 
         [[nodiscard]]
-        auto IsButtonJustReleased(Button button) const -> bool;
+        auto is_button_just_released(Button button) const -> bool;
 
         [[nodiscard]]
-        auto IsWheelTriggered(Wheel wheel) const -> bool;
+        auto is_wheel_triggered(Wheel wheel) const -> bool;
 
         [[nodiscard]]
-        auto GetPosition() const -> glm::vec2;
+        auto get_position() const -> glm::vec2;
 
         [[nodiscard]]
-        auto GetDelta() const -> glm::vec2;
+        auto get_delta() const -> glm::vec2;
 
         [[nodiscard]]
-        auto GetScroll() const -> glm::vec2;
+        auto get_scroll() const -> glm::vec2;
 
         [[nodiscard]]
-        auto GetScrollVertical() const -> float;
+        auto get_scroll_vertical() const -> float;
 
         [[nodiscard]]
-        auto GetScrollHorizontal() const -> float;
+        auto get_scroll_horizontal() const -> float;
 
         [[nodiscard]]
-        auto IsCursorVisible() const -> bool;
+        static auto is_cursor_visible() -> bool;
 
-        void SetCursorVisible(bool visible) const;
+        static void set_cursor_visible(bool visible);
 
     private:
-        void HandleEvents(const SDL_Event& event);
-        void Update();
+        void handle_events(const SDL_Event& event);
+        void update();
 
         ButtonStates<5> m_buttons {};
         glm::vec2 m_position {};
-        glm::vec2 m_positionPrevious {};
+        glm::vec2 m_position_previous {};
         glm::vec2 m_scroll {};
     };
 } // namespace vn

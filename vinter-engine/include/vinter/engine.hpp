@@ -18,31 +18,31 @@
 namespace vn {
     class Engine {
     public:
-        explicit Engine(const ProjectSettings& projectSettings);
+        explicit Engine(const ProjectSettings& project_settings);
         virtual ~Engine();
 
-        void Run();
+        void run();
 
     protected:
-        std::unique_ptr<Window> m_window;
-        std::unique_ptr<Renderer> m_renderer;
-        std::unique_ptr<Time> m_time;
-        std::unique_ptr<DeviceManager> m_devices;
-        std::unique_ptr<InputMap> m_input;
+        std::unique_ptr<Window> window;
+        std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<Time> time;
+        std::unique_ptr<DeviceManager> devices;
+        std::unique_ptr<InputMap> input;
 
-        virtual void Load() {
+        virtual void load() {
         }
 
-        virtual void PollEvents() {
+        virtual void poll_events() {
         }
 
-        virtual void Update(float delta) {
+        virtual void update(float delta) {
         }
 
-        virtual void Render() {
+        virtual void render() {
         }
 
-        void Quit();
+        void quit();
 
     private:
         bool m_running {false};

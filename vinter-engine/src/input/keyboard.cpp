@@ -9,7 +9,7 @@ namespace vn {
         const bool* sdl_state {SDL_GetKeyboardState(nullptr)};
         ButtonStates<SDL_SCANCODE_COUNT> key_states {};
 
-        static auto ToSdlScancode(const Key key) -> SDL_Scancode {
+        static auto to_sdl_scancode(const Key key) -> SDL_Scancode {
             switch (key) {
                 default: return SDL_SCANCODE_UNKNOWN;
 
@@ -132,23 +132,23 @@ namespace vn {
 
     Keyboard::~Keyboard() = default;
 
-    auto Keyboard::IsKeyPressed(const Key key) const -> bool {
-        return m_impl->key_states.IsPressed(Impl::ToSdlScancode(key));
+    auto Keyboard::is_key_pressed(const Key key) const -> bool {
+        return m_impl->key_states.is_pressed(Impl::to_sdl_scancode(key));
     }
 
-    auto Keyboard::IsKeyJustPressed(const Key key) const -> bool {
-        return m_impl->key_states.IsJustPressed(Impl::ToSdlScancode(key));
+    auto Keyboard::is_key_just_pressed(const Key key) const -> bool {
+        return m_impl->key_states.is_just_pressed(Impl::to_sdl_scancode(key));
     }
 
-    auto Keyboard::IsKeyJustReleased(const Key key) const -> bool {
-        return m_impl->key_states.IsJustReleased(Impl::ToSdlScancode(key));
+    auto Keyboard::is_key_just_released(const Key key) const -> bool {
+        return m_impl->key_states.is_just_released(Impl::to_sdl_scancode(key));
     }
 
-    void Keyboard::HandleEvents(const SDL_Event& event) {
+    void Keyboard::handle_events(const SDL_Event& event) {
     }
 
-    void Keyboard::Update() {
-        m_impl->key_states.Refresh();
+    void Keyboard::update() {
+        m_impl->key_states.refresh();
 
         // Synchronize with actual sdl state.
         for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++) {

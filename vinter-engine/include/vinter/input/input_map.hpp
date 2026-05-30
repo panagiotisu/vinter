@@ -88,7 +88,7 @@ namespace vn {
          * @param actionName The name of a registered action.
          * @param key The key to be bound.
          */
-        void Bind(std::string_view actionName, Keyboard::Key key);
+        void bind(std::string_view action_name, Keyboard::Key key);
 
         /**
          *  Binds a registered action to a mouse button.
@@ -96,7 +96,7 @@ namespace vn {
          * @param actionName The name of a registered action.
          * @param button The mouse button to be bound.
          */
-        void Bind(std::string_view actionName, Mouse::Button button);
+        void bind(std::string_view action_name, Mouse::Button button);
 
         /**
          *  Binds a registered action to a mouse wheel input.
@@ -104,7 +104,7 @@ namespace vn {
          * @param actionName The name of a registered action.
          * @param wheel The mouse wheel input to be bound.
          */
-        void Bind(std::string_view actionName, Mouse::Wheel wheel);
+        void bind(std::string_view action_name, Mouse::Wheel wheel);
 
         /**
          *  Binds a registered action to a gamepad button, for all gamepads.
@@ -112,7 +112,7 @@ namespace vn {
          * @param actionName The name of a registered action.
          * @param button The gamepad button to be bound.
          */
-        void Bind(std::string_view actionName, Gamepad::Button button);
+        void bind(std::string_view action_name, Gamepad::Button button);
 
         /**
          *  Binds a registered action to a gamepad axis, for all gamepads.
@@ -120,7 +120,7 @@ namespace vn {
          * @param actionName The name of a registered action.
          * @param axis The gamepad axis to be bound.
          */
-        void Bind(std::string_view actionName, Gamepad::Axis axis);
+        void bind(std::string_view action_name, Gamepad::Axis axis);
 
         /**
          *  Binds a registered action to a gamepad button, for a specified gamepad.
@@ -129,7 +129,7 @@ namespace vn {
          * @param button The gamepad button to be bound.
          * @param slot The slot number of the gamepad to be bound.
          */
-        void Bind(std::string_view actionName, Gamepad::Button button, std::size_t slot);
+        void bind(std::string_view action_name, Gamepad::Button button, std::size_t slot);
 
         /**
          *  Binds a registered action to a gamepad axis, for a specified gamepad.
@@ -138,7 +138,7 @@ namespace vn {
          * @param axis The gamepad axis to be bound.
          * @param slot The slot number of the gamepad to be bound.
          */
-        void Bind(std::string_view actionName, Gamepad::Axis axis, std::size_t slot);
+        void bind(std::string_view action_name, Gamepad::Axis axis, std::size_t slot);
 
         /**
          * Checks if a registered action is actively pressed during the current frame.
@@ -147,7 +147,7 @@ namespace vn {
          * @return `true` if the action is currently pressed, `false` otherwise.
          */
         [[nodiscard]]
-        auto IsActionPressed(std::string_view actionName) const -> bool;
+        auto is_action_pressed(std::string_view action_name) const -> bool;
 
         /**
          * Checks if a registered action was pressed this frame but not in the previous frame.
@@ -158,7 +158,7 @@ namespace vn {
          * @return `true` if the action was just pressed in the current frame, `false` otherwise.
          */
         [[nodiscard]]
-        auto IsActionJustPressed(std::string_view actionName) const -> bool;
+        auto is_action_just_pressed(std::string_view action_name) const -> bool;
 
         /**
          * Checks if a registered action was released this frame but was pressed in the previous
@@ -170,7 +170,7 @@ namespace vn {
          * @return `true` if the action was just released in the current frame, `false` otherwise.
          */
         [[nodiscard]]
-        auto IsActionJustReleased(std::string_view actionName) const -> bool;
+        auto is_action_just_released(std::string_view action_name) const -> bool;
 
         /**
          * Returns the normalized strength of the specified action in the range [0.0, 1.0].
@@ -185,36 +185,36 @@ namespace vn {
          * @return The normalized strength of the action in the range [0.0, 1.0].
          */
         [[nodiscard]]
-        auto GetActionStrength(std::string_view actionName) const -> float;
+        auto get_action_strength(std::string_view action_name) const -> float;
 
     private:
         enum class PressedState : std::uint8_t { Pressed, JustPressed, JustReleased };
 
         [[nodiscard]]
-        static constexpr auto ToActionId(const std::string_view name) noexcept -> ActionID {
-            return Fnv1a64(name);
+        static constexpr auto to_action_id(const std::string_view name) noexcept -> ActionID {
+            return fnv1a64(name);
         }
 
-        auto CheckActionPressedState(std::string_view actionName, PressedState state) const -> bool;
+        auto check_action_pressed_state(std::string_view action_name, PressedState state) const -> bool;
 
-        auto EvaluateBindingPressed(const Binding& binding, PressedState state) const -> bool;
+        auto evaluate_binding_pressed(const Binding& binding, PressedState state) const -> bool;
 
-        auto EvaluateInputStrength(const Binding& binding) const -> float;
+        auto evaluate_input_strength(const Binding& binding) const -> float;
 
-        auto EvaluateKeyPressedState(Keyboard::Key key, PressedState state) const -> bool;
+        auto evaluate_key_pressed_state(Keyboard::Key key, PressedState state) const -> bool;
 
-        auto EvaluateMouseButtonPressedState(Mouse::Button button, PressedState state) const
+        auto evaluate_mouse_button_pressed_state(Mouse::Button button, PressedState state) const
             -> bool;
 
-        auto EvaluateMouseWheelPressedState(Mouse::Wheel wheel, PressedState state) const -> bool;
+        auto evaluate_mouse_wheel_pressed_state(Mouse::Wheel wheel, PressedState state) const -> bool;
 
-        auto EvaluateGamepadButtonPressedState(
+        auto evaluate_gamepad_button_pressed_state(
             Gamepad::Button button,
             const Binding& binding,
             PressedState state
         ) const -> bool;
 
-        auto EvaluateGamepadAxisPressedState(
+        auto evaluate_gamepad_axis_pressed_state(
             Gamepad::Axis axis,
             const Binding& binding,
             PressedState state

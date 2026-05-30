@@ -18,7 +18,7 @@ namespace vn {
         virtual ~Component() = default;
 
         [[nodiscard]]
-        constexpr auto GetOwner() const noexcept -> GameObject* {
+        constexpr auto get_owner() const noexcept -> GameObject* {
             return m_owner;
         }
 
@@ -26,30 +26,30 @@ namespace vn {
         template <typename T>
         requires std::derived_from<T, Component>
         [[nodiscard]]
-        auto GetComponent() -> T*;
+        auto get_component() -> T*;
 
         template <typename T>
         requires std::derived_from<T, Component>
         [[nodiscard]]
-        auto GetComponent() -> const T*;
+        auto get_component() -> const T*;
 
         template <typename T>
         [[nodiscard]]
-        auto HasComponent() const -> bool;
+        auto has_component() const -> bool;
 
         template <typename T>
-        void RemoveComponent() const;
+        void remove_component() const;
 
-        virtual void OnRegister() {
+        virtual void on_register() {
         }
 
-        virtual void Ready() {
+        virtual void ready() {
         }
 
-        virtual void Update(float delta) {
+        virtual void update(float delta) {
         }
 
-        virtual void OnRemove() {
+        virtual void on_remove() {
         }
 
     private:
@@ -60,13 +60,13 @@ namespace vn {
     public:
         GameObject() = default;
 
-        void Update(float delta) {
+        void update(float delta) {
             for (const auto& component : m_components | std::views::values) {
-                component->Update(delta);
+                component->update(delta);
             }
         }
 
-        auto AddChild(GameObject child) -> GameObject& {
+        auto add_child(GameObject child) -> GameObject& {
             child.m_parent = this;
 
             auto ptr = std::make_unique<GameObject>(std::move(child));
@@ -77,52 +77,52 @@ namespace vn {
         }
 
         template <typename T>
-        auto AddComponent(T&& component) -> T& {
-            AssertIsBaseOfComponent<T>();
-            auto componentPtr = std::make_unique<T>(std::forward<T>(component));
-            return AddComponentImpl(std::move(componentPtr));
+        auto add_component(T&& component) -> T& {
+            assert_is_base_of_component<T>();
+            auto component_ptr = std::make_unique<T>(std::forward<T>(component));
+            return AddComponentImpl(std::move(component_ptr));
         }
 
         template <typename T, typename... Args>
-        auto AddComponent(Args&&... args) -> T& {
-            AssertIsBaseOfComponent<T>();
-            auto componentPtr = std::make_unique<T>(std::forward<Args>(args)...);
-            return AddComponentImpl(std::move(componentPtr));
+        auto add_component(Args&&... args) -> T& {
+            assert_is_base_of_component<T>();
+            auto component_ptr = std::make_unique<T>(std::forward<Args>(args)...);
+            return AddComponentImpl(std::move(component_ptr));
         }
 
         template <typename T>
         [[nodiscard]]
-        auto HasComponent() const -> bool {
-            AssertIsBaseOfComponent<T>();
+        auto has_component() const -> bool {
+            assert_is_base_of_component<T>();
             return m_components.contains(std::type_index(typeid(T)));
         }
 
         template <typename T>
-        auto GetComponent() -> T* {
-            AssertIsBaseOfComponent<T>();
+        auto get_component() -> T* {
+            assert_is_base_of_component<T>();
 
             const auto it = m_components.find(std::type_index(typeid(T)));
             return it != m_components.end() ? static_cast<T*>(it->second.get()) : nullptr;
         }
 
         template <typename T>
-        auto GetComponent() const -> const T* {
-            AssertIsBaseOfComponent<T>();
+        auto get_component() const -> const T* {
+            assert_is_base_of_component<T>();
 
             const auto it = m_components.find(std::type_index(typeid(T)));
             return it != m_components.end() ? static_cast<const T*>(it->second.get()) : nullptr;
         }
 
         template <typename T>
-        void RemoveComponent() {
-            AssertIsBaseOfComponent<T>();
+        void remove_component() {
+            assert_is_base_of_component<T>();
 
             const auto it = m_components.find(std::type_index(typeid(T)));
             if (it == m_components.end()) {
                 return;
             }
 
-            it->second->OnRemove();
+            it->second->on_remove();
             it->second->m_owner = nullptr;
             m_components.erase(it);
         }
@@ -133,20 +133,20 @@ namespace vn {
         GameObject* m_parent {nullptr};
 
         template <typename T>
-        void AssertIsBaseOfComponent() const {
+        void assert_is_base_of_component() const {
             static_assert(std::is_base_of_v<Component, T>, "T must derive from Component.");
         }
 
         template <typename T>
-        auto AddComponentImpl(std::unique_ptr<T> componentPtr) -> T& {
+        auto add_component_impl(std::unique_ptr<T> component_ptr) -> T& {
             auto key = std::type_index(typeid(T));
 
-            auto [it, inserted] = m_components.try_emplace(key, std::move(componentPtr));
+            auto [it, inserted] = m_components.try_emplace(key, std::move(component_ptr));
             Component* base = it->second.get();
 
             if (inserted) {
                 base->m_owner = this;
-                base->OnRegister();
+                base->on_register();
             }
 
             return *static_cast<T*>(base);
@@ -155,25 +155,25 @@ namespace vn {
 
     template <typename T>
     requires std::derived_from<T, Component>
-    auto Component::GetComponent() -> T* {
-        return m_owner ? m_owner->GetComponent<T>() : nullptr;
+    auto Component::get_component() -> T* {
+        return m_owner ? m_owner->get_component<T>() : nullptr;
     }
 
     template <typename T>
     requires std::derived_from<T, Component>
-    auto Component::GetComponent() -> const T* {
-        return m_owner ? m_owner->GetComponent<T>() : nullptr;
+    auto Component::get_component() -> const T* {
+        return m_owner ? m_owner->get_component<T>() : nullptr;
     }
 
     template <typename T>
-    auto Component::HasComponent() const -> bool {
-        return m_owner && m_owner->HasComponent<T>();
+    auto Component::has_component() const -> bool {
+        return m_owner && m_owner->has_component<T>();
     }
 
     template <typename T>
-    void Component::RemoveComponent() const {
+    void Component::remove_component() const {
         if (m_owner) {
-            m_owner->RemoveComponent<T>();
+            m_owner->remove_component<T>();
         }
     }
 } // namespace vn

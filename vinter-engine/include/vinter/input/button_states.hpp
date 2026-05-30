@@ -8,23 +8,23 @@ namespace vn {
         std::array<bool, N> current {};
         std::array<bool, N> previous {};
 
-        void Refresh() {
+        void refresh() {
             previous = current;
         }
 
         [[nodiscard]]
-        auto IsPressed(std::size_t buttonIdx) const -> bool {
-            return current[buttonIdx];
+        auto is_pressed(std::size_t button_idx) const -> bool {
+            return current[button_idx];
         }
 
         [[nodiscard]]
-        auto IsJustPressed(std::size_t buttonIdx) const -> bool {
-            return current[buttonIdx] && !previous[buttonIdx];
+        auto is_just_pressed(std::size_t button_idx) const -> bool {
+            return current[button_idx] && !previous[button_idx];
         }
 
         [[nodiscard]]
-        auto IsJustReleased(std::size_t buttonIdx) const -> bool {
-            return !current[buttonIdx] && previous[buttonIdx];
+        auto is_just_released(std::size_t button_idx) const -> bool {
+            return !current[button_idx] && previous[button_idx];
         }
     };
 } // namespace vn

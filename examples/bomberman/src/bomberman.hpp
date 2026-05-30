@@ -5,44 +5,44 @@
 
 class Bomberman : public vn::Engine {
 public:
-    explicit Bomberman(const vn::ProjectSettings& projectSettings) : Engine(projectSettings) {
+    explicit Bomberman(const vn::ProjectSettings& project_settings) : Engine(project_settings) {
     }
 
 protected:
-    void Load() override {
-        m_input->Bind("set_bg_color_red", vn::Mouse::Button::Left);
-        m_input->Bind("set_bg_color_red", vn::Keyboard::Key::Space);
+    void load() override {
+        input->bind("set_bg_color_red", vn::Mouse::Button::Left);
+        input->bind("set_bg_color_red", vn::Keyboard::Key::Space);
 
-        m_input->Bind("set_bg_color_blue", vn::Mouse::Button::Right);
-        m_input->Bind("set_bg_color_blue", vn::Gamepad::Button::East);
-        m_input->Bind("set_bg_color_blue", vn::Gamepad::Axis::LeftStickLeft, 1);
+        input->bind("set_bg_color_blue", vn::Mouse::Button::Right);
+        input->bind("set_bg_color_blue", vn::Gamepad::Button::East);
+        input->bind("set_bg_color_blue", vn::Gamepad::Axis::LeftStickLeft, 1);
 
-        m_input->Bind("quit", vn::Keyboard::Key::Esc);
+        input->bind("quit", vn::Keyboard::Key::Esc);
     }
 
-    void Update(float /*delta*/) override {
-        if (m_input->IsActionJustPressed("set_bg_color_red")) {
-            m_backgroundColor = vn::colors::Red;
-        } else if (m_input->IsActionJustPressed("set_bg_color_blue")) {
-            m_backgroundColor = vn::colors::Blue;
+    void update(float /*delta*/) override {
+        if (input->is_action_just_pressed("set_bg_color_red")) {
+            m_background_color = vn::colors::Red;
+        } else if (input->is_action_just_pressed("set_bg_color_blue")) {
+            m_background_color = vn::colors::Blue;
         }
 
-        else if (m_input->IsActionJustPressed("quit")) {
-            Quit();
+        else if (input->is_action_just_pressed("quit")) {
+            quit();
         }
         // // Check action strengths.
-        std::cout << m_input->GetActionStrength("set_bg_color_blue") << '\n';
+        std::cout << input->get_action_strength("set_bg_color_blue") << '\n';
     }
 
-    void Render() override {
-        m_renderer->SetClearColor(m_backgroundColor);
+    void render() override {
+        renderer->set_clear_color(m_background_color);
 
-        m_renderer->DrawPixel({300.f, 300.f}, vn::colors::Red);
-        m_renderer->DrawLine({0.f, 0.f}, {400.f, 500.f}, vn::colors::Yellow);
-        m_renderer->DrawRectangleLine({200.f, 200.f}, {200.f, 100.f}, vn::colors::White);
-        m_renderer->DrawRectangle({100.f, 100.f}, {100.f, 200.f}, vn::colors::Magenta);
+        renderer->draw_pixel({300.f, 300.f}, vn::colors::Red);
+        renderer->draw_line({0.f, 0.f}, {400.f, 500.f}, vn::colors::Yellow);
+        renderer->draw_rectangle_line({200.f, 200.f}, {200.f, 100.f}, vn::colors::White);
+        renderer->draw_rectangle({100.f, 100.f}, {100.f, 200.f}, vn::colors::Magenta);
     }
 
 private:
-    vn::Color m_backgroundColor {vn::colors::DarkBlue};
+    vn::Color m_background_color {vn::colors::DarkBlue};
 };

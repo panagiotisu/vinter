@@ -10,16 +10,16 @@ namespace vn {
         Time();
 
         [[nodiscard]]
-        auto GetDelta() const -> float;
+        auto get_delta() const -> float;
 
         [[nodiscard]]
-        auto GetFps() const -> float;
+        auto get_fps() const -> float;
 
     private:
-        void Update();
+        void update();
 
-        std::uint64_t m_tickPrevious {0};
-        std::uint64_t m_tickCurrent {0};
+        std::uint64_t m_tick_previous {0};
+        std::uint64_t m_tick_current {0};
         std::uint64_t m_frequency {0};
         float m_delta {0.f};
     };

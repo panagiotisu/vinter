@@ -4,23 +4,23 @@
 
 namespace vn {
     Time::Time()
-        : m_tickCurrent(SDL_GetPerformanceCounter())
+        : m_tick_current(SDL_GetPerformanceCounter())
         , m_frequency(SDL_GetPerformanceFrequency()) {
     }
 
-    void Time::Update() {
-        m_tickPrevious = m_tickCurrent;
-        m_tickCurrent = SDL_GetPerformanceCounter();
+    void Time::update() {
+        m_tick_previous = m_tick_current;
+        m_tick_current = SDL_GetPerformanceCounter();
 
-        m_delta = static_cast<float>(m_tickCurrent - m_tickPrevious)
+        m_delta = static_cast<float>(m_tick_current - m_tick_previous)
                   / static_cast<float>(m_frequency);
     }
 
-    auto Time::GetDelta() const -> float {
+    auto Time::get_delta() const -> float {
         return m_delta;
     }
 
-    auto Time::GetFps() const -> float {
+    auto Time::get_fps() const -> float {
         return m_delta > 0.0f ? 1.0f / m_delta : 0.0f;
     }
 } // namespace vn

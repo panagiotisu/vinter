@@ -127,17 +127,17 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto IsKeyPressed(Key key) const -> bool;
+        auto is_key_pressed(Key key) const -> bool;
 
         [[nodiscard]]
-        auto IsKeyJustPressed(Key key) const -> bool;
+        auto is_key_just_pressed(Key key) const -> bool;
 
         [[nodiscard]]
-        auto IsKeyJustReleased(Key key) const -> bool;
+        auto is_key_just_released(Key key) const -> bool;
 
     private:
-        void HandleEvents(const SDL_Event& event);
-        void Update();
+        void handle_events(const SDL_Event& event);
+        void update();
 
         struct Impl;
         std::unique_ptr<Impl> m_impl;
