@@ -32,7 +32,7 @@ namespace vn {
         DrawRectangleLine(glm::vec2 position, glm::vec2 size, Color color, float weight = 1.f) = 0;
 
         virtual void
-        DrawCircle(glm::vec2 center, float radius, Color color, unsigned int segments) = 0;
+        DrawCircle(glm::vec2 center, float radius, Color color, std::size_t segments = 200) = 0;
 
         virtual void
         DrawCircleLine(glm::vec2 center, float radius, Color color, float weight = 1.f) = 0;

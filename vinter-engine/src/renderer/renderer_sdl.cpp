@@ -1,9 +1,12 @@
 #include "renderer_sdl.hpp"
 
 #include <algorithm>
+#include <cmath>
 
 #include <SDL3/SDL.h>
 
+#include "SDL3/SDL_render.h"
+#include "glm/ext/scalar_constants.hpp"
 #include "vinter/assert.hpp"
 #include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
@@ -48,8 +51,9 @@ namespace vn {
 
     RendererSDL::RendererSDL(const RendererSettings& rendererSettings, const Window& window)
         : m_impl(std::make_unique<Impl>(rendererSettings, window)) {
-        // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
-        // the window does not show blank state due to non-existent renderer.
+        // Show the window (briefly hidden on startup) AFTER Renderer has been
+        // constructed, so that the window does not show blank state due to
+        // non-existent renderer.
         SDL_ShowWindow(window.GetNativeHandle());
     }
 
@@ -111,28 +115,9 @@ namespace vn {
     }
 
     void
-    RendererSDL::DrawCircle(glm::vec2 center, float radius, Color color, unsigned int segments) {
+    RendererSDL::DrawCircle(glm::vec2 center, float radius, Color color, std::size_t segments) {
         VN_ASSERT(radius > 0, "Radius must be positive.");
         VN_ASSERT(segments > 2, "Need at least three segments to form a circle (closed chain).");
-
-        SDL_SetRenderDrawColorFloat(
-            m_impl->sdlRendererBackend, color.R(), color.G(), color.B(), color.A()
-        );
-        // Ensure segments are larger than 3 (triangle).
-        segments = std::max<unsigned int>(segments, 3);
-
-        // Vertices: center + perimeter points + closing point.
-        const unsigned int vertexCount {segments + 2};
-        std::vector<SDL_Vertex> vertices(vertexCount);
-
-        // Indices for the triangle fan.
-        const unsigned int indexCount {segments * 3};
-        std::vector<unsigned int> indices(indexCount);
-
-        // Define center vertex (index 0).
-        vertices[0].position.x = center.x;
-        vertices[0].position.y = center.y;
-        vertices[0].color = {.r = color.R(), .g = color.G(), .b = color.B(), .a = color.A()};
     }
 
     void RendererSDL::DrawCircleLine(glm::vec2 center, float radius, Color color, float weight) {
