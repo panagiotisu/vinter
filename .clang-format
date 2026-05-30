@@ -1,6 +1,6 @@
 ---
 
-# clang-format version 18
+# clang-format version 22
 
 Language: Cpp
 BasedOnStyle: LLVM
@@ -37,6 +37,8 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
+BreakAfterOpenBracketBracedList: true
+BreakBeforeCloseBracketBracedList: true
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: false
@@ -53,16 +55,18 @@ IncludeCategories:
 IndentCaseLabels: true
 IndentPPDirectives: BeforeHash
 IndentWidth: 4
+IndentRequiresClause: false
 KeepEmptyLinesAtTheStartOfBlocks: false
 PackConstructorInitializers: CurrentLine
-PenaltyBreakAssignment: 10
+PenaltyBreakAssignment: 100
 PenaltyBreakComment: 10
 PointerAlignment: Left
 QualifierAlignment: Left
 ReferenceAlignment: Left
 SeparateDefinitionBlocks: Always
-SpacesInContainerLiterals: false
-Standard: c++17
+SpacesInContainerLiterals: true
+Cpp11BracedListStyle: FunctionCall
+Standard: c++20
 TabWidth: 4
 NamespaceIndentation: All
 SpaceBeforeCpp11BracedList: true
