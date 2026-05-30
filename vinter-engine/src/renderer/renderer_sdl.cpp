@@ -64,10 +64,10 @@ namespace vn {
 
         SDL_SetRenderDrawColorFloat(
             m_impl->sdl_renderer_backend,
-            clear_color.r(),
-            clear_color.g(),
-            clear_color.b(),
-            clear_color.a()
+            clear_color.red(),
+            clear_color.green(),
+            clear_color.blue(),
+            clear_color.alpha()
         );
         SDL_RenderClear(m_impl->sdl_renderer_backend);
     }
@@ -78,25 +78,23 @@ namespace vn {
 
     void RendererSDL::draw_pixel(glm::vec2 position, Color color) {
         SDL_SetRenderDrawColorFloat(
-            m_impl->sdl_renderer_backend, color.r(), color.g(), color.b(), color.a()
+            m_impl->sdl_renderer_backend, color.red(), color.green(), color.blue(), color.alpha()
         );
         SDL_RenderPoint(m_impl->sdl_renderer_backend, position.x, position.y);
     }
 
     void RendererSDL::draw_line(glm::vec2 start, glm::vec2 end, Color color, float /*weight*/) {
         SDL_SetRenderDrawColorFloat(
-            m_impl->sdl_renderer_backend, color.r(), color.g(), color.b(), color.a()
+            m_impl->sdl_renderer_backend, color.red(), color.green(), color.blue(), color.alpha()
         );
         SDL_RenderLine(m_impl->sdl_renderer_backend, start.x, start.y, end.x, end.y);
     }
 
     void RendererSDL::draw_rectangle(glm::vec2 position, glm::vec2 size, Color color) {
         SDL_SetRenderDrawColorFloat(
-            m_impl->sdl_renderer_backend, color.r(), color.g(), color.b(), color.a()
+            m_impl->sdl_renderer_backend, color.red(), color.green(), color.blue(), color.alpha()
         );
-        const SDL_FRect sdl_rectangle = {
-            .x = position.x, .y = position.y, .w = size.x, .h = size.y
-        };
+        const SDL_FRect sdl_rectangle = {position.x, position.y, size.x, size.y};
         SDL_RenderFillRect(m_impl->sdl_renderer_backend, &sdl_rectangle);
     }
 
@@ -107,15 +105,47 @@ namespace vn {
         float /*weight*/
     ) {
         SDL_SetRenderDrawColorFloat(
-            m_impl->sdl_renderer_backend, color.r(), color.g(), color.b(), color.a()
+            m_impl->sdl_renderer_backend, color.red(), color.green(), color.blue(), color.alpha()
         );
-        const SDL_FRect sdl_rectangle = {
-            .x = position.x, .y = position.y, .w = size.x, .h = size.y
-        };
+        const SDL_FRect sdl_rectangle = {position.x, position.y, size.x, size.y};
         SDL_RenderRect(m_impl->sdl_renderer_backend, &sdl_rectangle);
     }
 
     void RendererSDL::draw_polygon(std::vector<glm::vec2> vertices, Color color) {
+        VN_ASSERT(
+            vertices.size() > 2, "Need at least three vertices to form a polygon (closed chain)."
+        );
+
+        const std::size_t vertex_count {vertices.size()};
+        std::vector<SDL_Vertex> sdl_vertices(vertex_count);
+
+        for (std::size_t i = 0; i < vertex_count; ++i) {
+            sdl_vertices[i] = {
+                .position = {vertices[i].x, vertices[i].y},
+                .color = {color.red(), color.green(), color.blue(), color.alpha()}
+            };
+        }
+
+        // Triangle fan:
+        // N vertices -> (N - 2) triangles -> 3 indices each.
+        const std::size_t triangle_count {vertex_count - 2};
+        const std::size_t index_count {triangle_count * 3};
+        std::vector<int> sdl_indices(index_count);
+
+        for (std::size_t i = 0; i < triangle_count; ++i) {
+            sdl_indices[i * 3] = 0;
+            sdl_indices[(i * 3) + 1] = static_cast<int>(i) + 1;
+            sdl_indices[(i * 3) + 2] = static_cast<int>(i) + 2;
+        }
+
+        SDL_RenderGeometry(
+            m_impl->sdl_renderer_backend,
+            nullptr,
+            sdl_vertices.data(),
+            static_cast<int>(vertex_count),
+            sdl_indices.data(),
+            static_cast<int>(index_count)
+        );
     }
 
     void
@@ -127,8 +157,8 @@ namespace vn {
 
         // Construct center vertex.
         vertices[0] = {
-            .position = {.x = center.x, .y = center.y},
-            .color = {.r = color.r(), .g = color.g(), .b = color.b(), .a = color.a()}
+            .position = {center.x, center.y},
+            .color = {color.red(), color.green(), color.blue(), color.alpha()}
         };
 
         // Construct perimeter vertices.
@@ -140,7 +170,7 @@ namespace vn {
                 .position =
                     {.x = center.x + (std::cos(theta) * radius),
                      .y = center.y + (std::sin(theta) * radius)},
-                .color = {.r = color.r(), .g = color.g(), .b = color.b(), .a = color.a()}
+                .color = {color.red(), color.green(), color.blue(), color.alpha()}
             };
         }
 

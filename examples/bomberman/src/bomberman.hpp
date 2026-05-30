@@ -45,6 +45,9 @@ protected:
         renderer->draw_rectangle({100.f, 100.f}, {100.f, 200.f}, vn::colors::Magenta);
 
         renderer->draw_circle({100.f, 100.f}, 40.f, vn::colors::Pink);
+        renderer->draw_polygon(
+            {{400.f, 400.f}, {450.f, 450.f}, {500.f, 350.f}, {480.f, 300.f}}, vn::colors::Yellow
+        );
     }
 
 private:
