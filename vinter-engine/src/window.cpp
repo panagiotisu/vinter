@@ -6,7 +6,7 @@
 
 namespace vn {
     struct Window::Impl {
-        SDL_Window* sdl_window_backend {nullptr};
+        SDL_Window* sdl_window_backend {};
 
         Impl(const Impl&) = default;
         Impl(Impl&&) = delete;
