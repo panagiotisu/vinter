@@ -5,11 +5,11 @@
 namespace vn {
     struct RendererSettings {
         enum class Backend : std::uint8_t {
-            SDL,
-            SdlGpu,
-            OpenGL,
+            Vulkan,
+            Direct3D,
+            Metal,
         };
-        Backend backend {Backend::SDL};
+        Backend backend {Backend::Vulkan};
 
         enum class VSyncMode : std::uint8_t {
             Disabled,

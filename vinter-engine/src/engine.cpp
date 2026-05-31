@@ -14,7 +14,7 @@ namespace vn {
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
         window = std::make_unique<Window>(project_settings.window);
-        renderer = Renderer::create(project_settings.renderer, *window);
+        renderer = std::make_unique<Renderer>(project_settings.renderer);
         time = std::make_unique<Time>();
         devices = std::make_unique<DeviceManager>();
         input = std::make_unique<InputMap>(*devices);
