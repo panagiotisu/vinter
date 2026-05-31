@@ -28,8 +28,12 @@ namespace vn {
 
         virtual void draw_rectangle(glm::vec2 position, glm::vec2 size, Color color) = 0;
 
-        virtual void
-        draw_rectangle_line(glm::vec2 position, glm::vec2 size, Color color, float weight = 1.f) = 0;
+        virtual void draw_rectangle_line(
+            glm::vec2 position,
+            glm::vec2 size,
+            Color color,
+            float weight = 1.f
+        ) = 0;
 
         virtual void
         draw_circle(glm::vec2 center, float radius, Color color, std::size_t segments = 200) = 0;
