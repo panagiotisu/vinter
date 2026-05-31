@@ -153,43 +153,19 @@ namespace vn {
         VN_ASSERT(radius > 0, "Radius must be positive.");
         VN_ASSERT(segments > 2, "Need at least three segments to form a circle (closed chain).");
 
-        std::vector<SDL_Vertex> vertices(segments + 2);
-
-        // Construct center vertex.
-        vertices[0] = {
-            .position = {center.x, center.y},
-            .color = {color.red(), color.green(), color.blue(), color.alpha()}
-        };
+        const std::size_t vertex_count {segments + 1};
+        std::vector<glm::vec2> vertices(vertex_count);
 
         // Construct perimeter vertices.
         for (std::size_t i = 0; i <= segments; ++i) {
             float theta = static_cast<float>(i) / static_cast<float>(segments) * 2.f
                           * std::numbers::pi_v<float>;
 
-            vertices[i + 1] = {
-                .position =
-                    {.x = center.x + (std::cos(theta) * radius),
-                     .y = center.y + (std::sin(theta) * radius)},
-                .color = {color.red(), color.green(), color.blue(), color.alpha()}
-            };
+            vertices[i].x = center.x + (std::cos(theta) * radius);
+            vertices[i].y = center.y + (std::sin(theta) * radius);
         }
 
-        std::vector<int> indices(segments * 3);
-
-        for (int i = 0; i < segments; ++i) {
-            indices[(i * 3) + 0] = 0;
-            indices[(i * 3) + 1] = i + 1;
-            indices[(i * 3) + 2] = i + 2;
-        }
-
-        SDL_RenderGeometry(
-            m_impl->sdl_renderer_backend,
-            nullptr,
-            vertices.data(),
-            static_cast<int>(vertices.size()),
-            indices.data(),
-            static_cast<int>(indices.size())
-        );
+        draw_polygon(vertices, color);
     }
 
     void RendererSDL::draw_circle_line(glm::vec2 center, float radius, Color color, float weight) {
