@@ -2,15 +2,17 @@
 
 #include <memory>
 
-namespace vn {
+namespace vn
+{
     struct RendererSettings;
     class Window;
 
-    class Renderer {
+    class Renderer
+    {
         friend class Engine;
 
     public:
-        explicit Renderer(const RendererSettings& settings);
+        explicit Renderer(const RendererSettings& settings, const Window& window);
         ~Renderer();
 
     private:

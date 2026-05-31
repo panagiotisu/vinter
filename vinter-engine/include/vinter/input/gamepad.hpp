@@ -6,17 +6,20 @@
 
 union SDL_Event;
 
-namespace vn {
+namespace vn
+{
     struct Color;
 
-    class Gamepad {
+    class Gamepad
+    {
         friend class DeviceManager;
 
     public:
         explicit Gamepad(unsigned int joystick_id);
         ~Gamepad();
 
-        enum class Button : std::uint8_t {
+        enum class Button : std::uint8_t
+        {
             // Common Buttons.
             South,
             East,
@@ -50,7 +53,8 @@ namespace vn {
             Misc6,
         };
 
-        enum class Axis : std::uint8_t {
+        enum class Axis : std::uint8_t
+        {
             LeftStickLeft,
             LeftStickRight,
             LeftStickUp,
@@ -64,7 +68,8 @@ namespace vn {
             Count,
         };
 
-        enum class ButtonLabel : std::uint8_t {
+        enum class ButtonLabel : std::uint8_t
+        {
             Unknown,
             A,
             B,
@@ -76,7 +81,8 @@ namespace vn {
             Triangle,
         };
 
-        enum class Type : std::uint8_t {
+        enum class Type : std::uint8_t
+        {
             Unknown,
             Standard,
             Xbox360,

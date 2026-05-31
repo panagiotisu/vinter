@@ -3,11 +3,14 @@
 #include <cstdint>
 #include <string_view>
 
-namespace vn {
+namespace vn
+{
     [[nodiscard]]
-    constexpr auto fnv1a64(const std::string_view str) noexcept -> std::uint64_t {
+    constexpr auto fnv1a64(const std::string_view str) noexcept -> std::uint64_t
+    {
         std::uint64_t hash = 0xcbf29ce484222325ull; // FNV-1a 64-bit offset basis
-        for (const unsigned char c : str) {
+        for (const unsigned char c : str)
+        {
             hash ^= c;
             hash *= 0x100000001b3ull; // FNV-1a 64-bit prime
         }

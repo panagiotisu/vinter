@@ -16,8 +16,10 @@
     #endif
 
     #define VN_ASSERT(cond, fmt, ...)      \
-        do {                               \
-            if (!(cond)) {                 \
+        do                                 \
+        {                                  \
+            if (!(cond))                   \
+            {                              \
                 std::cerr << std::format(  \
                     "[ASSERT] {}\n"        \
                     "File: {}\n"           \

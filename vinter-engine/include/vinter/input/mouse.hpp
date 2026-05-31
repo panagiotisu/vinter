@@ -6,12 +6,15 @@
 
 union SDL_Event;
 
-namespace vn {
-    class Mouse {
+namespace vn
+{
+    class Mouse
+    {
         friend class DeviceManager;
 
     public:
-        enum class Button : std::uint8_t {
+        enum class Button : std::uint8_t
+        {
             Left,
             Right,
             Middle,
@@ -19,7 +22,8 @@ namespace vn {
             X2,
         };
 
-        enum class Wheel : std::uint8_t {
+        enum class Wheel : std::uint8_t
+        {
             Up,
             Down,
             Left,

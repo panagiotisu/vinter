@@ -2,37 +2,45 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-namespace vn {
-    Engine::Engine(const ProjectSettings& project_settings) {
+namespace vn
+{
+    Engine::Engine(const ProjectSettings& project_settings)
+    {
         if (!SDL_Init(
                 SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD
                 | SDL_INIT_JOYSTICK
-            )) {
+            ))
+        {
             throw std::runtime_error(SDL_GetError());
         }
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
         window = std::make_unique<Window>(project_settings.window);
-        renderer = std::make_unique<Renderer>(project_settings.renderer);
+        renderer = std::make_unique<Renderer>(project_settings.renderer, *window);
         time = std::make_unique<Time>();
         devices = std::make_unique<DeviceManager>();
         input = std::make_unique<InputMap>(*devices);
     }
 
-    Engine::~Engine() {
+    Engine::~Engine()
+    {
         SDL_Quit();
     }
 
-    void Engine::run() {
+    void Engine::run()
+    {
         m_running = true;
 
         load();
 
-        while (m_running) {
+        while (m_running)
+        {
             SDL_Event sdl_event;
-            while (SDL_PollEvent(&sdl_event)) {
-                if (sdl_event.type == SDL_EVENT_QUIT) {
+            while (SDL_PollEvent(&sdl_event))
+            {
+                if (sdl_event.type == SDL_EVENT_QUIT)
+                {
                     m_running = false;
                 }
                 window->handle_events(sdl_event);
@@ -44,13 +52,12 @@ namespace vn {
             update(time->get_delta());
             devices->update();
 
-            renderer->begin_frame();
             render();
-            renderer->end_frame();
         }
     }
 
-    void Engine::quit() {
+    void Engine::quit()
+    {
         m_running = false;
     }
 } // namespace vn

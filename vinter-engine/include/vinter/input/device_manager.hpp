@@ -9,14 +9,16 @@
 
 union SDL_Event;
 
-namespace vn {
+namespace vn
+{
     class Keyboard;
     class Mouse;
     class Gamepad;
 
     using DeviceID = std::uint32_t;
 
-    class DeviceManager {
+    class DeviceManager
+    {
         friend class Engine;
 
     public:

@@ -9,124 +9,155 @@
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
 
-namespace vn {
-    DeviceManager::DeviceManager() {
+namespace vn
+{
+    DeviceManager::DeviceManager()
+    {
         m_keyboard = std::make_unique<Keyboard>();
         m_mouse = std::make_unique<Mouse>();
 
         // Scan existing gamepads on startup.
         int joystick_count = 0;
         SDL_JoystickID* joystick_ids = SDL_GetJoysticks(&joystick_count);
-        for (int i = 0; i < joystick_count; ++i) {
+        for (int i = 0; i < joystick_count; ++i)
+        {
             handle_gamepad_added(joystick_ids[i]);
         }
         SDL_free(joystick_ids);
     }
 
-    auto DeviceManager::get_keyboard() const noexcept -> Keyboard& {
+    auto DeviceManager::get_keyboard() const noexcept -> Keyboard&
+    {
         return *m_keyboard;
     }
 
-    auto DeviceManager::get_mouse() const noexcept -> Mouse& {
+    auto DeviceManager::get_mouse() const noexcept -> Mouse&
+    {
         return *m_mouse;
     }
 
     auto DeviceManager::get_gamepads() const noexcept
-        -> std::array<Gamepad*, DeviceManager::k_max_gamepad_count> {
+        -> std::array<Gamepad*, DeviceManager::k_max_gamepad_count>
+    {
         // NOTE: We could cache this but the construction cost is minimal.
         std::array<Gamepad*, k_max_gamepad_count> result {};
 
-        for (std::size_t i = 0; i < k_max_gamepad_count; i++) {
-            if (const auto& optional_id = m_gamepad_slots[i]; optional_id) {
-                if (auto it = m_gamepads.find(*optional_id); it != m_gamepads.end()) {
+        for (std::size_t i = 0; i < k_max_gamepad_count; i++)
+        {
+            if (const auto& optional_id = m_gamepad_slots[i]; optional_id)
+            {
+                if (auto it = m_gamepads.find(*optional_id); it != m_gamepads.end())
+                {
                     result[i] = it->second.get();
                 }
             }
-}
+        }
         return result;
     }
 
-    auto DeviceManager::get_active_gamepads() const noexcept -> std::vector<Gamepad*> {
+    auto DeviceManager::get_active_gamepads() const noexcept -> std::vector<Gamepad*>
+    {
         std::vector<Gamepad*> result;
         result.reserve(k_max_gamepad_count);
 
-        for (const auto& gamepad : get_gamepads()) {
-            if (gamepad != nullptr) {
+        for (const auto& gamepad : get_gamepads())
+        {
+            if (gamepad != nullptr)
+            {
                 result.push_back(gamepad);
             }
         }
         return result;
     }
 
-    auto DeviceManager::get_gamepad_by_id(DeviceID id) const noexcept -> Gamepad* {
-        if (const auto it = m_gamepads.find(id); it != m_gamepads.end()) {
+    auto DeviceManager::get_gamepad_by_id(DeviceID id) const noexcept -> Gamepad*
+    {
+        if (const auto it = m_gamepads.find(id); it != m_gamepads.end())
+        {
             return it->second.get();
         }
         return nullptr;
     }
 
-    auto DeviceManager::get_gamepad(const std::size_t slot) const noexcept -> Gamepad* {
+    auto DeviceManager::get_gamepad(const std::size_t slot) const noexcept -> Gamepad*
+    {
         VN_ASSERT(slot < k_max_gamepad_count, "Gamepad slot out of range.");
 
-        if (const auto& optional_id = m_gamepad_slots[slot]; optional_id) {
+        if (const auto& optional_id = m_gamepad_slots[slot]; optional_id)
+        {
             return get_gamepad_by_id(*optional_id);
         }
         return nullptr;
     }
 
-    void DeviceManager::handle_events(const SDL_Event& event) {
+    void DeviceManager::handle_events(const SDL_Event& event)
+    {
         m_keyboard->handle_events(event);
         m_mouse->handle_events(event);
 
-        if (event.type == SDL_EVENT_GAMEPAD_ADDED) {
+        if (event.type == SDL_EVENT_GAMEPAD_ADDED)
+        {
             handle_gamepad_added(event.gdevice.which);
         }
-        if (event.type == SDL_EVENT_GAMEPAD_REMOVED) {
+        if (event.type == SDL_EVENT_GAMEPAD_REMOVED)
+        {
             handle_gamepad_removed(event.gdevice.which);
         }
 
-        for (const auto& gamepad : m_gamepads | std::views::values) {
+        for (const auto& gamepad : m_gamepads | std::views::values)
+        {
             gamepad->handle_events(event);
         }
     }
 
-    void DeviceManager::update() {
+    void DeviceManager::update()
+    {
         m_keyboard->update();
         m_mouse->update();
-        for (const auto& gamepad : m_gamepads | std::views::values) {
+        for (const auto& gamepad : m_gamepads | std::views::values)
+        {
             gamepad->update();
         }
     }
 
-    void DeviceManager::handle_gamepad_added(const DeviceID id) {
-        if (!SDL_IsGamepad(id)) {
+    void DeviceManager::handle_gamepad_added(const DeviceID id)
+    {
+        if (!SDL_IsGamepad(id))
+        {
             return;
         }
 
         const auto [it, inserted] = m_gamepads.try_emplace(id, std::make_unique<Gamepad>(id));
 
-        if (!inserted) {
+        if (!inserted)
+        {
             return;
         }
 
         // Assign to first free slot.
-        for (auto& slot : m_gamepad_slots) {
-            if (!slot) {
+        for (auto& slot : m_gamepad_slots)
+        {
+            if (!slot)
+            {
                 slot = id;
                 break;
             }
         }
     }
 
-    void DeviceManager::handle_gamepad_removed(const DeviceID id) {
+    void DeviceManager::handle_gamepad_removed(const DeviceID id)
+    {
         // Erase from map, stop if not present.
-        if (m_gamepads.erase(id) == 0) {
+        if (m_gamepads.erase(id) == 0)
+        {
             return;
         }
 
         // Remove from slot assignment.
-        for (auto& slot : m_gamepad_slots) {
-            if (slot && *slot == id) {
+        for (auto& slot : m_gamepad_slots)
+        {
+            if (slot && *slot == id)
+            {
                 slot.reset();
                 break;
             }

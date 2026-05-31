@@ -15,8 +15,10 @@
 #include "vinter/time.hpp"
 #include "vinter/window.hpp"
 
-namespace vn {
-    class Engine {
+namespace vn
+{
+    class Engine
+    {
     public:
         explicit Engine(const ProjectSettings& project_settings);
         virtual ~Engine();
@@ -30,16 +32,20 @@ namespace vn {
         std::unique_ptr<DeviceManager> devices;
         std::unique_ptr<InputMap> input;
 
-        virtual void load() {
+        virtual void load()
+        {
         }
 
-        virtual void poll_events() {
+        virtual void poll_events()
+        {
         }
 
-        virtual void update(float delta) {
+        virtual void update(float delta)
+        {
         }
 
-        virtual void render() {
+        virtual void render()
+        {
         }
 
         void quit();
