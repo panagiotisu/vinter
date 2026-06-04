@@ -16,11 +16,11 @@ namespace vn
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
-        window = std::make_unique<Window>(project_settings.window);
-        renderer = std::make_unique<Renderer>(project_settings.renderer, *window);
-        time = std::make_unique<Time>();
-        devices = std::make_unique<DeviceManager>();
-        input = std::make_unique<InputMap>(*devices);
+        m_window = std::make_unique<Window>(project_settings.window);
+        m_renderer = std::make_unique<Renderer>(project_settings.renderer, *m_window);
+        m_time = std::make_unique<Time>();
+        m_devices = std::make_unique<DeviceManager>();
+        m_input = std::make_unique<InputMap>(*m_devices);
     }
 
     Engine::~Engine()
@@ -43,14 +43,14 @@ namespace vn
                 {
                     m_running = false;
                 }
-                window->handle_events(sdl_event);
-                devices->handle_events(sdl_event);
+                m_window->handle_events(sdl_event);
+                m_devices->handle_events(sdl_event);
             }
             poll_events();
 
-            time->update();
-            update(time->get_delta());
-            devices->update();
+            m_time->update();
+            update(m_time->get_delta());
+            m_devices->update();
 
             render();
         }

@@ -26,12 +26,6 @@ namespace vn
         void run();
 
     protected:
-        std::unique_ptr<Window> window;
-        std::unique_ptr<Renderer> renderer;
-        std::unique_ptr<Time> time;
-        std::unique_ptr<DeviceManager> devices;
-        std::unique_ptr<InputMap> input;
-
         virtual void load()
         {
         }
@@ -50,7 +44,24 @@ namespace vn
 
         void quit();
 
+        [[nodiscard]]
+        auto get_window() noexcept -> const Window&;
+        [[nodiscard]]
+        auto get_renderer() noexcept -> const Renderer&;
+        [[nodiscard]]
+        auto get_time() noexcept -> const Time&;
+        [[nodiscard]]
+        auto get_devices() noexcept -> const DeviceManager&;
+        [[nodiscard]]
+        auto get_input() noexcept -> const InputMap&;
+
     private:
+        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Renderer> m_renderer;
+        std::unique_ptr<Time> m_time;
+        std::unique_ptr<DeviceManager> m_devices;
+        std::unique_ptr<InputMap> m_input;
+
         bool m_running {false};
     };
 } // namespace vn
