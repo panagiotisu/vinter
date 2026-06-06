@@ -12,7 +12,6 @@ namespace vn {
             Info,
             Warning,
             Error,
-            Fatal,
         };
 
         static void set_level_filter(Level level) {
@@ -21,22 +20,22 @@ namespace vn {
 
         template <typename... Args>
         static void debug(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Debug, "[DEBUG]", fmt, std::forward<Args>(args)...);
+            log(Level::Debug, "[DEBUG]: ", fmt, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
         static void info(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Info, "[INFO]", fmt, std::forward<Args>(args)...);
+            log(Level::Info, "[INFO]: ", fmt, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
         static void warning(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Warning, "[WARNING]", fmt, std::forward<Args>(args)...);
+            log(Level::Warning, "[WARNING]: ", fmt, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
         static void error(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Error, "[ERROR]", fmt, std::forward<Args>(args)...);
+            log(Level::Error, "[ERROR]: ", fmt, std::forward<Args>(args)...);
         }
 
     private:
