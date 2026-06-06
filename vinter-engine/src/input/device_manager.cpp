@@ -4,10 +4,10 @@
 
 #include <SDL3/SDL.h>
 
-#include "vinter/assert.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
+#include "vinter/panic.hpp"
 
 namespace vn {
     DeviceManager::DeviceManager() {

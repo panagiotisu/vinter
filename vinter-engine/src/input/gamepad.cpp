@@ -6,9 +6,9 @@
 
 #include <SDL3/SDL.h>
 
-#include "vinter/assert.hpp"
 #include "vinter/color.hpp"
 #include "vinter/input/button_states.hpp"
+#include "vinter/panic.hpp"
 
 namespace vn {
     static auto normalize_axis(const float axis) noexcept -> float {

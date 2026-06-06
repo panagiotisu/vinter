@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/panic.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
 
@@ -25,15 +26,11 @@ namespace vn {
               ))
             , window_backend(window.get_native_handle()) {
             if (gpu_device == nullptr) {
-                throw std::runtime_error(
-                    std::format("Failed creating GPU Device: {}", SDL_GetError())
-                );
+                VN_FATAL("Failed creating GPU Device: ", SDL_GetError());
             }
 
             if (!SDL_ClaimWindowForGPUDevice(gpu_device, window_backend)) {
-                throw std::runtime_error(
-                    std::format("Failed claiming window for GPU Device: {}", SDL_GetError())
-                );
+                VN_FATAL("Failed claiming window for GPU Device: ", SDL_GetError());
             }
         }
 

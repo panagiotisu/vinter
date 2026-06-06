@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/panic.hpp"
 #include "vinter/settings/window_settings.hpp"
 
 namespace vn {
@@ -21,7 +22,7 @@ namespace vn {
                   to_sdl_window_flags(window_settings.flags)
               )) {
             if (backend == nullptr) {
-                throw std::runtime_error(SDL_GetError());
+                VN_FATAL("Failed to create Window: ", SDL_GetError());
             }
         }
 

@@ -2,13 +2,15 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
+#include "vinter/panic.hpp"
+
 namespace vn {
     Engine::Engine(const ProjectSettings& project_settings) {
         if (!SDL_Init(
                 SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD
                 | SDL_INIT_JOYSTICK
             )) {
-            throw std::runtime_error(SDL_GetError());
+            VN_FATAL("Failed to initialize SDL: ", SDL_GetError());
         }
 
         // Forgo member initialization list to initialize SDL before other systems.
