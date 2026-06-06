@@ -5,12 +5,10 @@
 struct SDL_Window;
 union SDL_Event;
 
-namespace vn
-{
+namespace vn {
     struct WindowSettings;
 
-    class Window
-    {
+    class Window {
         friend class Engine;
 
     public:

@@ -2,16 +2,13 @@
 
 #include <SDL3/SDL.h>
 
-namespace vn
-{
+namespace vn {
     Time::Time()
         : m_tick_current(SDL_GetPerformanceCounter())
-        , m_frequency(SDL_GetPerformanceFrequency())
-    {
+        , m_frequency(SDL_GetPerformanceFrequency()) {
     }
 
-    void Time::update()
-    {
+    void Time::update() {
         m_tick_previous = m_tick_current;
         m_tick_current = SDL_GetPerformanceCounter();
 
@@ -19,13 +16,11 @@ namespace vn
                   / static_cast<float>(m_frequency);
     }
 
-    auto Time::get_delta() const -> float
-    {
+    auto Time::get_delta() const -> float {
         return m_delta;
     }
 
-    auto Time::get_fps() const -> float
-    {
+    auto Time::get_fps() const -> float {
         return m_delta > 0.0f ? 1.0f / m_delta : 0.0f;
     }
 } // namespace vn

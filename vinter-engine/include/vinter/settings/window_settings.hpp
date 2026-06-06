@@ -2,22 +2,18 @@
 
 #include <string>
 
-namespace vn
-{
-    struct WindowSettings
-    {
+namespace vn {
+    struct WindowSettings {
         std::string title {"Vinter App"};
 
-        struct Size
-        {
+        struct Size {
             int width, height;
         };
 
         Size initial_size {.width = 1280, .height = 720};
         Size virtual_size {.width = 640, .height = 360};
 
-        struct Flags
-        {
+        struct Flags {
             bool fullscreen {false};
             bool resizeable {false};
             bool maximized {false};

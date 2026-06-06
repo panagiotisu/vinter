@@ -7,10 +7,8 @@
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
 
-namespace vn
-{
-    struct Renderer::Impl
-    {
+namespace vn {
+    struct Renderer::Impl {
         SDL_GPUDevice* gpu_device {};
         SDL_Window* window_backend {};
 
@@ -25,33 +23,28 @@ namespace vn
                   true,
                   nullptr
               ))
-            , window_backend(window.get_native_handle())
-        {
-            if (gpu_device == nullptr)
-            {
+            , window_backend(window.get_native_handle()) {
+            if (gpu_device == nullptr) {
                 throw std::runtime_error(
                     std::format("Failed creating GPU Device: {}", SDL_GetError())
                 );
             }
 
-            if (!SDL_ClaimWindowForGPUDevice(gpu_device, window_backend))
-            {
+            if (!SDL_ClaimWindowForGPUDevice(gpu_device, window_backend)) {
                 throw std::runtime_error(
                     std::format("Failed claiming window for GPU Device: {}", SDL_GetError())
                 );
             }
         }
 
-        ~Impl()
-        {
+        ~Impl() {
             SDL_ReleaseWindowFromGPUDevice(gpu_device, window_backend);
             SDL_DestroyGPUDevice(gpu_device);
         }
     };
 
     Renderer::Renderer(const RendererSettings& settings, const Window& window)
-        : m_impl(std::make_unique<Impl>(settings, window))
-    {
+        : m_impl(std::make_unique<Impl>(settings, window)) {
     }
 
     Renderer::~Renderer() = default;

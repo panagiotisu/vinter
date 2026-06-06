@@ -4,10 +4,8 @@
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/settings/window_settings.hpp"
 
-namespace vn
-{
-    struct ProjectSettings
-    {
+namespace vn {
+    struct ProjectSettings {
         WindowSettings window;
         RendererSettings renderer;
         PhysicsSettings physics;

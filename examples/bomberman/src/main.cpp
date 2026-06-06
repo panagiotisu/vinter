@@ -1,7 +1,6 @@
 #include "bomberman.hpp"
 
-auto main() -> int
-{
+auto main() -> int {
     const vn::ProjectSettings project_settings {
         .window = {
             .flags = {

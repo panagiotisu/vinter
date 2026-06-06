@@ -3,33 +3,27 @@
 #include <algorithm>
 #include <cstdint>
 
-namespace vn
-{
-    struct ColorRGBA8
-    {
+namespace vn {
+    struct ColorRGBA8 {
         std::uint8_t r, g, b, a;
     };
 
-    class Color
-    {
+    class Color {
     public:
         constexpr Color(float red, float green, float blue, float alpha = 1.f)
             : m_r(std::max(0.0f, red))
             , m_g(std::max(0.0f, green))
             , m_b(std::max(0.0f, blue))
-            , m_a(std::max(0.0f, alpha))
-        {
+            , m_a(std::max(0.0f, alpha)) {
         }
 
         static constexpr auto from_hdr(float red, float green, float blue, float alpha = 1.f)
-            -> Color
-        {
+            -> Color {
             return {red, green, blue, alpha};
         }
 
         static constexpr auto
-        from_rgba(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) -> Color
-        {
+        from_rgba(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) -> Color {
             return {
                 static_cast<float>(r) / 255.0f,
                 static_cast<float>(g) / 255.0f,
@@ -38,14 +32,12 @@ namespace vn
             };
         }
 
-        static constexpr auto from_rgba(ColorRGBA8 rgba) -> Color
-        {
+        static constexpr auto from_rgba(ColorRGBA8 rgba) -> Color {
             return from_rgba(rgba.r, rgba.g, rgba.b, rgba.a);
         }
 
         [[nodiscard]]
-        constexpr auto to_rgb_a8() const -> ColorRGBA8
-        {
+        constexpr auto to_rgb_a8() const -> ColorRGBA8 {
             return {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
                 .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
@@ -55,26 +47,22 @@ namespace vn
         }
 
         [[nodiscard]]
-        constexpr auto red() const -> float
-        {
+        constexpr auto red() const -> float {
             return m_r;
         }
 
         [[nodiscard]]
-        constexpr auto green() const -> float
-        {
+        constexpr auto green() const -> float {
             return m_g;
         }
 
         [[nodiscard]]
-        constexpr auto blue() const -> float
-        {
+        constexpr auto blue() const -> float {
             return m_b;
         }
 
         [[nodiscard]]
-        constexpr auto alpha() const -> float
-        {
+        constexpr auto alpha() const -> float {
             return m_a;
         }
 
@@ -83,8 +71,7 @@ namespace vn
     };
 
     // NOLINTBEGIN(readability-identifier-naming)
-    namespace colors
-    {
+    namespace colors {
         inline constexpr Color Red = Color::from_rgba(255, 0, 0);
         inline constexpr Color Green = Color::from_rgba(0, 255, 0);
         inline constexpr Color Blue = Color::from_rgba(0, 0, 255);

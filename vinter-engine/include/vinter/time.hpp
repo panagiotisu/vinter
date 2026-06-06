@@ -2,10 +2,8 @@
 
 #include <cstdint>
 
-namespace vn
-{
-    class Time
-    {
+namespace vn {
+    class Time {
         friend class Engine;
 
     public:

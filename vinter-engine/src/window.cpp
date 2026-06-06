@@ -4,10 +4,8 @@
 
 #include "vinter/settings/window_settings.hpp"
 
-namespace vn
-{
-    struct Window::Impl
-    {
+namespace vn {
+    struct Window::Impl {
         SDL_Window* backend {};
 
         Impl(const Impl&) = default;
@@ -21,72 +19,55 @@ namespace vn
                   window_settings.initial_size.width,
                   window_settings.initial_size.height,
                   to_sdl_window_flags(window_settings.flags)
-              ))
-        {
-            if (backend == nullptr)
-            {
+              )) {
+            if (backend == nullptr) {
                 throw std::runtime_error(SDL_GetError());
             }
         }
 
-        ~Impl()
-        {
-            if (backend != nullptr)
-            {
+        ~Impl() {
+            if (backend != nullptr) {
                 SDL_DestroyWindow(backend);
             }
         }
 
-        static auto to_sdl_window_flags(const WindowSettings::Flags& flags) -> SDL_WindowFlags
-        {
+        static auto to_sdl_window_flags(const WindowSettings::Flags& flags) -> SDL_WindowFlags {
             SDL_WindowFlags sdl_window_flags = 0;
 
-            if (flags.fullscreen)
-            {
+            if (flags.fullscreen) {
                 sdl_window_flags |= SDL_WINDOW_FULLSCREEN;
             }
-            if (flags.resizeable)
-            {
+            if (flags.resizeable) {
                 sdl_window_flags |= SDL_WINDOW_RESIZABLE;
             }
-            if (flags.maximized)
-            {
+            if (flags.maximized) {
                 sdl_window_flags |= SDL_WINDOW_MAXIMIZED;
             }
-            if (flags.minimized)
-            {
+            if (flags.minimized) {
                 sdl_window_flags |= SDL_WINDOW_MINIMIZED;
             }
-            if (flags.hidden)
-            {
+            if (flags.hidden) {
                 sdl_window_flags |= SDL_WINDOW_HIDDEN;
             }
-            if (flags.borderless)
-            {
+            if (flags.borderless) {
                 sdl_window_flags |= SDL_WINDOW_BORDERLESS;
             }
-            if (flags.always_on_top)
-            {
+            if (flags.always_on_top) {
                 sdl_window_flags |= SDL_WINDOW_ALWAYS_ON_TOP;
             }
-            if (flags.mouse_captured)
-            {
+            if (flags.mouse_captured) {
                 sdl_window_flags |= SDL_WINDOW_MOUSE_CAPTURE;
             }
-            if (flags.mouse_grabbed)
-            {
+            if (flags.mouse_grabbed) {
                 sdl_window_flags |= SDL_WINDOW_MOUSE_GRABBED;
             }
-            if (flags.mouse_focus)
-            {
+            if (flags.mouse_focus) {
                 sdl_window_flags |= SDL_WINDOW_MOUSE_FOCUS;
             }
-            if (flags.mouse_relative_mode)
-            {
+            if (flags.mouse_relative_mode) {
                 sdl_window_flags |= SDL_WINDOW_MOUSE_RELATIVE_MODE;
             }
-            if (flags.keyboard_grabbed)
-            {
+            if (flags.keyboard_grabbed) {
                 sdl_window_flags |= SDL_WINDOW_KEYBOARD_GRABBED;
             }
 
@@ -95,21 +76,17 @@ namespace vn
     };
 
     Window::Window(const WindowSettings& window_settings)
-        : m_impl(std::make_unique<Impl>(window_settings))
-    {
+        : m_impl(std::make_unique<Impl>(window_settings)) {
     }
 
     Window::~Window() = default;
 
-    auto Window::get_native_handle() const -> SDL_Window*
-    {
+    auto Window::get_native_handle() const -> SDL_Window* {
         return m_impl->backend;
     }
 
-    void Window::handle_events(const SDL_Event& event)
-    {
-        if (event.type == SDL_EVENT_WINDOW_RESIZED)
-        {
+    void Window::handle_events(const SDL_Event& event) {
+        if (event.type == SDL_EVENT_WINDOW_RESIZED) {
             m_width = event.window.data1;
             m_height = event.window.data2;
         }

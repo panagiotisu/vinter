@@ -5,18 +5,15 @@
 
 union SDL_Event;
 
-namespace vn
-{
-    class Keyboard
-    {
+namespace vn {
+    class Keyboard {
         friend class DeviceManager;
 
     public:
         Keyboard();
         ~Keyboard();
 
-        enum class Key : std::uint8_t
-        {
+        enum class Key : std::uint8_t {
             // Function keys
             F1,
             F2,

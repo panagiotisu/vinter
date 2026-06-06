@@ -9,8 +9,7 @@
 #include "vinter/input/mouse.hpp"
 #include "vinter/utils/hash.hpp"
 
-namespace vn
-{
+namespace vn {
     class DeviceManager;
 
     /**
@@ -30,8 +29,7 @@ namespace vn
      * @note If the gamepad slot is nullopt, then it corresponds to either a non-gamepad device,
      * or all gamepad slots simultaneously.
      */
-    struct Binding
-    {
+    struct Binding {
         InputMethod input_method;
         std::optional<std::size_t> gamepad_slot;
     };
@@ -75,8 +73,7 @@ namespace vn
      *
      * @note InputMap requires a valid DeviceManager reference for querying device states.
      */
-    class InputMap
-    {
+    class InputMap {
     public:
         /**
          * Constructs an InputMap object after taking in a reference to a DeviceManager object.
@@ -191,16 +188,10 @@ namespace vn
         auto get_action_strength(std::string_view action_name) const -> float;
 
     private:
-        enum class PressedState : std::uint8_t
-        {
-            Pressed,
-            JustPressed,
-            JustReleased
-        };
+        enum class PressedState : std::uint8_t { Pressed, JustPressed, JustReleased };
 
         [[nodiscard]]
-        static constexpr auto to_action_id(const std::string_view name) noexcept -> ActionID
-        {
+        static constexpr auto to_action_id(const std::string_view name) noexcept -> ActionID {
             return fnv1a64(name);
         }
 

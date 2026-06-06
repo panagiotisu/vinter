@@ -4,17 +4,13 @@
 
 #include "vinter/input/button_states.hpp"
 
-namespace vn
-{
-    struct Keyboard::Impl
-    {
+namespace vn {
+    struct Keyboard::Impl {
         const bool* sdl_state {SDL_GetKeyboardState(nullptr)};
         ButtonStates<SDL_SCANCODE_COUNT> key_states {};
 
-        static auto to_sdl_scancode(const Key key) -> SDL_Scancode
-        {
-            switch (key)
-            {
+        static auto to_sdl_scancode(const Key key) -> SDL_Scancode {
+            switch (key) {
                 default: return SDL_SCANCODE_UNKNOWN;
 
                 // Function keys
@@ -131,38 +127,31 @@ namespace vn
         }
     };
 
-    Keyboard::Keyboard() : m_impl(std::make_unique<Impl>())
-    {
+    Keyboard::Keyboard() : m_impl(std::make_unique<Impl>()) {
     }
 
     Keyboard::~Keyboard() = default;
 
-    auto Keyboard::is_key_pressed(const Key key) const -> bool
-    {
+    auto Keyboard::is_key_pressed(const Key key) const -> bool {
         return m_impl->key_states.is_pressed(Impl::to_sdl_scancode(key));
     }
 
-    auto Keyboard::is_key_just_pressed(const Key key) const -> bool
-    {
+    auto Keyboard::is_key_just_pressed(const Key key) const -> bool {
         return m_impl->key_states.is_just_pressed(Impl::to_sdl_scancode(key));
     }
 
-    auto Keyboard::is_key_just_released(const Key key) const -> bool
-    {
+    auto Keyboard::is_key_just_released(const Key key) const -> bool {
         return m_impl->key_states.is_just_released(Impl::to_sdl_scancode(key));
     }
 
-    void Keyboard::handle_events(const SDL_Event& event)
-    {
+    void Keyboard::handle_events(const SDL_Event& event) {
     }
 
-    void Keyboard::update()
-    {
+    void Keyboard::update() {
         m_impl->key_states.refresh();
 
         // Synchronize with actual sdl state.
-        for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++)
-        {
+        for (std::size_t i = 0; i < SDL_SCANCODE_COUNT; i++) {
             m_impl->key_states.current[i] = m_impl->sdl_state[i];
         }
     }

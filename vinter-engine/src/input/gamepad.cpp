@@ -10,39 +10,28 @@
 #include "vinter/color.hpp"
 #include "vinter/input/button_states.hpp"
 
-namespace vn
-{
-    static auto normalize_axis(const float axis) noexcept -> float
-    {
-        if (axis < 0.f)
-        {
+namespace vn {
+    static auto normalize_axis(const float axis) noexcept -> float {
+        if (axis < 0.f) {
             return -axis / SDL_JOYSTICK_AXIS_MIN;
         }
         return axis / SDL_JOYSTICK_AXIS_MAX;
     }
 
-    static void apply_trigger_deadzone(float& trigger_value, const float deadzone)
-    {
-        if (trigger_value < deadzone)
-        {
+    static void apply_trigger_deadzone(float& trigger_value, const float deadzone) {
+        if (trigger_value < deadzone) {
             trigger_value = 0.f;
-        }
-        else
-        {
+        } else {
             trigger_value = (trigger_value - deadzone) / (1.f - deadzone);
         }
     }
 
-    static void apply_stick_deadzone(float& stick_x, float& stick_y, const float deadzone)
-    {
+    static void apply_stick_deadzone(float& stick_x, float& stick_y, const float deadzone) {
         const float magnitude_squared = (stick_x * stick_x) + (stick_y * stick_y);
-        if (magnitude_squared < deadzone * deadzone)
-        {
+        if (magnitude_squared < deadzone * deadzone) {
             stick_x = 0.f;
             stick_y = 0.f;
-        }
-        else
-        {
+        } else {
             const float magnitude = std::sqrt(magnitude_squared);
             const float magnitude_scaled = (magnitude - deadzone) / (1.f - deadzone);
 
@@ -51,13 +40,11 @@ namespace vn
         }
     }
 
-    static auto axis_to_index(const Gamepad::Axis axis) -> std::size_t
-    {
+    static auto axis_to_index(const Gamepad::Axis axis) -> std::size_t {
         return static_cast<std::size_t>(axis);
     }
 
-    struct Gamepad::Impl
-    {
+    struct Gamepad::Impl {
         SDL_Gamepad* sdl_gamepad {nullptr};
         ButtonStates<SDL_GAMEPAD_BUTTON_COUNT> button_states {};
         std::array<float, SDL_GAMEPAD_AXIS_COUNT> sdl_axis_states_current {},
@@ -70,24 +57,19 @@ namespace vn
         auto operator=(const Impl&) -> Impl& = default;
         auto operator=(Impl&&) -> Impl& = delete;
 
-        explicit Impl(const unsigned int joystick_id) : sdl_gamepad(SDL_OpenGamepad(joystick_id))
-        {
+        explicit Impl(const unsigned int joystick_id) : sdl_gamepad(SDL_OpenGamepad(joystick_id)) {
             VN_ASSERT(sdl_gamepad, "Failed to open SDL gamepad.");
         }
 
-        ~Impl()
-        {
-            if (sdl_gamepad != nullptr)
-            {
+        ~Impl() {
+            if (sdl_gamepad != nullptr) {
                 SDL_CloseGamepad(sdl_gamepad);
             }
         }
 
         [[nodiscard]]
-        static auto to_sdl_gamepad_button(const Button button) noexcept -> SDL_GamepadButton
-        {
-            switch (button)
-            {
+        static auto to_sdl_gamepad_button(const Button button) noexcept -> SDL_GamepadButton {
+            switch (button) {
                 default: return SDL_GAMEPAD_BUTTON_INVALID;
 
                 case Button::South: return SDL_GAMEPAD_BUTTON_SOUTH;
@@ -129,8 +111,7 @@ namespace vn
         static void remap_sdl_axes(
             std::array<float, static_cast<std::size_t>(Axis::Count)>& axes,
             const std::array<float, SDL_GAMEPAD_AXIS_COUNT>& sdl_axes
-        )
-        {
+        ) {
             // Split and remap stick axes so that they are always between [0, 1] instead of [-1, 1].
             axes[axis_to_index(Axis::LeftStickLeft)] = std::max(
                 0.f, -sdl_axes[SDL_GAMEPAD_AXIS_LEFTX]
@@ -164,22 +145,18 @@ namespace vn
         }
     };
 
-    Gamepad::Gamepad(const unsigned int joystick_id) : m_impl(std::make_unique<Impl>(joystick_id))
-    {
+    Gamepad::Gamepad(const unsigned int joystick_id) : m_impl(std::make_unique<Impl>(joystick_id)) {
     }
 
     Gamepad::~Gamepad() = default;
 
-    auto Gamepad::get_id() const noexcept -> unsigned int
-    {
+    auto Gamepad::get_id() const noexcept -> unsigned int {
         return SDL_GetGamepadID(m_impl->sdl_gamepad);
     }
 
-    auto Gamepad::get_guid_string() const noexcept -> std::string
-    {
+    auto Gamepad::get_guid_string() const noexcept -> std::string {
         SDL_Joystick* joy = SDL_GetGamepadJoystick(m_impl->sdl_gamepad);
-        if (joy == nullptr)
-        {
+        if (joy == nullptr) {
             return {};
         }
 
@@ -189,16 +166,13 @@ namespace vn
         return std::string {buf.data()};
     }
 
-    auto Gamepad::get_name() const noexcept -> std::string
-    {
+    auto Gamepad::get_name() const noexcept -> std::string {
         const char* name = SDL_GetGamepadName(m_impl->sdl_gamepad);
         return (name != nullptr) ? std::string {name} : std::string {};
     }
 
-    auto Gamepad::get_type() const noexcept -> Gamepad::Type
-    {
-        switch (SDL_GetGamepadType(m_impl->sdl_gamepad))
-        {
+    auto Gamepad::get_type() const noexcept -> Gamepad::Type {
+        switch (SDL_GetGamepadType(m_impl->sdl_gamepad)) {
             default: return Type::Unknown;
             case SDL_GAMEPAD_TYPE_STANDARD: return Type::Standard;
             case SDL_GAMEPAD_TYPE_XBOX360: return Type::Xbox360;
@@ -214,10 +188,9 @@ namespace vn
         }
     }
 
-    auto Gamepad::get_button_label(const Button button) const noexcept -> Gamepad::ButtonLabel
-    {
-        switch (SDL_GetGamepadButtonLabel(m_impl->sdl_gamepad, Impl::to_sdl_gamepad_button(button)))
-        {
+    auto Gamepad::get_button_label(const Button button) const noexcept -> Gamepad::ButtonLabel {
+        switch (
+            SDL_GetGamepadButtonLabel(m_impl->sdl_gamepad, Impl::to_sdl_gamepad_button(button))) {
             default: return ButtonLabel::Unknown;
             case SDL_GAMEPAD_BUTTON_LABEL_A: return ButtonLabel::A;
             case SDL_GAMEPAD_BUTTON_LABEL_B: return ButtonLabel::B;
@@ -230,41 +203,34 @@ namespace vn
         }
     }
 
-    auto Gamepad::is_button_pressed(const Button button) const noexcept -> bool
-    {
+    auto Gamepad::is_button_pressed(const Button button) const noexcept -> bool {
         return m_impl->button_states.is_pressed(Impl::to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_button_just_pressed(const Button button) const noexcept -> bool
-    {
+    auto Gamepad::is_button_just_pressed(const Button button) const noexcept -> bool {
         return m_impl->button_states.is_just_pressed(Impl::to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_button_just_released(const Button button) const noexcept -> bool
-    {
+    auto Gamepad::is_button_just_released(const Button button) const noexcept -> bool {
         return m_impl->button_states.is_just_released(Impl::to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_axis_pressed(const Axis axis) const noexcept -> bool
-    {
+    auto Gamepad::is_axis_pressed(const Axis axis) const noexcept -> bool {
         const std::size_t i = axis_to_index(axis);
         return m_impl->axis_states_current[i] > 0;
     }
 
-    auto Gamepad::is_axis_just_pressed(const Axis axis) const noexcept -> bool
-    {
+    auto Gamepad::is_axis_just_pressed(const Axis axis) const noexcept -> bool {
         const std::size_t i = axis_to_index(axis);
         return m_impl->axis_states_current[i] > 0 && !(m_impl->axis_states_previous[i] > 0);
     }
 
-    auto Gamepad::is_axis_just_released(const Axis axis) const noexcept -> bool
-    {
+    auto Gamepad::is_axis_just_released(const Axis axis) const noexcept -> bool {
         const std::size_t i = axis_to_index(axis);
         return !(m_impl->axis_states_current[i] > 0) && m_impl->axis_states_previous[i] > 0;
     }
 
-    auto Gamepad::get_axis_strength(const Axis axis) const noexcept -> float
-    {
+    auto Gamepad::get_axis_strength(const Axis axis) const noexcept -> float {
         return m_impl->axis_states_current[axis_to_index(axis)];
     }
 
@@ -272,8 +238,7 @@ namespace vn
         const float weak_percent_magnitude,
         const float strong_percent_magnitude,
         const float duration_sec
-    ) const
-    {
+    ) const {
         constexpr std::uint16_t k_max_motor_magnitude {0xFFFF};
         const auto weak_magnitude = static_cast<std::uint16_t>(
             std::clamp(weak_percent_magnitude, 0.f, 1.f) * k_max_motor_magnitude
@@ -286,38 +251,32 @@ namespace vn
         SDL_RumbleGamepad(m_impl->sdl_gamepad, weak_magnitude, strong_magnitude, duration_ms);
     }
 
-    void Gamepad::stop_vibrate() const
-    {
+    void Gamepad::stop_vibrate() const {
         SDL_RumbleGamepad(m_impl->sdl_gamepad, 0, 0, 0);
     }
 
-    void Gamepad::set_led_color(const Color color) const
-    {
+    void Gamepad::set_led_color(const Color color) const {
         const ColorRGBA8 rgba8 = color.to_rgb_a8();
         SDL_SetGamepadLED(m_impl->sdl_gamepad, rgba8.r, rgba8.g, rgba8.b);
     }
 
-    void Gamepad::handle_events(const SDL_Event& event)
-    {
+    void Gamepad::handle_events(const SDL_Event& event) {
     }
 
-    void Gamepad::update()
-    {
+    void Gamepad::update() {
         m_impl->button_states.refresh();
         m_impl->sdl_axis_states_previous = m_impl->sdl_axis_states_current;
         m_impl->axis_states_previous = m_impl->axis_states_current;
 
         // Synchronize buttons with sdl buttons.
-        for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++)
-        {
+        for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
             m_impl->button_states.current[i] = SDL_GetGamepadButton(
                 m_impl->sdl_gamepad, static_cast<SDL_GamepadButton>(i)
             );
         }
 
         // Normalize and store sdl axes.
-        for (std::size_t i = 0; i < SDL_GAMEPAD_AXIS_COUNT; i++)
-        {
+        for (std::size_t i = 0; i < SDL_GAMEPAD_AXIS_COUNT; i++) {
             m_impl->sdl_axis_states_current[i] = normalize_axis(
                 SDL_GetGamepadAxis(m_impl->sdl_gamepad, static_cast<SDL_GamepadAxis>(i))
             );
