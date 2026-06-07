@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/logger.hpp"
 #include "vinter/panic.hpp"
 #include "vinter/settings/window_settings.hpp"
 
@@ -24,12 +25,15 @@ namespace vn {
             if (backend == nullptr) {
                 VN_FATAL("Failed to create Window: ", SDL_GetError());
             }
+            Logger::info("Window context created successfully");
         }
 
         ~Impl() {
+            Logger::info("Destroying Window context...");
             if (backend != nullptr) {
                 SDL_DestroyWindow(backend);
             }
+            Logger::info("Window context destroyed successfully");
         }
 
         static auto to_sdl_window_flags(const WindowSettings::Flags& flags) -> SDL_WindowFlags {
@@ -90,6 +94,8 @@ namespace vn {
         if (event.type == SDL_EVENT_WINDOW_RESIZED) {
             m_width = event.window.data1;
             m_height = event.window.data2;
+
+            Logger::info("Window resized to ({}x{})", m_width, m_height);
         }
     }
 } // namespace vn
