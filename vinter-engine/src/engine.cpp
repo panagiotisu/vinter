@@ -27,11 +27,13 @@ namespace vn {
     }
 
     Engine::~Engine() {
+        Logger::info("Destroying Vinter runtime...");
         SDL_Quit();
+        Logger::info("Shutting down");
     }
 
     void Engine::run() {
-        Logger::info("Executing Vinter Engine runtime");
+        Logger::info("Executing Vinter runtime");
         m_running = true;
 
         Logger::info("Loading assets...");
@@ -59,7 +61,6 @@ namespace vn {
 
     void Engine::quit() {
         Logger::info("Game loop terminated successfully");
-        Logger::info("Shutting down");
         m_running = false;
     }
 
