@@ -48,7 +48,6 @@ namespace vn {
                 m_window->handle_events(sdl_event);
                 m_devices->handle_events(sdl_event);
             }
-            poll_events();
 
             m_time->update();
             update(m_time->get_delta());

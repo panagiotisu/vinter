@@ -28,9 +28,6 @@ namespace vn {
         virtual void load() {
         }
 
-        virtual void poll_events() {
-        }
-
         virtual void update(float delta) {
         }
 
