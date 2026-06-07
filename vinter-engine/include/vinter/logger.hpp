@@ -19,18 +19,18 @@ namespace vn {
             m_level_filter = level;
         }
 
-        static void enable_colors(bool enabled) {
-            m_use_colors = enabled;
+        static void enable_colored_logs(bool enabled) {
+            m_colored_logs = enabled;
         }
 
         template <typename... Args>
         static void debug(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Debug, "\033[90m", "[DEBUG]", fmt, std::forward<Args>(args)...);
+            log(Level::Debug, "\033[32m", "[DEBUG]", fmt, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
         static void info(std::format_string<Args...> fmt, Args&&... args) {
-            log(Level::Info, "\033[32m", "[INFO]", fmt, std::forward<Args>(args)...);
+            log(Level::Info, "\033[90m", "[INFO]", fmt, std::forward<Args>(args)...);
         }
 
         template <typename... Args>
@@ -57,16 +57,16 @@ namespace vn {
 
             const auto message = std::format(fmt, std::forward<Args>(args)...);
 
-            if (m_use_colors) {
-                std::cout << color << label << ": " << message << "\033[0m"
+            if (m_colored_logs) {
+                std::cout << color << label << " " << message << "\033[0m"
                           << "\n";
             } else {
-                std::cout << label << ": " << message << "\n";
+                std::cout << label << " " << message << "\n";
             }
         }
 
-        inline static Level m_level_filter {Level::Info};
-        inline static bool m_use_colors {true};
+        inline static Level m_level_filter {Level::Debug};
+        inline static bool m_colored_logs {true};
     };
 
 } // namespace vn
