@@ -80,14 +80,14 @@ namespace vn {
         auto add_component(T&& component) -> T& {
             assert_is_base_of_component<T>();
             auto component_ptr = std::make_unique<T>(std::forward<T>(component));
-            return AddComponentImpl(std::move(component_ptr));
+            return add_component_impl(std::move(component_ptr));
         }
 
         template <typename T, typename... Args>
         auto add_component(Args&&... args) -> T& {
             assert_is_base_of_component<T>();
             auto component_ptr = std::make_unique<T>(std::forward<Args>(args)...);
-            return AddComponentImpl(std::move(component_ptr));
+            return add_component_impl(std::move(component_ptr));
         }
 
         template <typename T>
