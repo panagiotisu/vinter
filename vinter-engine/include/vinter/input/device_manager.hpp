@@ -22,7 +22,7 @@ namespace vn {
     public:
         DeviceManager();
 
-        static constexpr std::size_t k_max_gamepad_count {8};
+        static constexpr std::size_t MaxGamepadCount {8};
 
         [[nodiscard]]
         auto get_keyboard() const noexcept -> Keyboard&;
@@ -37,7 +37,7 @@ namespace vn {
         auto get_gamepad(std::size_t slot = 0) const noexcept -> Gamepad*;
 
         [[nodiscard]]
-        auto get_gamepads() const noexcept -> std::array<Gamepad*, k_max_gamepad_count>;
+        auto get_gamepads() const noexcept -> std::array<Gamepad*, MaxGamepadCount>;
 
         [[nodiscard]]
         auto get_active_gamepads() const noexcept -> std::vector<Gamepad*>;
@@ -51,7 +51,7 @@ namespace vn {
 
         std::unique_ptr<Keyboard> m_keyboard;
         std::unique_ptr<Mouse> m_mouse;
-        std::array<std::optional<DeviceID>, k_max_gamepad_count> m_gamepad_slots;
+        std::array<std::optional<DeviceID>, MaxGamepadCount> m_gamepad_slots;
         std::unordered_map<DeviceID, std::unique_ptr<Gamepad>> m_gamepads;
     };
 } // namespace vn
