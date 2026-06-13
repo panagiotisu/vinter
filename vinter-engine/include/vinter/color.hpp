@@ -70,7 +70,6 @@ namespace vn {
         float m_r, m_g, m_b, m_a;
     };
 
-    // NOLINTBEGIN(readability-identifier-naming)
     namespace colors {
         inline constexpr Color Red = Color::from_rgba(255, 0, 0);
         inline constexpr Color Green = Color::from_rgba(0, 255, 0);
@@ -100,7 +99,5 @@ namespace vn {
         inline constexpr Color Magenta = Color::from_rgba(255, 0, 255);
         inline constexpr Color RayWhite = Color::from_rgba(245, 245, 245);
     } // namespace colors
-
-    // NOLINTEND(readability-identifier-naming)
 
 } // namespace vn
