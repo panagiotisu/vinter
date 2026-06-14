@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/logger.hpp"
 #include "vinter/panic.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
@@ -25,18 +26,32 @@ namespace vn {
                   nullptr
               ))
             , window_backend(window.get_native_handle()) {
+            Logger::info("Creating Renderer...");
+
             if (gpu_device == nullptr) {
                 VN_FATAL("Failed creating GPU Device: ", SDL_GetError());
             }
+            Logger::info("GPU Device created successfully");
 
             if (!SDL_ClaimWindowForGPUDevice(gpu_device, window_backend)) {
                 VN_FATAL("Failed claiming window for GPU Device: ", SDL_GetError());
             }
+            Logger::info("Window context claimed for GPU Device successfully");
+
+            Logger::info("Renderer created successfully");
         }
 
         ~Impl() {
-            SDL_ReleaseWindowFromGPUDevice(gpu_device, window_backend);
-            SDL_DestroyGPUDevice(gpu_device);
+            Logger::info("Destroying Renderer...");
+            if (gpu_device != nullptr) {
+                if (window_backend != nullptr) {
+                    SDL_ReleaseWindowFromGPUDevice(gpu_device, window_backend);
+                    Logger::info("Window released from GPU Device successfully");
+                }
+                SDL_DestroyGPUDevice(gpu_device);
+                Logger::info("GPU Device destroyed successfully");
+            }
+            Logger::info("Renderer destroyed successfully");
         }
     };
 
