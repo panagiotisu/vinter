@@ -4,7 +4,6 @@
 
 // TODO: Place these in a fwd.hpp.
 #include "vinter/color.hpp"
-#include "vinter/game_object.hpp"
 #include "vinter/input/device_manager.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/input_map.hpp"
