@@ -20,11 +20,11 @@ namespace vn {
         Impl(const Impl&) = delete;
         auto operator=(const Impl&) -> Impl& = delete;
 
-        explicit Impl(const RendererSettings& /*settings*/, const Window& window)
+        explicit Impl(const RendererSettings& settings, const Window& window)
             : device(SDL_CreateGPUDevice(
-                  SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
+                  to_sdl_gpu_shader_format(settings.backend),
                   true,
-                  nullptr
+                  to_sdl_gpu_driver_name(settings.backend)
               ))
             , window_backend(window.get_native_handle()) {
             Logger::info("Creating Renderer...");
@@ -38,6 +38,7 @@ namespace vn {
                 VN_FATAL("Failed claiming window for GPU Device: ", SDL_GetError());
             }
             Logger::info("Window context claimed for GPU Device successfully");
+            Logger::info("Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDriver(0)));
 
             Logger::info("Renderer created successfully");
         }
@@ -53,6 +54,54 @@ namespace vn {
                 Logger::info("GPU Device destroyed successfully");
             }
             Logger::info("Renderer destroyed successfully");
+        }
+
+        static auto to_sdl_gpu_shader_format(RendererSettings::Backend rendering_backend)
+            -> SDL_GPUShaderFormat {
+            SDL_GPUShaderFormat sdl_gpu_shader_format {};
+
+            switch (rendering_backend) {
+                case RendererSettings::Backend::Vulkan:
+                    sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV;
+                    break;
+                case RendererSettings::Backend::Direct3D12:
+                    sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
+                                             | SDL_GPU_SHADERFORMAT_DXBC;
+                    break;
+                case RendererSettings::Backend::Metal:
+                    sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_MSL
+                                             | SDL_GPU_SHADERFORMAT_METALLIB;
+                    break;
+                case RendererSettings::Backend::Automatic:
+                    sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
+                                             | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_MSL
+                                             | SDL_GPU_SHADERFORMAT_METALLIB;
+                    break;
+            }
+            return sdl_gpu_shader_format;
+        }
+
+        static auto to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char* {
+            switch (backend) {
+                case RendererSettings::Backend::Vulkan: return "vulkan";
+                case RendererSettings::Backend::Direct3D12: return "direct3d12";
+                case RendererSettings::Backend::Metal: return "metal";
+                case RendererSettings::Backend::Automatic: return nullptr;
+            }
+            return nullptr;
+        }
+
+        static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string {
+            if (strcmp(sdl_gpu_driver_name, "vulkan") != 0) {
+                return "Vulkan";
+            }
+            if (strcmp(sdl_gpu_driver_name, "direct3d12") != 0) {
+                return "Direct3D12";
+            }
+            if (strcmp(sdl_gpu_driver_name, "metal") != 0) {
+                return "Metal";
+            }
+            return {};
         }
     };
 
