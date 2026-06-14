@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "vinter/color.hpp"
+
 namespace vn {
     struct RendererSettings {
         enum class Backend : std::uint8_t {
@@ -11,11 +13,6 @@ namespace vn {
         };
         Backend backend {Backend::Vulkan};
 
-        enum class VSyncMode : std::uint8_t {
-            Disabled,
-            Enabled,
-            Adaptive,
-        };
-        VSyncMode vsync_mode {VSyncMode::Disabled};
+        Color default_background_color {colors::DarkBlue};
     };
 } // namespace vn

@@ -18,7 +18,7 @@ namespace vn {
             bool resizeable {false};
             bool maximized {false};
             bool minimized {false};
-            bool hidden {true}; // To hide initial window black state until renderer construction.
+            bool hidden {false};
             bool borderless {false};
             bool always_on_top {false};
             bool mouse_captured {false};

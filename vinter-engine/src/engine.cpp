@@ -55,7 +55,9 @@ namespace vn {
             update(m_time->get_delta());
             m_devices->update();
 
+            m_renderer->begin_frame();
             render();
+            m_renderer->end_frame();
         }
     }
 
