@@ -3,6 +3,7 @@
 auto main() -> int {
     const vn::ProjectSettings project_settings {
         .window = {
+            .title = "Atomic Bomberman",
             .flags = {
                 .resizeable = true,
             }
