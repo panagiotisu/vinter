@@ -40,12 +40,14 @@ namespace vn {
                     "Unknown GPU"
                 )
             );
+            Logger::info(
+                "Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDeviceDriver(device))
+            );
 
             if (!SDL_ClaimWindowForGPUDevice(device, window_backend)) {
                 VN_FATAL("Failed claiming window for GPU Device: ", SDL_GetError());
             }
             Logger::info("Window context claimed for GPU Device successfully");
-            Logger::info("Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDriver(0)));
 
             Logger::info("Renderer created successfully");
         }
@@ -99,13 +101,13 @@ namespace vn {
         }
 
         static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string {
-            if (strcmp(sdl_gpu_driver_name, "vulkan") != 0) {
+            if (strcmp(sdl_gpu_driver_name, "vulkan") == 0) {
                 return "Vulkan";
             }
-            if (strcmp(sdl_gpu_driver_name, "direct3d12") != 0) {
+            if (strcmp(sdl_gpu_driver_name, "direct3d12") == 0) {
                 return "Direct3D12";
             }
-            if (strcmp(sdl_gpu_driver_name, "metal") != 0) {
+            if (strcmp(sdl_gpu_driver_name, "metal") == 0) {
                 return "Metal";
             }
             return {};
