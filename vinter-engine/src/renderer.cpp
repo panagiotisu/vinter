@@ -32,7 +32,14 @@ namespace vn {
             if (device == nullptr) {
                 VN_FATAL("Failed creating GPU Device: ", SDL_GetError());
             }
-            Logger::info("GPU Device created successfully");
+            Logger::info(
+                "GPU Device created successfully: {}",
+                SDL_GetStringProperty(
+                    SDL_GetGPUDeviceProperties(device),
+                    SDL_PROP_GPU_DEVICE_NAME_STRING,
+                    "Unknown GPU"
+                )
+            );
 
             if (!SDL_ClaimWindowForGPUDevice(device, window_backend)) {
                 VN_FATAL("Failed claiming window for GPU Device: ", SDL_GetError());
