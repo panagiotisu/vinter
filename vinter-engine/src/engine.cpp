@@ -66,23 +66,23 @@ namespace vn {
         m_running = false;
     }
 
-    auto Engine::get_window() noexcept -> const Window& {
+    auto Engine::get_window() noexcept -> Window& {
         return *m_window;
     }
 
-    auto Engine::get_renderer() noexcept -> const Renderer& {
+    auto Engine::get_renderer() noexcept -> Renderer& {
         return *m_renderer;
     }
 
-    auto Engine::get_time() noexcept -> const Time& {
+    auto Engine::get_time() noexcept -> Time& {
         return *m_time;
     }
 
-    auto Engine::get_devices() noexcept -> const DeviceManager& {
+    auto Engine::get_devices() noexcept -> DeviceManager& {
         return *m_devices;
     }
 
-    auto Engine::get_input() noexcept -> const InputMap& {
+    auto Engine::get_input() noexcept -> InputMap& {
         return *m_input;
     }
 } // namespace vn
