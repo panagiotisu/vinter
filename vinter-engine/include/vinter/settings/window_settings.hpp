@@ -1,13 +1,16 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace vn {
     struct WindowSettings {
         std::string title {"Vinter App"};
 
+        using Dimension = std::uint32_t;
+
         struct Size {
-            int width, height;
+            Dimension width, height;
         };
 
         Size initial_size {.width = 1280, .height = 720};

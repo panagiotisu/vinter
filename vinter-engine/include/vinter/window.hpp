@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "vinter/settings/window_settings.hpp"
+
 struct SDL_Window;
 union SDL_Event;
 
@@ -16,10 +18,19 @@ namespace vn {
         ~Window();
 
         [[nodiscard]]
+        auto get_width() const noexcept -> WindowSettings::Dimension;
+
+        [[nodiscard]]
+        auto get_height() const noexcept -> WindowSettings::Dimension;
+
+        [[nodiscard]]
+        auto get_size() const noexcept -> WindowSettings::Size;
+
+        [[nodiscard]]
         auto get_native_handle() const -> SDL_Window*;
 
     private:
-        int m_width {0}, m_height {0};
+        WindowSettings::Size m_size {};
 
         void handle_events(const SDL_Event& event);
 

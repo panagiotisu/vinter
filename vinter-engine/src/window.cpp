@@ -18,8 +18,8 @@ namespace vn {
         explicit Impl(const WindowSettings& window_settings)
             : backend(SDL_CreateWindow(
                   window_settings.title.c_str(),
-                  window_settings.initial_size.width,
-                  window_settings.initial_size.height,
+                  static_cast<int>(window_settings.initial_size.width),
+                  static_cast<int>(window_settings.initial_size.height),
                   to_sdl_window_flags(window_settings.flags)
               )) {
             if (backend == nullptr) {
@@ -92,8 +92,8 @@ namespace vn {
 
     void Window::handle_events(const SDL_Event& event) {
         if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-            m_width = event.window.data1;
-            m_height = event.window.data2;
+            m_size.width = static_cast<WindowSettings::Dimension>(event.window.data1);
+            m_size.height = static_cast<WindowSettings::Dimension>(event.window.data2);
         }
     }
 } // namespace vn
