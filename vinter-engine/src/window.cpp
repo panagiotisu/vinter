@@ -94,8 +94,6 @@ namespace vn {
         if (event.type == SDL_EVENT_WINDOW_RESIZED) {
             m_width = event.window.data1;
             m_height = event.window.data2;
-
-            Logger::info("Window resized to ({}x{})", m_width, m_height);
         }
     }
 } // namespace vn
