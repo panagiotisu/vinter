@@ -103,6 +103,7 @@ namespace vn {
 
     private:
         void update();
+        void update_timers();
         void update_fps();
 
         TimePoint m_start_time;

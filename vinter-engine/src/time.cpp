@@ -71,10 +71,16 @@ namespace vn {
         m_unscaled_delta_time = 0.f;
         m_elapsed_time = 0.f;
         m_unscaled_elapsed_time = 0.f;
+        m_wall_clock_time = 0.f;
         m_fps = 0.f;
     }
 
     void Time::update() {
+        update_timers();
+        update_fps();
+    }
+
+    void Time::update_timers() {
         const TimePoint current_time {Clock::now()};
 
         double raw_delta_time {Duration(current_time - m_last_frame_time).count()};
@@ -97,5 +103,8 @@ namespace vn {
 
         // Wall clock remains unaffected by both scaling and pausing.
         m_wall_clock_time += m_unscaled_delta_time;
+    }
+
+    void Time::update_fps() {
     }
 } // namespace vn
