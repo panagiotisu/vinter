@@ -20,6 +20,10 @@ namespace vn {
         return m_unscaled_elapsed_time;
     }
 
+    auto Time::get_wall_clock_time() const noexcept -> float {
+        return m_wall_clock_time;
+    }
+
     auto Time::get_fps() const -> float {
         if (m_unscaled_delta_time <= 0.f) {
             return 0.f;
@@ -83,9 +87,15 @@ namespace vn {
             m_delta_time = 0.f;
         } else {
             m_delta_time = m_unscaled_delta_time * m_time_scale;
+
+            // Unscaled elapsed time is affected by pausing but is not scaled.
+            m_unscaled_elapsed_time += m_unscaled_delta_time;
+
+            // Elapsed time is affected by pausing and is scaled.
             m_elapsed_time += m_delta_time;
         }
 
-        m_unscaled_elapsed_time += m_unscaled_delta_time;
+        // Wall clock remains unaffected by both scaling and pausing.
+        m_wall_clock_time += m_unscaled_delta_time;
     }
 } // namespace vn
