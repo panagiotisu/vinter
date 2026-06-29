@@ -13,18 +13,19 @@ namespace vn {
     class DeviceManager;
 
     /**
-     * The unique hashed identifier corresponding to an action name.
+     * @brief The unique hashed identifier corresponding to an action name.
      */
     using ActionID = std::uint64_t;
 
     /**
-     * The type of device-specific input method to bind to a generic input action.
+     * @brief The type of device-specific input method to bind to a generic input action.
      */
     using InputMethod =
         std::variant<Keyboard::Key, Mouse::Button, Mouse::Wheel, Gamepad::Button, Gamepad::Axis>;
 
     /**
-     * Represents a binding of an input method to an action, optionally for a specific gamepad slot.
+     * @brief Represents a binding of an input method to an action, optionally for a specific
+     * gamepad slot.
      *
      * @note If the gamepad slot is nullopt, then it corresponds to either a non-gamepad device,
      * or all gamepad slots simultaneously.
@@ -35,7 +36,7 @@ namespace vn {
     };
 
     /**
-     * Maps named actions to input devices and queries their state.
+     * @brief Maps named actions to input devices and queries their state.
      *
      * InputMap allows the registration of logical actions (like "jump", "shoot", "punch")
      * and their binding to one or more physical inputs, such as keyboard keys, mouse buttons,
@@ -73,14 +74,15 @@ namespace vn {
     class InputMap {
     public:
         /**
-         * Constructs an InputMap object after taking in a reference to a DeviceManager object.
+         * @brief Constructs an InputMap object after taking in a reference to a DeviceManager
+         * object.
          *
          * @param devices The reference to the DeviceManager object.
          */
         explicit InputMap(DeviceManager& devices);
 
         /**
-         * Binds a registered action to a key.
+         * @brief Binds a registered action to a key.
          *
          * @param action_name The name of a registered action.
          * @param key The key to be bound.
@@ -88,7 +90,7 @@ namespace vn {
         void bind(std::string_view action_name, Keyboard::Key key);
 
         /**
-         *  Binds a registered action to a mouse button.
+         * @brief Binds a registered action to a mouse button.
          *
          * @param action_name The name of a registered action.
          * @param button The mouse button to be bound.
@@ -96,7 +98,7 @@ namespace vn {
         void bind(std::string_view action_name, Mouse::Button button);
 
         /**
-         *  Binds a registered action to a mouse wheel input.
+         * @brief Binds a registered action to a mouse wheel input.
          *
          * @param action_name The name of a registered action.
          * @param wheel The mouse wheel input to be bound.
@@ -104,7 +106,7 @@ namespace vn {
         void bind(std::string_view action_name, Mouse::Wheel wheel);
 
         /**
-         *  Binds a registered action to a gamepad button, for all gamepads.
+         * @brief Binds a registered action to a gamepad button, for all gamepads.
          *
          * @param action_name The name of a registered action.
          * @param button The gamepad button to be bound.
@@ -112,7 +114,7 @@ namespace vn {
         void bind(std::string_view action_name, Gamepad::Button button);
 
         /**
-         *  Binds a registered action to a gamepad axis, for all gamepads.
+         * @brief Binds a registered action to a gamepad axis, for all gamepads.
          *
          * @param action_name The name of a registered action.
          * @param axis The gamepad axis to be bound.
@@ -120,7 +122,7 @@ namespace vn {
         void bind(std::string_view action_name, Gamepad::Axis axis);
 
         /**
-         *  Binds a registered action to a gamepad button, for a specified gamepad.
+         * @brief Binds a registered action to a gamepad button, for a specified gamepad.
          *
          * @param action_name The name of a registered action.
          * @param button The gamepad button to be bound.
@@ -129,7 +131,7 @@ namespace vn {
         void bind(std::string_view action_name, Gamepad::Button button, std::size_t slot);
 
         /**
-         *  Binds a registered action to a gamepad axis, for a specified gamepad.
+         * @brief Binds a registered action to a gamepad axis, for a specified gamepad.
          *
          * @param action_name The name of a registered action.
          * @param axis The gamepad axis to be bound.
@@ -138,7 +140,7 @@ namespace vn {
         void bind(std::string_view action_name, Gamepad::Axis axis, std::size_t slot);
 
         /**
-         * Checks if a registered action is actively pressed during the current frame.
+         * @brief Checks if a registered action is actively pressed during the current frame.
          *
          * @param action_name The name of a registered action.
          * @return `true` if the action is currently pressed, `false` otherwise.
@@ -147,9 +149,10 @@ namespace vn {
         auto is_action_pressed(std::string_view action_name) const -> bool;
 
         /**
-         * Checks if a registered action was pressed this frame but not in the previous frame.
+         * @brief Checks if a registered action was pressed this frame but not in the previous
+         * frame.
          *
-         * This is useful for detecting a single press event rather than continuous holding.
+         * @note This is useful for detecting a single press event rather than continuous holding.
          *
          * @param action_name The name of a registered action.
          * @return `true` if the action was just pressed in the current frame, `false` otherwise.
@@ -158,10 +161,10 @@ namespace vn {
         auto is_action_just_pressed(std::string_view action_name) const -> bool;
 
         /**
-         * Checks if a registered action was released this frame but was pressed in the previous
-         * frame.
+         * @brief Checks if a registered action was released this frame but was pressed in the
+         * previous frame.
          *
-         * This is useful for detecting a single release event.
+         * @note This is useful for detecting a single release event.
          *
          * @param action_name The name of a registered action.
          * @return `true` if the action was just released in the current frame, `false` otherwise.
@@ -170,11 +173,11 @@ namespace vn {
         auto is_action_just_released(std::string_view action_name) const -> bool;
 
         /**
-         * Returns the normalized strength of the specified action in the range [0.0, 1.0].
+         * @brief Returns the normalized strength of the specified action in the range [0.0, 1.0].
          *
-         * Actions mapped to analog inputs (e.g., gamepad axes) produce continuous values
-         * within [0.0, 1.0], while actions mapped to digital inputs (e.g., buttons)
-         * return 1.0 when pressed and 0.0 otherwise.
+         * Actions mapped to analog inputs (e.g., gamepad axes) produce continuous values within
+         * [0.0, 1.0], while actions mapped to digital inputs (e.g., buttons) return 1.0 when
+         * pressed and 0.0 otherwise.
          *
          * If the action is not registered, this function returns 0.0.
          *
