@@ -14,6 +14,8 @@ namespace vn {
         };
         Backend backend {Backend::Automatic};
 
+        bool vsync_enabled {true};
+
         Color default_background_color {colors::DarkBlue};
     };
 } // namespace vn
