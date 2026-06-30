@@ -119,15 +119,24 @@ namespace vn {
 
     Renderer::~Renderer() = default;
 
+    auto Renderer::vsync_enabled() const noexcept -> bool {
+        return m_vsync_enabled;
+    }
+
     void Renderer::set_vsync(bool enabled) {
+        m_vsync_enabled = false;
         SDL_GPUPresentMode present_mode {SDL_GPU_PRESENTMODE_IMMEDIATE};
+
         bool supports_mailbox {SDL_WindowSupportsGPUPresentMode(
             m_impl->device, m_impl->window_backend, SDL_GPU_PRESENTMODE_MAILBOX
         )};
+
         if (enabled) {
             present_mode = supports_mailbox ? SDL_GPU_PRESENTMODE_MAILBOX
                                             : SDL_GPU_PRESENTMODE_VSYNC;
+            m_vsync_enabled = true;
         }
+
         if (!SDL_SetGPUSwapchainParameters(
                 m_impl->device,
                 m_impl->window_backend,
