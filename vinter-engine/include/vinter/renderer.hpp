@@ -15,7 +15,7 @@ namespace vn {
         explicit Renderer(const RendererSettings& settings, const Window& window);
         ~Renderer();
 
-        void toggle_vsync(bool enabled);
+        void set_vsync(bool enabled);
 
     private:
         void begin_frame();

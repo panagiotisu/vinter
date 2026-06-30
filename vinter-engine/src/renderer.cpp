@@ -114,12 +114,12 @@ namespace vn {
     Renderer::Renderer(const RendererSettings& settings, const Window& window)
         : m_impl(std::make_unique<Impl>(settings, window))
         , m_clear_color(settings.default_background_color) {
-        toggle_vsync(settings.vsync_enabled);
+        set_vsync(settings.vsync_enabled);
     }
 
     Renderer::~Renderer() = default;
 
-    void Renderer::toggle_vsync(bool enabled) {
+    void Renderer::set_vsync(bool enabled) {
         SDL_GPUPresentMode present_mode {SDL_GPU_PRESENTMODE_IMMEDIATE};
         bool supports_mailbox {SDL_WindowSupportsGPUPresentMode(
             m_impl->device, m_impl->window_backend, SDL_GPU_PRESENTMODE_MAILBOX
