@@ -1,7 +1,5 @@
 #include "vinter/renderer.hpp"
 
-#include <format>
-
 #include <SDL3/SDL.h>
 
 #include "vinter/logger.hpp"
