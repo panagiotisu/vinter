@@ -121,11 +121,11 @@ namespace vn {
         TimePoint m_start_time;
         TimePoint m_last_frame_time;
 
-        float m_time_scale { 1.f };
+        float m_time_scale {1.f};
 
         float m_delta_time {};
         float m_unscaled_delta_time {};
-        float m_max_delta_time { 0.1f };
+        float m_max_delta_time {0.1f};
 
         float m_elapsed_time {};
         float m_unscaled_elapsed_time {};
@@ -134,6 +134,6 @@ namespace vn {
         float m_fps {};
         std::unique_ptr<MovingAverageFilter<float>> m_frame_time_filter {};
 
-        bool m_paused { false };
+        bool m_paused {false};
     };
 } // namespace vn
