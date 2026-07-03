@@ -27,7 +27,7 @@ namespace vn {
         virtual void load() {
         }
 
-        virtual void update(float delta) {
+        virtual void update() {
         }
 
         virtual void render() {

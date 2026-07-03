@@ -52,7 +52,7 @@ namespace vn {
             }
 
             m_time->update();
-            update(m_time->get_delta());
+            update();
             m_devices->update();
 
             m_renderer->begin_frame();
