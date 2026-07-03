@@ -11,7 +11,7 @@ protected:
     void load() override {
     }
 
-    void update(float /*delta*/) override {
+    void update() override {
     }
 
     void render() override {
