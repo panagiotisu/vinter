@@ -96,7 +96,7 @@ namespace vn {
     void Time::update_timers() {
         const TimePoint current_time {Clock::now()};
 
-        double raw_delta_time {Duration(current_time - m_last_frame_time).count()};
+        const double raw_delta_time {Duration(current_time - m_last_frame_time).count()};
         m_last_frame_time = current_time;
 
         m_unscaled_delta_time = static_cast<float>(raw_delta_time);

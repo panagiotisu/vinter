@@ -127,7 +127,7 @@ namespace vn {
         m_vsync_enabled = false;
         SDL_GPUPresentMode present_mode {SDL_GPU_PRESENTMODE_IMMEDIATE};
 
-        bool supports_mailbox {SDL_WindowSupportsGPUPresentMode(
+        const bool supports_mailbox {SDL_WindowSupportsGPUPresentMode(
             m_impl->device, m_impl->window_backend, SDL_GPU_PRESENTMODE_MAILBOX
         )};
 
@@ -171,14 +171,14 @@ namespace vn {
         );
 
         SDL_GPUTexture* swapchain_texture {};
-        bool ok = SDL_WaitAndAcquireGPUSwapchainTexture(
+        const bool ok = SDL_WaitAndAcquireGPUSwapchainTexture(
             m_impl->cmd_buffer, m_impl->window_backend, &swapchain_texture, nullptr, nullptr
         );
         VN_ASSERT(
             ok && swapchain_texture, "Error acquiring GPU swapchain texture. \n{}", SDL_GetError()
         );
 
-        SDL_GPUColorTargetInfo color_target {
+        const SDL_GPUColorTargetInfo color_target {
             .texture = swapchain_texture,
             .clear_color =
                 {
@@ -196,7 +196,7 @@ namespace vn {
     void Renderer::end_frame() {
         SDL_EndGPURenderPass(m_impl->render_pass);
 
-        bool ok = SDL_SubmitGPUCommandBuffer(m_impl->cmd_buffer);
+        const bool ok = SDL_SubmitGPUCommandBuffer(m_impl->cmd_buffer);
         VN_ASSERT(ok, "Error submitting GPU command buffer. \n{}", SDL_GetError());
     }
 

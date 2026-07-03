@@ -37,8 +37,8 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
-BreakAfterOpenBracketBracedList: true
-BreakBeforeCloseBracketBracedList: true
+# BreakAfterOpenBracketBracedList: true
+# BreakBeforeCloseBracketBracedList: true
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: false
@@ -65,7 +65,7 @@ QualifierAlignment: Left
 ReferenceAlignment: Left
 SeparateDefinitionBlocks: Always
 SpacesInContainerLiterals: true
-Cpp11BracedListStyle: FunctionCall
+Cpp11BracedListStyle: true
 Standard: c++20
 TabWidth: 4
 NamespaceIndentation: All

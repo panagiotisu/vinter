@@ -40,6 +40,7 @@ Checks: >
   -misc-include-cleaner,
   -misc-non-private-member-variables-in-classes,
   -modernize-use-designated-initializers,
+  -modernize-use-trailing-return-type,
   -performance-no-int-to-ptr,
   -clang-diagnostic-reorder-ctor,
   -readability-identifier-length,
