@@ -23,6 +23,7 @@ Checks: >
   -bugprone-easily-swappable-parameters,
   -cert-msc51-cpp,
   -cert-err58-cpp,
+  -clang-diagnostic-braced-scalar-init,
   -cppcoreguidelines-avoid-const-or-ref-data-members,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-avoid-non-const-global-variables,
