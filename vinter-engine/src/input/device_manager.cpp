@@ -10,10 +10,9 @@
 #include "vinter/panic.hpp"
 
 namespace vn {
-    DeviceManager::DeviceManager() {
-        m_keyboard = std::make_unique<Keyboard>();
-        m_mouse = std::make_unique<Mouse>();
-
+    DeviceManager::DeviceManager()
+        : m_keyboard(std::make_unique<Keyboard>())
+        , m_mouse(std::make_unique<Mouse>()) {
         // Scan existing gamepads on startup.
         int joystick_count = 0;
         SDL_JoystickID* joystick_ids = SDL_GetJoysticks(&joystick_count);

@@ -195,27 +195,35 @@ namespace vn {
             return fnv1a64(name);
         }
 
+        [[nodiscard]]
         auto check_action_pressed_state(std::string_view action_name, PressedState state) const
             -> bool;
 
+        [[nodiscard]]
         auto evaluate_binding_pressed(const Binding& binding, PressedState state) const -> bool;
 
+        [[nodiscard]]
         auto evaluate_input_strength(const Binding& binding) const -> float;
 
+        [[nodiscard]]
         auto evaluate_key_pressed_state(Keyboard::Key key, PressedState state) const -> bool;
 
+        [[nodiscard]]
         auto evaluate_mouse_button_pressed_state(Mouse::Button button, PressedState state) const
             -> bool;
 
+        [[nodiscard]]
         auto evaluate_mouse_wheel_pressed_state(Mouse::Wheel wheel, PressedState state) const
             -> bool;
 
+        [[nodiscard]]
         auto evaluate_gamepad_button_pressed_state(
             Gamepad::Button button,
             const Binding& binding,
             PressedState state
         ) const -> bool;
 
+        [[nodiscard]]
         auto evaluate_gamepad_axis_pressed_state(
             Gamepad::Axis axis,
             const Binding& binding,
@@ -223,6 +231,6 @@ namespace vn {
         ) const -> bool;
 
         DeviceManager& m_devices;
-        std::unordered_map<ActionID, std::vector<Binding>> m_bindings;
+        std::unordered_map<ActionID, std::vector<Binding>> m_bindings {};
     };
 } // namespace vn

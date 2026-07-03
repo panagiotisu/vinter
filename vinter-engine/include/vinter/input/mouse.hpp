@@ -63,8 +63,8 @@ namespace vn {
         void update();
 
         ButtonStates<5> m_buttons {};
-        glm::vec2 m_position {};
-        glm::vec2 m_position_previous {};
-        glm::vec2 m_scroll {};
+        glm::Vec2 m_position {};
+        glm::Vec2 m_position_previous {};
+        glm::Vec2 m_scroll {};
     };
 } // namespace vn

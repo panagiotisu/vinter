@@ -47,6 +47,7 @@ Checks: >
   -readability-magic-numbers,
   -readability-static-accessed-through-instance,
   -readability-uppercase-literal-suffix,
+  -readability-redundant-member-init,
   -cppcoreguidelines-avoid-do-while,
 WarningsAsErrors: true
 FormatStyle: file

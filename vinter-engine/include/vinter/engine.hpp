@@ -47,11 +47,11 @@ namespace vn {
         auto get_input() noexcept -> InputMap&;
 
     private:
-        std::unique_ptr<Window> m_window;
-        std::unique_ptr<Renderer> m_renderer;
-        std::unique_ptr<Time> m_time;
-        std::unique_ptr<DeviceManager> m_devices;
-        std::unique_ptr<InputMap> m_input;
+        std::unique_ptr<Window> m_window {};
+        std::unique_ptr<Renderer> m_renderer {};
+        std::unique_ptr<Time> m_time {};
+        std::unique_ptr<DeviceManager> m_devices {};
+        std::unique_ptr<InputMap> m_input {};
 
         bool m_running {false};
     };

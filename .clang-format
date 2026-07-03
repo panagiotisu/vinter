@@ -6,7 +6,7 @@ Language: Cpp
 BasedOnStyle: LLVM
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: BlockIndent
+AlignAfterOpenBracket: true
 AlignConsecutiveMacros: Consecutive
 AlignEscapedNewlines: Left
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -37,8 +37,12 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
-# BreakAfterOpenBracketBracedList: true
-# BreakBeforeCloseBracketBracedList: true
+BreakAfterOpenBracketBracedList: true
+BreakBeforeCloseBracketBracedList: true
+BreakAfterOpenBracketFunction: true
+BreakBeforeCloseBracketFunction: true
+BreakAfterOpenBracketIf: true
+BreakBeforeCloseBracketIf: true
 BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: false

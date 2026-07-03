@@ -28,6 +28,6 @@ namespace vn {
 
     protected:
         std::size_t m_window_size {};
-        std::vector<T> m_samples;
+        std::vector<T> m_samples {};
     };
 } // namespace vn
