@@ -86,6 +86,18 @@ namespace vn {
 
     Window::~Window() = default;
 
+    auto Window::get_width() const noexcept -> WindowSettings::Dimension {
+        return m_size.width;
+    }
+
+    auto Window::get_height() const noexcept -> WindowSettings::Dimension {
+        return m_size.height;
+    }
+
+    auto Window::get_size() const noexcept -> WindowSettings::Size {
+        return m_size;
+    }
+
     auto Window::get_native_handle() const -> SDL_Window* {
         return m_impl->backend;
     }
