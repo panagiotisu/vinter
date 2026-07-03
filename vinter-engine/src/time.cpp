@@ -1,7 +1,10 @@
 #include "vinter/time.hpp"
 
 namespace vn {
-    Time::Time() : m_start_time(Clock::now()), m_last_frame_time(m_start_time) {
+    Time::Time()
+        : m_start_time(Clock::now())
+        , m_last_frame_time(m_start_time)
+        , m_frame_time_filter(std::make_unique<MovingAverageFilter<float>>(120)) {
     }
 
     auto Time::get_delta_time() const noexcept -> float {
@@ -24,11 +27,19 @@ namespace vn {
         return m_wall_clock_time;
     }
 
-    auto Time::get_fps() const -> float {
+    auto Time::get_instant_fps() const -> float {
         if (m_unscaled_delta_time <= 0.f) {
             return 0.f;
         }
         return 1.f / m_unscaled_delta_time;
+    }
+
+    auto Time::get_filtered_fps() const -> std::uint32_t {
+        const auto filtered_fps {m_frame_time_filter->get_value()};
+        if (filtered_fps <= 0.f) {
+            return 0;
+        }
+        return static_cast<std::uint32_t>(1.f / filtered_fps);
     }
 
     auto Time::get_time_scale() const noexcept -> float {
@@ -72,7 +83,9 @@ namespace vn {
         m_elapsed_time = 0.f;
         m_unscaled_elapsed_time = 0.f;
         m_wall_clock_time = 0.f;
+
         m_fps = 0.f;
+        m_frame_time_filter->reset();
     }
 
     void Time::update() {
@@ -106,5 +119,6 @@ namespace vn {
     }
 
     void Time::update_fps() {
+        m_frame_time_filter->add_sample(get_unscaled_delta_time());
     }
 } // namespace vn

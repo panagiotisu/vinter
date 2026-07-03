@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+#include "vinter/utils/filters/moving_average_filter.hpp"
+
 namespace vn {
     class Time {
         friend class Engine;
@@ -58,9 +60,19 @@ namespace vn {
 
         /**
          * @return The current FPS calculated between current and last frame.
+         *
+         * @note Useful for time-sensitive and accurate statistics.
          */
         [[nodiscard]]
-        auto get_fps() const -> float;
+        auto get_instant_fps() const -> float;
+
+        /**
+         * @return The averaged FPS filtered by m_fps_filter.
+         *
+         * @note Useful fur user-facing FPS infos.
+         */
+        [[nodiscard]]
+        auto get_filtered_fps() const -> std::uint32_t;
 
         /**
          * @return The scale at which time passes, defaults to 1.0.
@@ -109,18 +121,19 @@ namespace vn {
         TimePoint m_start_time;
         TimePoint m_last_frame_time;
 
-        float m_time_scale {1.f};
+        float m_time_scale { 1.f };
 
         float m_delta_time {};
         float m_unscaled_delta_time {};
-        float m_max_delta_time {0.1f};
+        float m_max_delta_time { 0.1f };
 
         float m_elapsed_time {};
         float m_unscaled_elapsed_time {};
         float m_wall_clock_time {};
 
         float m_fps {};
+        std::unique_ptr<MovingAverageFilter<float>> m_frame_time_filter {};
 
-        bool m_paused {false};
+        bool m_paused { false };
     };
 } // namespace vn
