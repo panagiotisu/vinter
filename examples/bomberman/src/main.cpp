@@ -6,8 +6,12 @@ auto main() -> int {
             .title = "Atomic Bomberman",
             .flags = {
                 .resizeable = true,
-            }
-        }
+            },
+        },
+        .renderer = {
+            .backend = vn::RendererSettings::Backend::Automatic,
+            .vsync_enabled = false,
+        },
     };
 
     Bomberman bomberman(project_settings);
