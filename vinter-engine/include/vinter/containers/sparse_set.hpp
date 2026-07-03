@@ -142,7 +142,8 @@ namespace vn {
         }
 
         // Returns true if the dense array is empty.
-        auto is_empty() const {
+        [[nodiscard]]
+        auto is_empty() const -> bool {
             return m_dense.empty();
         }
 
