@@ -48,6 +48,7 @@ Checks: >
   -readability-static-accessed-through-instance,
   -readability-uppercase-literal-suffix,
   -readability-redundant-member-init,
+  -readability-redundant-access-specifiers,
   -cppcoreguidelines-avoid-do-while,
 WarningsAsErrors: true
 FormatStyle: file
