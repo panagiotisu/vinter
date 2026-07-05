@@ -22,7 +22,7 @@ namespace vn {
     public:
         DeviceManager();
 
-        static constexpr std::size_t MaxGamepadCount {8};
+        static constexpr std::size_t MaxGamepadCount { 8 };
 
         [[nodiscard]]
         auto get_keyboard() const noexcept -> Keyboard&;

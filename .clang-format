@@ -70,7 +70,7 @@ QualifierAlignment: Left
 ReferenceAlignment: Left
 SeparateDefinitionBlocks: Always
 SpacesInContainerLiterals: true
-Cpp11BracedListStyle: true
+Cpp11BracedListStyle: false
 Standard: c++20
 TabWidth: 4
 NamespaceIndentation: All

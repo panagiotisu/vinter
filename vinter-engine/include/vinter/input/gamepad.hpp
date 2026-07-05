@@ -1,10 +1,15 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
-#include <memory>
 #include <string>
+#include <vector>
+
+#include "vinter/color.hpp"
+#include "vinter/input/button_states.hpp"
 
 union SDL_Event;
+struct SDL_Gamepad;
 
 namespace vn {
     struct Color;
@@ -140,10 +145,26 @@ namespace vn {
         void handle_events(const SDL_Event& event);
         void update();
 
-        float m_stick_deadzone {0.1f};
-        float m_trigger_deadzone {0.05f};
+        [[nodiscard]]
+        static auto normalize_axis(float axis) noexcept -> float;
+        static void apply_trigger_deadzone(float& trigger_value, float deadzone);
+        static void apply_stick_deadzone(float& stick_x, float& stick_y, float deadzone);
+        [[nodiscard]]
+        static auto axis_to_index(Gamepad::Axis axis) -> std::size_t;
 
-        struct Impl;
-        std::unique_ptr<Impl> m_impl;
+        [[nodiscard]]
+        static auto to_sdl_gamepad_button(Button button) noexcept -> int;
+        void remap_sdl_axes_to_gamepad_axes();
+
+    private:
+        float m_stick_deadzone { 0.1f };
+        float m_trigger_deadzone { 0.05f };
+
+        SDL_Gamepad* m_sdl_gamepad {};
+        ButtonStates m_button_states;
+        std::vector<float> m_sdl_axis_states_current {};
+        std::vector<float> m_sdl_axis_states_previous {};
+        std::array<float, static_cast<std::size_t>(Axis::Count)> m_axis_states_current {};
+        std::array<float, static_cast<std::size_t>(Axis::Count)> m_axis_states_previous {};
     };
 } // namespace vn

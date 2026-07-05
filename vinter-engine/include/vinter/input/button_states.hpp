@@ -1,29 +1,33 @@
 #pragma once
 
-#include <array>
+#include <vector>
 
 namespace vn {
-    template <std::size_t N>
     struct ButtonStates {
-        std::array<bool, N> current {};
-        std::array<bool, N> previous {};
+        std::vector<bool> current {};
+        std::vector<bool> previous {};
+
+        explicit ButtonStates(std::size_t button_count)
+            : current(button_count, false)
+            , previous(button_count, false) {
+        }
 
         void refresh() {
             previous = current;
         }
 
         [[nodiscard]]
-        auto is_pressed(std::size_t button_idx) const -> bool {
+        auto is_pressed(std::size_t button_idx) const noexcept -> bool {
             return current[button_idx];
         }
 
         [[nodiscard]]
-        auto is_just_pressed(std::size_t button_idx) const -> bool {
+        auto is_just_pressed(std::size_t button_idx) const noexcept -> bool {
             return current[button_idx] && !previous[button_idx];
         }
 
         [[nodiscard]]
-        auto is_just_released(std::size_t button_idx) const -> bool {
+        auto is_just_released(std::size_t button_idx) const noexcept -> bool {
             return !current[button_idx] && previous[button_idx];
         }
     };

@@ -5,7 +5,7 @@
 
 namespace vn {
     struct WindowSettings {
-        std::string title {"Vinter App"};
+        std::string title { "Vinter App" };
 
         using Dimension = std::uint32_t;
 
@@ -13,23 +13,23 @@ namespace vn {
             Dimension width, height;
         };
 
-        Size initial_size {.width = 1280, .height = 720};
-        Size virtual_size {.width = 640, .height = 360};
+        Size initial_size { .width = 1280, .height = 720 };
+        Size virtual_size { .width = 640, .height = 360 };
 
         struct Flags {
-            bool fullscreen {false};
-            bool resizeable {false};
-            bool maximized {false};
-            bool minimized {false};
-            bool hidden {false};
-            bool borderless {false};
-            bool always_on_top {false};
-            bool mouse_captured {false};
-            bool mouse_grabbed {false};
-            bool mouse_focus {false};
-            bool mouse_relative_mode {false};
-            bool keyboard_grabbed {false};
-            bool high_pixel_density {false};
+            bool fullscreen { false };
+            bool resizeable { false };
+            bool maximized { false };
+            bool minimized { false };
+            bool hidden { false };
+            bool borderless { false };
+            bool always_on_top { false };
+            bool mouse_captured { false };
+            bool mouse_grabbed { false };
+            bool mouse_focus { false };
+            bool mouse_relative_mode { false };
+            bool keyboard_grabbed { false };
+            bool high_pixel_density { false };
         };
 
         Flags flags {};

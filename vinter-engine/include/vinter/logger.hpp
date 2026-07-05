@@ -65,8 +65,8 @@ namespace vn {
             }
         }
 
-        inline static Level m_level_filter {Level::Debug};
-        inline static bool m_colored_logs {true};
+        inline static Level m_level_filter { Level::Debug };
+        inline static bool m_colored_logs { true };
     };
 
 } // namespace vn

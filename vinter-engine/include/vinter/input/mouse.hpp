@@ -27,42 +27,46 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto is_button_pressed(Button button) const -> bool;
+        auto is_button_pressed(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto is_button_just_pressed(Button button) const -> bool;
+        auto is_button_just_pressed(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto is_button_just_released(Button button) const -> bool;
+        auto is_button_just_released(Button button) const noexcept -> bool;
 
         [[nodiscard]]
-        auto is_wheel_triggered(Wheel wheel) const -> bool;
+        auto is_wheel_triggered(Wheel wheel) const noexcept -> bool;
 
         [[nodiscard]]
-        auto get_position() const -> glm::vec2;
+        auto get_position() const noexcept -> glm::vec2;
 
         [[nodiscard]]
-        auto get_delta() const -> glm::vec2;
+        auto get_delta() const noexcept -> glm::vec2;
 
         [[nodiscard]]
-        auto get_scroll() const -> glm::vec2;
+        auto get_scroll() const noexcept -> glm::vec2;
 
         [[nodiscard]]
-        auto get_scroll_vertical() const -> float;
+        auto get_scroll_vertical() const noexcept -> float;
 
         [[nodiscard]]
-        auto get_scroll_horizontal() const -> float;
+        auto get_scroll_horizontal() const noexcept -> float;
 
         [[nodiscard]]
-        static auto is_cursor_visible() -> bool;
-
-        static void set_cursor_visible(bool visible);
+        auto is_cursor_visible() const noexcept -> bool;
+        void set_cursor_visible(bool visible);
 
     private:
         void handle_events(const SDL_Event& event);
         void update();
 
-        ButtonStates<5> m_buttons {};
+        [[nodiscard]]
+        static auto to_sdl_mouse_button(Mouse::Button button) noexcept -> std::size_t;
+
+    private:
+        static constexpr std::size_t ButtonCount { 5 };
+        ButtonStates m_buttons { ButtonCount };
         glm::vec2 m_position {};
         glm::vec2 m_position_previous {};
         glm::vec2 m_scroll {};

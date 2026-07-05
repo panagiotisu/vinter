@@ -33,6 +33,6 @@ namespace vn {
         }
 
     private:
-        T m_running_sum {T {}};
+        T m_running_sum { T {} };
     };
 } // namespace vn

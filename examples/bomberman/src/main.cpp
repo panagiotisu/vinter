@@ -2,13 +2,13 @@
 
 auto main() -> int {
     const vn::ProjectSettings project_settings {
-        .window {
+        .window = {
             .title = "Atomic Bomberman",
-            .flags {
+            .flags = {
                 .resizeable = true,
             },
         },
-        .renderer {
+        .renderer = {
             .backend = vn::RendererSettings::Backend::Automatic,
             .vsync_enabled = false,
         },

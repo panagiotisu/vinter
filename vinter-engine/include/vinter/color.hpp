@@ -19,7 +19,7 @@ namespace vn {
 
         static constexpr auto from_hdr(float red, float green, float blue, float alpha = 1.f)
             -> Color {
-            return {red, green, blue, alpha};
+            return { red, green, blue, alpha };
         }
 
         static constexpr auto
@@ -28,7 +28,7 @@ namespace vn {
                 static_cast<float>(r) / 255.0f,
                 static_cast<float>(g) / 255.0f,
                 static_cast<float>(b) / 255.0f,
-                static_cast<float>(a) / 255.0f
+                static_cast<float>(a) / 255.0f,
             };
         }
 
@@ -42,7 +42,7 @@ namespace vn {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
                 .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
                 .b = static_cast<std::uint8_t>(std::min(m_b, 1.0f) * 255.0f),
-                .a = static_cast<std::uint8_t>(std::min(m_a, 1.0f) * 255.0f)
+                .a = static_cast<std::uint8_t>(std::min(m_a, 1.0f) * 255.0f),
             };
         }
 

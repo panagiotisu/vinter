@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
+
+#include "vinter/input/button_states.hpp"
 
 union SDL_Event;
 
@@ -11,7 +12,6 @@ namespace vn {
 
     public:
         Keyboard();
-        ~Keyboard();
 
         enum class Key : std::uint8_t {
             // Function keys
@@ -127,19 +127,23 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto is_key_pressed(Key key) const -> bool;
+        auto is_key_pressed(Key key) const noexcept -> bool;
 
         [[nodiscard]]
-        auto is_key_just_pressed(Key key) const -> bool;
+        auto is_key_just_pressed(Key key) const noexcept -> bool;
 
         [[nodiscard]]
-        auto is_key_just_released(Key key) const -> bool;
+        auto is_key_just_released(Key key) const noexcept -> bool;
 
     private:
         void handle_events(const SDL_Event& event);
         void update();
 
-        struct Impl;
-        std::unique_ptr<Impl> m_impl;
+        [[nodiscard]]
+        static auto to_sdl_scancode(Key key) noexcept -> int;
+
+    private:
+        ButtonStates m_key_states;
+        const bool* m_sdl_state {};
     };
 } // namespace vn

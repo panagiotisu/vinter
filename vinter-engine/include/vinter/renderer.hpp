@@ -1,18 +1,23 @@
 #pragma once
 
-#include <memory>
+#include <string>
 
 #include "vinter/color.hpp"
+#include "vinter/settings/renderer_settings.hpp"
+
+struct SDL_GPUDevice;
+struct SDL_Window;
+struct SDL_GPUCommandBuffer;
+struct SDL_GPURenderPass;
 
 namespace vn {
-    struct RendererSettings;
     class Window;
 
     class Renderer {
         friend class Engine;
 
     public:
-        explicit Renderer(const RendererSettings& settings, const Window& window);
+        Renderer(const RendererSettings& settings, const Window& window);
         ~Renderer();
 
         [[nodiscard]]
@@ -23,11 +28,23 @@ namespace vn {
         void begin_frame();
         void end_frame();
 
-        Color m_clear_color {colors::DarkBlue};
+        [[nodiscard]]
+        static auto to_sdl_gpu_shader_format(RendererSettings::Backend rendering_backend)
+            -> std::uint32_t;
 
+        [[nodiscard]]
+        static auto to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char*;
+
+        [[nodiscard]]
+        static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string;
+
+    private:
+        Color m_clear_color {colors::DarkBlue};
         bool m_vsync_enabled {true};
 
-        struct Impl;
-        std::unique_ptr<Impl> m_impl;
+        SDL_GPUDevice* m_device {};
+        SDL_Window* m_window_backend {};
+        SDL_GPUCommandBuffer* m_cmd_buffer {};
+        SDL_GPURenderPass* m_render_pass {};
     };
 } // namespace vn

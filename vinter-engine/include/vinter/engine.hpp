@@ -53,6 +53,6 @@ namespace vn {
         std::unique_ptr<DeviceManager> m_devices {};
         std::unique_ptr<InputMap> m_input {};
 
-        bool m_running {false};
+        bool m_running { false };
     };
 } // namespace vn

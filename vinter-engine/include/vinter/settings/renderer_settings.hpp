@@ -12,10 +12,10 @@ namespace vn {
             Metal,
             Automatic,
         };
-        Backend backend {Backend::Automatic};
+        Backend backend { Backend::Automatic };
 
-        bool vsync_enabled {true};
+        bool vsync_enabled { true };
 
-        Color default_background_color {colors::DarkBlue};
+        Color default_background_color { colors::DarkBlue };
     };
 } // namespace vn
