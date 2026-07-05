@@ -17,6 +17,7 @@ AllowShortLambdasOnASingleLine: None
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
+BinPackLongBracedList: true
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
