@@ -1,21 +1,12 @@
 #include "vinter/app.hpp"
 
-#include <SDL3/SDL.h> // Temporary for early debugging.
+#include <SDL3/SDL.h>
 
 #include "vinter/logger.hpp"
 
 namespace vn {
     App::App(const ProjectSettings& project_settings) {
         VN_INFO("Started {}", project_settings.window.title);
-
-        VN_INFO("Initializing SDL...");
-        if (!SDL_Init(
-                SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD
-                | SDL_INIT_JOYSTICK
-            )) {
-            VN_FATAL("Failed to initialize SDL: ", SDL_GetError());
-        }
-        VN_INFO("SDL initialized successfully");
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
@@ -28,6 +19,13 @@ namespace vn {
 
     App::~App() {
         VN_INFO("Destroying Vinter runtime...");
+
+        m_input.reset();
+        m_devices.reset();
+        m_time.reset();
+        m_renderer.reset();
+        m_window.reset();
+
         SDL_Quit();
         VN_INFO("Shutting down");
     }
