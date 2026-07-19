@@ -9,7 +9,7 @@ namespace vn {
     struct WindowSettings;
 
     class Window {
-        friend class Engine;
+        friend class App;
 
     public:
         explicit Window(const WindowSettings& window_settings);

@@ -17,7 +17,7 @@ namespace vn {
     using DeviceID = std::uint32_t;
 
     class DeviceManager {
-        friend class Engine;
+        friend class App;
 
     public:
         DeviceManager();

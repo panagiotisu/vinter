@@ -16,10 +16,10 @@
 #include "vinter/window.hpp"
 
 namespace vn {
-    class Engine {
+    class App {
     public:
-        explicit Engine(const ProjectSettings& project_settings);
-        virtual ~Engine();
+        explicit App(const ProjectSettings& project_settings);
+        virtual ~App();
 
         void run();
 

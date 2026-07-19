@@ -6,7 +6,7 @@
 
 namespace vn {
     class Time {
-        friend class Engine;
+        friend class App;
 
         using Clock = std::chrono::steady_clock;
         using TimePoint = Clock::time_point;

@@ -1,11 +1,11 @@
-#include "vinter/engine.hpp"
+#include "vinter/app.hpp"
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
 #include "vinter/panic.hpp"
 
 namespace vn {
-    Engine::Engine(const ProjectSettings& project_settings) {
+    App::App(const ProjectSettings& project_settings) {
         Logger::info("Started {}", project_settings.window.title);
 
         Logger::info("Initializing SDL...");
@@ -26,13 +26,13 @@ namespace vn {
         m_input = std::make_unique<InputMap>(*m_devices);
     }
 
-    Engine::~Engine() {
+    App::~App() {
         Logger::info("Destroying Vinter runtime...");
         SDL_Quit();
         Logger::info("Shutting down");
     }
 
-    void Engine::run() {
+    void App::run() {
         Logger::info("Executing Vinter runtime");
         m_running = true;
 
@@ -61,28 +61,28 @@ namespace vn {
         }
     }
 
-    void Engine::quit() {
+    void App::quit() {
         Logger::info("Game loop terminated successfully");
         m_running = false;
     }
 
-    auto Engine::get_window() noexcept -> Window& {
+    auto App::get_window() noexcept -> Window& {
         return *m_window;
     }
 
-    auto Engine::get_renderer() noexcept -> Renderer& {
+    auto App::get_renderer() noexcept -> Renderer& {
         return *m_renderer;
     }
 
-    auto Engine::get_time() noexcept -> Time& {
+    auto App::get_time() noexcept -> Time& {
         return *m_time;
     }
 
-    auto Engine::get_devices() noexcept -> DeviceManager& {
+    auto App::get_devices() noexcept -> DeviceManager& {
         return *m_devices;
     }
 
-    auto Engine::get_input() noexcept -> InputMap& {
+    auto App::get_input() noexcept -> InputMap& {
         return *m_input;
     }
 } // namespace vn

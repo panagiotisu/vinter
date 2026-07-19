@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vinter/engine.hpp>
+#include <vinter/app.hpp>
 
-class Bomberman : public vn::Engine {
+class Bomberman : public vn::App {
 public:
-    explicit Bomberman(const vn::ProjectSettings& project_settings) : Engine(project_settings) {
+    explicit Bomberman(const vn::ProjectSettings& project_settings) : App(project_settings) {
     }
 
 protected:

@@ -14,7 +14,7 @@ namespace vn {
     class Window;
 
     class Renderer {
-        friend class Engine;
+        friend class App;
 
     public:
         Renderer(const RendererSettings& settings, const Window& window);
@@ -39,8 +39,8 @@ namespace vn {
         static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string;
 
     private:
-        Color m_clear_color {colors::DarkBlue};
-        bool m_vsync_enabled {true};
+        Color m_clear_color { colors::DarkBlue };
+        bool m_vsync_enabled { true };
 
         SDL_GPUDevice* m_device {};
         SDL_Window* m_window_backend {};
