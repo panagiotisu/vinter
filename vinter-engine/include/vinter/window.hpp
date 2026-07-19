@@ -16,9 +16,9 @@ namespace vn {
         ~Window();
 
         [[nodiscard]]
-        auto get_width() const noexcept -> WindowSettings::Dimension;
+        auto get_width() const noexcept -> std::uint32_t;
         [[nodiscard]]
-        auto get_height() const noexcept -> WindowSettings::Dimension;
+        auto get_height() const noexcept -> std::uint32_t;
         [[nodiscard]]
         auto get_size() const noexcept -> WindowSettings::Size;
 

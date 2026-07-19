@@ -7,10 +7,8 @@ namespace vn {
     struct WindowSettings {
         std::string title { "Vinter App" };
 
-        using Dimension = std::uint32_t;
-
         struct Size {
-            Dimension width, height;
+            std::uint32_t width, height;
         };
 
         Size initial_size { .width = 1280, .height = 720 };

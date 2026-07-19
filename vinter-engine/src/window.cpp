@@ -28,11 +28,11 @@ namespace vn {
         Logger::info("Window context destroyed successfully");
     };
 
-    auto Window::get_width() const noexcept -> WindowSettings::Dimension {
+    auto Window::get_width() const noexcept -> std::uint32_t {
         return m_size.width;
     }
 
-    auto Window::get_height() const noexcept -> WindowSettings::Dimension {
+    auto Window::get_height() const noexcept -> std::uint32_t {
         return m_size.height;
     }
 
@@ -46,8 +46,8 @@ namespace vn {
 
     void Window::handle_events(const SDL_Event& event) {
         if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-            m_size.width = static_cast<WindowSettings::Dimension>(event.window.data1);
-            m_size.height = static_cast<WindowSettings::Dimension>(event.window.data2);
+            m_size.width = event.window.data1;
+            m_size.height = event.window.data2;
         }
     }
 
