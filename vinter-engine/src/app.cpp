@@ -2,20 +2,20 @@
 
 #include <SDL3/SDL.h> // Temporary for early debugging.
 
-#include "vinter/panic.hpp"
+#include "vinter/logger.hpp"
 
 namespace vn {
     App::App(const ProjectSettings& project_settings) {
-        Logger::info("Started {}", project_settings.window.title);
+        VN_INFO("Started {}", project_settings.window.title);
 
-        Logger::info("Initializing SDL...");
+        VN_INFO("Initializing SDL...");
         if (!SDL_Init(
                 SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD
                 | SDL_INIT_JOYSTICK
             )) {
             VN_FATAL("Failed to initialize SDL: ", SDL_GetError());
         }
-        Logger::info("SDL initialized successfully");
+        VN_INFO("SDL initialized successfully");
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
@@ -27,20 +27,20 @@ namespace vn {
     }
 
     App::~App() {
-        Logger::info("Destroying Vinter runtime...");
+        VN_INFO("Destroying Vinter runtime...");
         SDL_Quit();
-        Logger::info("Shutting down");
+        VN_INFO("Shutting down");
     }
 
     void App::run() {
-        Logger::info("Executing Vinter runtime");
+        VN_INFO("Executing Vinter runtime");
         m_running = true;
 
-        Logger::info("Loading assets...");
+        VN_INFO("Loading assets...");
         load();
-        Logger::info("Assets loaded successfully");
+        VN_INFO("Assets loaded successfully");
 
-        Logger::info("Starting game loop");
+        VN_INFO("Starting game loop");
         while (m_running) {
             SDL_Event sdl_event;
             while (SDL_PollEvent(&sdl_event)) {
@@ -62,7 +62,7 @@ namespace vn {
     }
 
     void App::quit() {
-        Logger::info("Game loop terminated successfully");
+        VN_INFO("Game loop terminated successfully");
         m_running = false;
     }
 

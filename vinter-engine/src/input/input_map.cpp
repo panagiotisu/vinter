@@ -1,7 +1,6 @@
 #include "vinter/input/input_map.hpp"
 
 #include <string_view>
-#include <vector>
 
 #include "vinter/input/device_manager.hpp"
 
@@ -10,35 +9,35 @@ namespace vn {
     }
 
     void InputMap::bind(const std::string_view action_name, Keyboard::Key key) {
-        m_bindings[to_action_id(action_name)].push_back({.input_method = key});
+        m_bindings[to_action_id(action_name)].push_back({ .input_method = key });
     }
 
     void InputMap::bind(const std::string_view action_name, Mouse::Button button) {
-        m_bindings[to_action_id(action_name)].push_back({.input_method = button});
+        m_bindings[to_action_id(action_name)].push_back({ .input_method = button });
     }
 
     void InputMap::bind(const std::string_view action_name, Mouse::Wheel wheel) {
-        m_bindings[to_action_id(action_name)].push_back({.input_method = wheel});
+        m_bindings[to_action_id(action_name)].push_back({ .input_method = wheel });
     }
 
     void InputMap::bind(const std::string_view action_name, Gamepad::Button button) {
-        m_bindings[to_action_id(action_name)].push_back({.input_method = button});
+        m_bindings[to_action_id(action_name)].push_back({ .input_method = button });
     }
 
     void InputMap::bind(const std::string_view action_name, Gamepad::Axis axis) {
-        m_bindings[to_action_id(action_name)].push_back({.input_method = axis});
+        m_bindings[to_action_id(action_name)].push_back({ .input_method = axis });
     }
 
     void
     InputMap::bind(const std::string_view action_name, Gamepad::Button button, std::size_t slot) {
         m_bindings[to_action_id(action_name)].push_back(
-            {.input_method = button, .gamepad_slot = slot}
+            { .input_method = button, .gamepad_slot = slot }
         );
     }
 
     void InputMap::bind(const std::string_view action_name, Gamepad::Axis axis, std::size_t slot) {
         m_bindings[to_action_id(action_name)].push_back(
-            {.input_method = axis, .gamepad_slot = slot}
+            { .input_method = axis, .gamepad_slot = slot }
         );
     }
 

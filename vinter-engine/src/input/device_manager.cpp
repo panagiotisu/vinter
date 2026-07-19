@@ -7,7 +7,7 @@
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
-#include "vinter/panic.hpp"
+#include "vinter/logger.hpp"
 
 namespace vn {
     DeviceManager::DeviceManager()

@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 
 #include "vinter/logger.hpp"
-#include "vinter/panic.hpp"
 #include "vinter/settings/window_settings.hpp"
 
 namespace vn {
@@ -17,15 +16,15 @@ namespace vn {
         if (m_backend == nullptr) {
             VN_FATAL("Failed to create Window: ", SDL_GetError());
         }
-        Logger::info("Window context created successfully");
+        VN_INFO("Window context created successfully");
     }
 
     Window::~Window() {
-        Logger::info("Destroying Window context...");
+        VN_INFO("Destroying Window context...");
         if (m_backend != nullptr) {
             SDL_DestroyWindow(m_backend);
         }
-        Logger::info("Window context destroyed successfully");
+        VN_INFO("Window context destroyed successfully");
     };
 
     auto Window::get_width() const noexcept -> std::uint32_t {

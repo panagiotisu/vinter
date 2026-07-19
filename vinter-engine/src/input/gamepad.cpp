@@ -6,7 +6,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "vinter/panic.hpp"
+#include "vinter/logger.hpp"
 
 namespace vn {
     Gamepad::Gamepad(const unsigned int joystick_id)
@@ -62,7 +62,9 @@ namespace vn {
     }
 
     auto Gamepad::get_button_label(const Button button) const noexcept -> Gamepad::ButtonLabel {
-        switch (SDL_GetGamepadButtonLabel(m_sdl_gamepad, static_cast<SDL_GamepadButton>(to_sdl_gamepad_button(button)))) {
+        switch (SDL_GetGamepadButtonLabel(
+            m_sdl_gamepad, static_cast<SDL_GamepadButton>(to_sdl_gamepad_button(button))
+        )) {
             default: return ButtonLabel::Unknown;
             case SDL_GAMEPAD_BUTTON_LABEL_A: return ButtonLabel::A;
             case SDL_GAMEPAD_BUTTON_LABEL_B: return ButtonLabel::B;

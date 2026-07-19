@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 
 #include "vinter/logger.hpp"
-#include "vinter/panic.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/window.hpp"
 
@@ -16,42 +15,40 @@ namespace vn {
           ))
         , m_window_backend(window.get_native_handle())
         , m_clear_color(settings.default_background_color) {
-        Logger::info("Creating Renderer...");
+        VN_INFO("Creating Renderer...");
 
         if (m_device == nullptr) {
             VN_FATAL("Failed creating GPU Device: {}", SDL_GetError());
         }
-        Logger::info(
+        VN_INFO(
             "GPU Device created successfully: {}",
             SDL_GetStringProperty(
                 SDL_GetGPUDeviceProperties(m_device), SDL_PROP_GPU_DEVICE_NAME_STRING, "Unknown GPU"
             )
         );
-        Logger::info(
-            "Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDeviceDriver(m_device))
-        );
+        VN_INFO("Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDeviceDriver(m_device)));
 
         if (!SDL_ClaimWindowForGPUDevice(m_device, m_window_backend)) {
             VN_FATAL("Failed claiming window for GPU Device: {}", SDL_GetError());
         }
-        Logger::info("Window context claimed for GPU Device successfully");
-        Logger::info("Renderer created successfully");
+        VN_INFO("Window context claimed for GPU Device successfully");
+        VN_INFO("Renderer created successfully");
 
         set_vsync(settings.vsync_enabled);
-        Logger::info("VSync: {}", m_vsync_enabled ? "Enabled" : "Disabled");
+        VN_INFO("VSync: {}", m_vsync_enabled ? "Enabled" : "Disabled");
     }
 
     Renderer::~Renderer() {
-        Logger::info("Destroying Renderer...");
+        VN_INFO("Destroying Renderer...");
         if (m_device != nullptr) {
             if (m_window_backend != nullptr) {
                 SDL_ReleaseWindowFromGPUDevice(m_device, m_window_backend);
-                Logger::info("Window released from GPU Device successfully");
+                VN_INFO("Window released from GPU Device successfully");
             }
             SDL_DestroyGPUDevice(m_device);
-            Logger::info("GPU Device destroyed successfully");
+            VN_INFO("GPU Device destroyed successfully");
         }
-        Logger::info("Renderer destroyed successfully");
+        VN_INFO("Renderer destroyed successfully");
     }
 
     auto Renderer::vsync_enabled() const noexcept -> bool {
@@ -80,15 +77,15 @@ namespace vn {
 
         switch (present_mode) {
             case SDL_GPU_PRESENTMODE_IMMEDIATE: {
-                Logger::info("VSync disabled.");
+                VN_INFO("VSync disabled.");
                 break;
             }
             case SDL_GPU_PRESENTMODE_VSYNC: {
-                Logger::info("VSync enabled.");
+                VN_INFO("VSync enabled.");
                 break;
             }
             case SDL_GPU_PRESENTMODE_MAILBOX: {
-                Logger::info("VSync enabled (Mailbox).");
+                VN_INFO("VSync enabled (Mailbox).");
                 break;
             }
         }
