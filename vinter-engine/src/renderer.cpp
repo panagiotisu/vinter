@@ -76,15 +76,15 @@ namespace vn {
 
         switch (present_mode) {
             case SDL_GPU_PRESENTMODE_IMMEDIATE: {
-                VN_INFO("VSync: Disabled.");
+                VN_INFO("VSync disabled");
                 break;
             }
             case SDL_GPU_PRESENTMODE_VSYNC: {
-                VN_INFO("VSync: Enabled.");
+                VN_INFO("VSync enabled");
                 break;
             }
             case SDL_GPU_PRESENTMODE_MAILBOX: {
-                VN_INFO("VSync: Enabled (Mailbox).");
+                VN_INFO("VSync enabled (Mailbox)");
                 break;
             }
         }
