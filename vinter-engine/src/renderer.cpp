@@ -35,7 +35,6 @@ namespace vn {
         VN_INFO("Renderer created successfully");
 
         set_vsync(settings.vsync_enabled);
-        VN_INFO("VSync: {}", m_vsync_enabled ? "Enabled" : "Disabled");
     }
 
     Renderer::~Renderer() {
@@ -77,15 +76,15 @@ namespace vn {
 
         switch (present_mode) {
             case SDL_GPU_PRESENTMODE_IMMEDIATE: {
-                VN_INFO("VSync disabled.");
+                VN_INFO("VSync: Disabled.");
                 break;
             }
             case SDL_GPU_PRESENTMODE_VSYNC: {
-                VN_INFO("VSync enabled.");
+                VN_INFO("VSync: Enabled.");
                 break;
             }
             case SDL_GPU_PRESENTMODE_MAILBOX: {
-                VN_INFO("VSync enabled (Mailbox).");
+                VN_INFO("VSync: Enabled (Mailbox).");
                 break;
             }
         }
