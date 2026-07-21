@@ -30,6 +30,7 @@ set(SDLTTF_VENDORED ON)
 include_dependency(SDL3_ttf https://github.com/libsdl-org/SDL_ttf.git release-3.2.2)
 
 # --- glm Math ---
+set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE)
 include_dependency(glm https://github.com/g-truc/glm.git 1.0.2)
 
 ######################################################################################################################
