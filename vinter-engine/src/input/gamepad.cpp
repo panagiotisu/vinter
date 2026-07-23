@@ -130,7 +130,7 @@ namespace vn {
     }
 
     void Gamepad::set_led_color(const Color color) const {
-        const ColorRGBA8 rgba8 = color.to_rgb_a8();
+        const ColorRGBA8 rgba8 = color.to_rgba8();
         SDL_SetGamepadLED(m_sdl_gamepad, rgba8.r, rgba8.g, rgba8.b);
     }
 

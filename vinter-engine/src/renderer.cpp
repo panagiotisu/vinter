@@ -13,8 +13,7 @@ namespace vn {
               true,
               to_sdl_gpu_driver_name(settings.backend)
           ))
-        , m_window_backend(window.get_native_handle())
-        , m_clear_color(settings.default_background_color) {
+        , m_window_backend(window.get_native_handle()) {
         VN_INFO("Creating Renderer...");
 
         if (m_device == nullptr) {
@@ -34,6 +33,7 @@ namespace vn {
         VN_INFO("Window context claimed for GPU Device successfully");
         VN_INFO("Renderer created successfully");
 
+        set_clear_color(settings.default_clear_color);
         set_vsync(settings.vsync_enabled);
     }
 
@@ -48,6 +48,17 @@ namespace vn {
             VN_INFO("GPU Device destroyed successfully");
         }
         VN_INFO("Renderer destroyed successfully");
+    }
+
+    void Renderer::set_clear_color(Color color) {
+        m_clear_color = color;
+        VN_DEBUG(
+            "Clear color set to: RGBA({}, {}, {}, {})",
+            color.to_rgba8().r,
+            color.to_rgba8().g,
+            color.to_rgba8().b,
+            color.to_rgba8().a
+        );
     }
 
     auto Renderer::vsync_enabled() const noexcept -> bool {

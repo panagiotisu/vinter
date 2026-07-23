@@ -5,7 +5,7 @@
 
 namespace vn {
     struct ColorRGBA8 {
-        std::uint8_t r, g, b, a;
+        std::uint8_t r {}, g {}, b {}, a {};
     };
 
     class Color {
@@ -37,7 +37,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto to_rgb_a8() const -> ColorRGBA8 {
+        constexpr auto to_rgba8() const -> ColorRGBA8 {
             return {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
                 .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
