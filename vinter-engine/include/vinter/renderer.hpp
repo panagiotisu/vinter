@@ -5,10 +5,8 @@
 #include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
-struct SDL_GPUDevice;
+struct SDL_Renderer;
 struct SDL_Window;
-struct SDL_GPUCommandBuffer;
-struct SDL_GPURenderPass;
 
 namespace vn {
     class Window;
@@ -22,17 +20,13 @@ namespace vn {
 
         void set_clear_color(Color color);
 
-        [[nodiscard]]
-        auto vsync_enabled() const noexcept -> bool;
-        void set_vsync(bool enabled);
+        void set_vsync(RendererSettings::VSyncMode vsync);
 
     private:
         void begin_frame();
         void end_frame();
 
-        [[nodiscard]]
-        static auto to_sdl_gpu_shader_format(RendererSettings::Backend rendering_backend)
-            -> std::uint32_t;
+        void clear();
 
         [[nodiscard]]
         static auto to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char*;
@@ -42,11 +36,7 @@ namespace vn {
 
     private:
         Color m_clear_color { colors::DarkBlue };
-        bool m_vsync_enabled { true };
 
-        SDL_GPUDevice* m_device {};
-        SDL_Window* m_window_backend {};
-        SDL_GPUCommandBuffer* m_cmd_buffer {};
-        SDL_GPURenderPass* m_render_pass {};
+        SDL_Renderer* m_renderer_backend {};
     };
 } // namespace vn
