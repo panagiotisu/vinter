@@ -19,7 +19,7 @@ namespace vn {
             bool resizeable { false };
             bool maximized { false };
             bool minimized { false };
-            bool hidden { false };
+            bool hidden { true }; // Start Window as hidden until Renderer is created.
             bool borderless { false };
             bool always_on_top { false };
             bool mouse_captured { false };

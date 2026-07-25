@@ -35,6 +35,10 @@ namespace vn {
 
         set_clear_color(settings.default_clear_color);
         set_vsync(settings.vsync_enabled);
+
+        // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
+        // the window does not show blank state due to non-existent renderer.
+        SDL_ShowWindow(m_window_backend);
     }
 
     Renderer::~Renderer() {
