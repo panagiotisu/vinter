@@ -55,6 +55,10 @@ namespace vn {
     }
 
     void Renderer::set_clear_color(Color color) {
+        if (m_clear_color == color) {
+            return;
+        }
+
         m_clear_color = color;
         VN_DEBUG(
             "Clear color set to: RGBA({}, {}, {}, {})",
@@ -66,6 +70,10 @@ namespace vn {
     }
 
     void Renderer::set_vsync(bool enabled) {
+        if (m_vsync_enabled == enabled) {
+            return;
+        }
+
         m_vsync_enabled = false;
         SDL_GPUPresentMode present_mode { SDL_GPU_PRESENTMODE_IMMEDIATE };
 
@@ -87,15 +95,15 @@ namespace vn {
 
         switch (present_mode) {
             case SDL_GPU_PRESENTMODE_IMMEDIATE: {
-                VN_INFO("VSync disabled");
+                VN_DEBUG("VSync disabled");
                 break;
             }
             case SDL_GPU_PRESENTMODE_VSYNC: {
-                VN_INFO("VSync enabled");
+                VN_DEBUG("VSync enabled");
                 break;
             }
             case SDL_GPU_PRESENTMODE_MAILBOX: {
-                VN_INFO("VSync enabled (Mailbox)");
+                VN_DEBUG("VSync enabled (Mailbox)");
                 break;
             }
         }

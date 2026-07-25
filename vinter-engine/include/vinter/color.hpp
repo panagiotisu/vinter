@@ -66,6 +66,20 @@ namespace vn {
             return m_a;
         }
 
+        [[nodiscard]]
+        constexpr auto operator==(const Color& other) const -> bool {
+            float tolerance { 1e-6 };
+            return (std::abs(m_r - other.m_r) < tolerance)
+                   && (std::abs(m_g - other.m_g) < tolerance)
+                   && (std::abs(m_b - other.m_b) < tolerance)
+                   && (std::abs(m_a - other.m_a) < tolerance);
+        }
+
+        [[nodiscard]]
+        constexpr auto operator!=(const Color& other) const -> bool {
+            return !(*this == other);
+        }
+
     private:
         float m_r, m_g, m_b, m_a;
     };

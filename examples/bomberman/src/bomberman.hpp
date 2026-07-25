@@ -17,6 +17,10 @@ protected:
         } else if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Up)) {
             get_renderer().set_clear_color(vn::colors::Red);
         }
+
+        if (get_devices().get_mouse().is_button_just_pressed(vn::Mouse::Button::Right)) {
+            get_renderer().set_vsync(true);
+        }
     }
 
     void render() override {
