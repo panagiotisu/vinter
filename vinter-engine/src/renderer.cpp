@@ -149,21 +149,25 @@ namespace vn {
         SDL_GPUShaderFormat sdl_gpu_shader_format {};
 
         switch (rendering_backend) {
-            case RendererSettings::Backend::Vulkan:
+            case RendererSettings::Backend::Vulkan: {
                 sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV;
                 break;
-            case RendererSettings::Backend::Direct3D12:
+            }
+            case RendererSettings::Backend::Direct3D12: {
                 sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
                                          | SDL_GPU_SHADERFORMAT_DXBC;
                 break;
-            case RendererSettings::Backend::Metal:
+            }
+            case RendererSettings::Backend::Metal: {
                 sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_MSL | SDL_GPU_SHADERFORMAT_METALLIB;
                 break;
-            case RendererSettings::Backend::Automatic:
+            }
+            case RendererSettings::Backend::Automatic: {
                 sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
                                          | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_MSL
                                          | SDL_GPU_SHADERFORMAT_METALLIB;
                 break;
+            }
         }
         return sdl_gpu_shader_format;
     }
