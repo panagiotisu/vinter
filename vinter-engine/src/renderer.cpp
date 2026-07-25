@@ -61,10 +61,6 @@ namespace vn {
         );
     }
 
-    auto Renderer::vsync_enabled() const noexcept -> bool {
-        return m_vsync_enabled;
-    }
-
     void Renderer::set_vsync(bool enabled) {
         m_vsync_enabled = false;
         SDL_GPUPresentMode present_mode { SDL_GPU_PRESENTMODE_IMMEDIATE };

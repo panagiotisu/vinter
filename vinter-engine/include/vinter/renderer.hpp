@@ -22,8 +22,6 @@ namespace vn {
 
         void set_clear_color(Color color);
 
-        [[nodiscard]]
-        auto vsync_enabled() const noexcept -> bool;
         void set_vsync(bool enabled);
 
     private:
