@@ -8,26 +8,12 @@
 
 namespace vn {
     Renderer::Renderer(const RendererSettings& settings, const Window& window)
-        : m_renderer_backend(SDL_CreateRenderer(
-              window.get_native_handle(),
-              to_sdl_gpu_driver_name(settings.backend)
-          )) {
+        : m_renderer_backend(SDL_CreateRenderer(window.get_native_handle(), nullptr)) {
         VN_INFO("Creating Renderer...");
 
-        if (m_renderer_backend == nullptr) {
-            VN_FATAL("Failed creating Graphics Device: {}", SDL_GetError());
-        }
-        VN_INFO(
-            "Graphics Device created successfully: {}",
-            SDL_GetStringProperty(
-                SDL_GetGPUDeviceProperties(SDL_GetGPURendererDevice(m_renderer_backend)),
-                SDL_PROP_GPU_DEVICE_NAME_STRING,
-                "Unknown GPU"
-            )
-        );
-        VN_INFO(
-            "Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetRendererName(m_renderer_backend))
-        );
+        VN_ASSERT(m_renderer_backend, "Failed creating Graphics Device: {}", SDL_GetError());
+
+        VN_INFO("Renderer Driver: {}", SDL_GetRendererName(m_renderer_backend));
 
         VN_INFO("Renderer created successfully");
 
@@ -63,9 +49,8 @@ namespace vn {
     }
 
     void Renderer::set_vsync(RendererSettings::VSyncMode vsync) {
-        if (!SDL_SetRenderVSync(m_renderer_backend, static_cast<int>(vsync))) {
-            VN_FATAL("Failed to set VSync: {}", SDL_GetError());
-        }
+        const bool ok = SDL_SetRenderVSync(m_renderer_backend, static_cast<int>(vsync));
+        VN_ASSERT(ok, "Failed to set VSync: {}", SDL_GetError());
 
         switch (vsync) {
             case RendererSettings::VSyncMode::Enabled: {
@@ -96,28 +81,4 @@ namespace vn {
         SDL_SetRenderDrawColor(m_renderer_backend, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
         SDL_RenderClear(m_renderer_backend);
     }
-
-    auto Renderer::to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char* {
-        switch (backend) {
-            case RendererSettings::Backend::Vulkan: return "vulkan";
-            case RendererSettings::Backend::Direct3D12: return "direct3d12";
-            case RendererSettings::Backend::Metal: return "metal";
-            case RendererSettings::Backend::Automatic: return nullptr;
-        }
-        return nullptr;
-    }
-
-    auto Renderer::to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string {
-        if (strcmp(sdl_gpu_driver_name, "vulkan") == 0) {
-            return "Vulkan";
-        }
-        if (strcmp(sdl_gpu_driver_name, "direct3d12") == 0) {
-            return "Direct3D12";
-        }
-        if (strcmp(sdl_gpu_driver_name, "metal") == 0) {
-            return "Metal";
-        }
-        return {};
-    }
-
 } // namespace vn

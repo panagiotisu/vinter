@@ -28,12 +28,6 @@ namespace vn {
 
         void clear();
 
-        [[nodiscard]]
-        static auto to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char*;
-
-        [[nodiscard]]
-        static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string;
-
     private:
         Color m_clear_color { colors::DarkBlue };
 
