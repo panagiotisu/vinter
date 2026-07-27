@@ -39,16 +39,6 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto operator==(const Color& other) const -> bool {
-            return m_r == other.m_r && m_g == other.m_g && m_b == other.m_b && m_a == other.m_a;
-        }
-
-        [[nodiscard]]
-        constexpr auto operator!=(const Color& other) const -> bool {
-            return !(*this == other);
-        }
-
-        [[nodiscard]]
         constexpr auto to_rgba8() const -> ColorRGBA8 {
             return {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
@@ -79,7 +69,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto operator==(const Color& other) const -> bool {
+        auto operator==(const Color& other) const -> bool {
             float tolerance { 1e-6 };
             return (std::abs(m_r - other.m_r) < tolerance)
                    && (std::abs(m_g - other.m_g) < tolerance)
@@ -88,7 +78,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto operator!=(const Color& other) const -> bool {
+        auto operator!=(const Color& other) const -> bool {
             return !(*this == other);
         }
 

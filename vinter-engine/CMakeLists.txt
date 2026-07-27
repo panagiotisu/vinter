@@ -36,7 +36,7 @@ include_dependency(glm https://github.com/g-truc/glm.git 1.0.2)
 ######################################################################################################################
 # Library
 ######################################################################################################################
-add_library(${PROJECT_NAME} SHARED)
+add_library(${PROJECT_NAME} STATIC)
 
 file(GLOB PUBLIC_HEADERS CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_LIST_DIR}/include/vinter/*.h"
