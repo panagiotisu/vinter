@@ -10,6 +10,8 @@ namespace vn {
 
     class Color {
     public:
+        Color() = default;
+
         constexpr Color(float red, float green, float blue, float alpha = 1.f)
             : m_r(std::max(0.0f, red))
             , m_g(std::max(0.0f, green))
@@ -77,7 +79,7 @@ namespace vn {
         }
 
     private:
-        float m_r, m_g, m_b, m_a;
+        float m_r {}, m_g {}, m_b {}, m_a {};
     };
 
     namespace colors {
