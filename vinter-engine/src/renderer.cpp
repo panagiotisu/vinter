@@ -82,7 +82,7 @@ namespace vn {
     }
 
     void Renderer::draw_line(glm::vec2 start, glm::vec2 end, float weight, Color color) {
-        // Avoid division by zero if the start and end points are identical
+        // Avoid division by zero if the start and end points are identical.
         if (start == end) {
             draw_point(start, color);
         }
@@ -143,7 +143,7 @@ namespace vn {
 
         // Push all vertices into the vertex buffer.
         for (const auto& pos : vertices) {
-            Vertex vertex = { pos, color, { 0.0f, 0.0f } };
+            Vertex vertex = { pos, color };
             m_primitives.vertices.push_back(vertex);
         }
 
