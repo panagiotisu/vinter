@@ -45,3 +45,10 @@ build/
 
 # VSCode
 .cache/
+
+# MSVC
+.vs/
+out/
+
+# Git
+.git/
