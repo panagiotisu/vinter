@@ -50,6 +50,7 @@ Checks: >
   -readability-redundant-member-init,
   -readability-redundant-access-specifiers,
   -cppcoreguidelines-avoid-do-while,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
 WarningsAsErrors: true
 FormatStyle: file
 CheckOptions:

@@ -8,48 +8,27 @@
 
 namespace vn {
     Renderer::Renderer(const RendererSettings& settings, const Window& window)
-        : m_device(SDL_CreateGPUDevice(
-              to_sdl_gpu_shader_format(settings.backend),
-              true,
-              to_sdl_gpu_driver_name(settings.backend)
-          ))
-        , m_window_backend(window.get_native_handle()) {
+        : m_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr)) {
         VN_INFO("Creating Renderer...");
 
-        if (m_device == nullptr) {
-            VN_FATAL("Failed creating GPU Device: {}", SDL_GetError());
-        }
-        VN_INFO(
-            "GPU Device created successfully: {}",
-            SDL_GetStringProperty(
-                SDL_GetGPUDeviceProperties(m_device), SDL_PROP_GPU_DEVICE_NAME_STRING, "Unknown GPU"
-            )
-        );
-        VN_INFO("Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDeviceDriver(m_device)));
+        VN_ASSERT(m_handle, "Failed creating Graphics Device: {}", SDL_GetError());
 
-        if (!SDL_ClaimWindowForGPUDevice(m_device, m_window_backend)) {
-            VN_FATAL("Failed claiming window for GPU Device: {}", SDL_GetError());
-        }
-        VN_INFO("Window context claimed for GPU Device successfully");
+        VN_INFO("Renderer Driver: {}", SDL_GetRendererName(m_handle));
+
         VN_INFO("Renderer created successfully");
 
         set_clear_color(settings.default_clear_color);
-        set_vsync(settings.vsync_enabled);
+        set_vsync(settings.vsync);
 
         // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
         // the window does not show blank state due to non-existent renderer.
-        SDL_ShowWindow(m_window_backend);
+        SDL_ShowWindow(window.get_native_handle());
     }
 
     Renderer::~Renderer() {
         VN_INFO("Destroying Renderer...");
-        if (m_device != nullptr) {
-            if (m_window_backend != nullptr) {
-                SDL_ReleaseWindowFromGPUDevice(m_device, m_window_backend);
-                VN_INFO("Window released from GPU Device successfully");
-            }
-            SDL_DestroyGPUDevice(m_device);
-            VN_INFO("GPU Device destroyed successfully");
+        if (m_handle != nullptr) {
+            SDL_DestroyRenderer(m_handle);
         }
         VN_INFO("Renderer destroyed successfully");
     }
@@ -69,130 +48,155 @@ namespace vn {
         );
     }
 
-    void Renderer::set_vsync(bool enabled) {
-        if (m_vsync_enabled == enabled) {
+    void Renderer::set_vsync(RendererSettings::VSyncMode vsync) {
+        const bool ok = SDL_SetRenderVSync(m_handle, static_cast<int>(vsync));
+        VN_ASSERT(ok, "Failed to set VSync: {}", SDL_GetError());
+
+        switch (vsync) {
+            case RendererSettings::VSyncMode::Enabled: {
+                VN_INFO("VSync Enabled");
+                break;
+            }
+            case RendererSettings::VSyncMode::Adaptive: {
+                VN_INFO("VSync Enabled (Adaptive)");
+                break;
+            }
+            case RendererSettings::VSyncMode::Disabled: {
+                VN_INFO("VSync Disabled");
+                break;
+            }
+        }
+    }
+
+    void Renderer::draw_point(glm::vec2 position, Color color) {
+        // Treat the point as a tiny 1x1 pixel rectangle.
+        // Offset by -0.5f to center on the pixel coordinate.
+        std::vector<glm::vec2> points {
+            { position.x - 0.5f, position.y - 0.5f }, // Top-Left.
+            { position.x + 0.5f, position.y - 0.5f }, // Top-Right.
+            { position.x + 0.5f, position.y + 0.5f }, // Bottom-Right.
+            { position.x - 0.5f, position.y + 0.5f }  // Bottom-Left.
+        };
+
+        draw_polygon(points, color);
+    }
+
+    void Renderer::draw_line(glm::vec2 start, glm::vec2 end, float weight, Color color) {
+        // Avoid division by zero if the start and end points are identical.
+        if (start == end) {
+            draw_point(start, color);
+        }
+
+        // Calculate the direction vector and the line's perpendicular normal.
+        glm::vec2 direction { end - start };
+
+        // Rotate vector by 90 degrees (-y, x).
+        glm::vec2 normal { glm::normalize(glm::vec2(-direction.y, direction.x)) };
+
+        // Offset the points by half of the thickness on both sides of the line.
+        glm::vec2 offset { normal * (weight * 0.5f) };
+
+        // Generate the 4 corners of the thick line rectangle.
+        std::vector<glm::vec2> points {
+            start + offset, // Top-Left corner of the line
+            end + offset,   // Top-Right corner of the line
+            end - offset,   // Bottom-Right corner of the line
+            start - offset  // Bottom-Left corner of the line
+        };
+
+        draw_polygon(points, color);
+    }
+
+    void Renderer::draw_aabb(glm::vec2 position, glm::vec2 size, Color color) {
+        std::vector<glm::vec2> points {
+            position,                                     // Top-Left.
+            { position.x + size.x, position.y },          // Top-Right.
+            { position.x + size.x, position.y + size.y }, // Bottom-Right.
+            { position.x, position.y + size.y }           // Bottom-Left.
+        };
+
+        draw_polygon(points, color);
+    }
+
+    void Renderer::draw_circle(glm::vec2 center, float radius, Color color, std::size_t segments) {
+        std::vector<glm::vec2> points;
+        points.reserve(segments);
+
+        const float increment = 2.0f * std::numbers::pi_v<float> / static_cast<float>(segments);
+        for (int i = 0; i < segments; ++i) {
+            float angle = static_cast<float>(i) * increment;
+            points.emplace_back(
+                center.x + (cosf(angle) * radius), center.y + (sinf(angle) * radius)
+            );
+        }
+
+        draw_polygon(points, color);
+    }
+
+    void Renderer::draw_polygon(const std::vector<glm::vec2>& vertices, Color color) {
+        if (vertices.size() < 3) {
+            VN_ERROR("A valid polygon requires at least 3 vertices. Found {}", vertices.size());
             return;
         }
 
-        m_vsync_enabled = false;
-        SDL_GPUPresentMode present_mode { SDL_GPU_PRESENTMODE_IMMEDIATE };
+        int base_index = static_cast<int>(m_primitives.vertices.size());
 
-        const bool supports_mailbox { SDL_WindowSupportsGPUPresentMode(
-            m_device, m_window_backend, SDL_GPU_PRESENTMODE_MAILBOX
-        ) };
-
-        if (enabled) {
-            present_mode = supports_mailbox ? SDL_GPU_PRESENTMODE_MAILBOX
-                                            : SDL_GPU_PRESENTMODE_VSYNC;
-            m_vsync_enabled = true;
+        // Push all vertices into the vertex buffer.
+        for (const auto& pos : vertices) {
+            Vertex vertex = { pos, color };
+            m_primitives.vertices.push_back(vertex);
         }
 
-        if (!SDL_SetGPUSwapchainParameters(
-                m_device, m_window_backend, SDL_GPU_SWAPCHAINCOMPOSITION_SDR, present_mode
-            )) {
-            VN_FATAL("Failed setting up GPU swapchain parameters: {}", SDL_GetError());
-        }
-
-        switch (present_mode) {
-            case SDL_GPU_PRESENTMODE_IMMEDIATE: {
-                VN_DEBUG("VSync disabled");
-                break;
-            }
-            case SDL_GPU_PRESENTMODE_VSYNC: {
-                VN_DEBUG("VSync enabled");
-                break;
-            }
-            case SDL_GPU_PRESENTMODE_MAILBOX: {
-                VN_DEBUG("VSync enabled (Mailbox)");
-                break;
-            }
+        // Build Triangle Fan Indices.
+        // Anchor the fan at the very first vertex (index 0).
+        // Then connect it to pairs of adjacent vertices to form triangles.
+        for (int i = 1; i < vertices.size() - 1; ++i) {
+            m_primitives.indices.push_back(base_index + 0);     // Anchor vertex.
+            m_primitives.indices.push_back(base_index + i);     // Current vertex.
+            m_primitives.indices.push_back(base_index + i + 1); // Next vertex.
         }
     }
 
     void Renderer::begin_frame() {
-        m_cmd_buffer = SDL_AcquireGPUCommandBuffer(m_device);
-        VN_ASSERT(
-            m_cmd_buffer != nullptr, "Error acquiring GPU command buffer. \n{}", SDL_GetError()
-        );
-
-        SDL_GPUTexture* swapchain_texture {};
-        const bool ok = SDL_WaitAndAcquireGPUSwapchainTexture(
-            m_cmd_buffer, m_window_backend, &swapchain_texture, nullptr, nullptr
-        );
-        VN_ASSERT(
-            ok && swapchain_texture, "Error acquiring GPU swapchain texture. \n{}", SDL_GetError()
-        );
-
-        const SDL_GPUColorTargetInfo color_target {
-            .texture = swapchain_texture,
-            .clear_color = { 
-                .r = m_clear_color.red(),
-                .g = m_clear_color.green(),
-                .b = m_clear_color.blue(),
-                .a = m_clear_color.alpha(), 
-            },
-            .load_op = SDL_GPU_LOADOP_CLEAR,
-            .store_op = SDL_GPU_STOREOP_STORE,
-        };
-        m_render_pass = SDL_BeginGPURenderPass(m_cmd_buffer, &color_target, 1, nullptr);
+        clear();
     }
 
     void Renderer::end_frame() {
-        SDL_EndGPURenderPass(m_render_pass);
-
-        const bool ok = SDL_SubmitGPUCommandBuffer(m_cmd_buffer);
-        VN_ASSERT(ok, "Error submitting GPU command buffer. \n{}", SDL_GetError());
+        flush_primitives();
+        SDL_RenderPresent(m_handle);
     }
 
-    auto Renderer::to_sdl_gpu_shader_format(RendererSettings::Backend rendering_backend)
-        -> SDL_GPUShaderFormat {
-        SDL_GPUShaderFormat sdl_gpu_shader_format {};
+    void Renderer::clear() {
+        m_primitives.clear();
 
-        switch (rendering_backend) {
-            case RendererSettings::Backend::Vulkan: {
-                sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV;
-                break;
-            }
-            case RendererSettings::Backend::Direct3D12: {
-                sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
-                                         | SDL_GPU_SHADERFORMAT_DXBC;
-                break;
-            }
-            case RendererSettings::Backend::Metal: {
-                sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_MSL | SDL_GPU_SHADERFORMAT_METALLIB;
-                break;
-            }
-            case RendererSettings::Backend::Automatic: {
-                sdl_gpu_shader_format |= SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL
-                                         | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_MSL
-                                         | SDL_GPU_SHADERFORMAT_METALLIB;
-                break;
-            }
-        }
-        return sdl_gpu_shader_format;
+        set_draw_color(m_clear_color);
+        SDL_RenderClear(m_handle);
     }
 
-    auto Renderer::to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char* {
-        switch (backend) {
-            case RendererSettings::Backend::Vulkan: return "vulkan";
-            case RendererSettings::Backend::Direct3D12: return "direct3d12";
-            case RendererSettings::Backend::Metal: return "metal";
-            case RendererSettings::Backend::Automatic: return nullptr;
-        }
-        return nullptr;
+    void Renderer::set_draw_color(Color color) {
+        ColorRGBA8 rgba8 { color.to_rgba8() };
+        SDL_SetRenderDrawColor(m_handle, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
     }
 
-    auto Renderer::to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string {
-        if (strcmp(sdl_gpu_driver_name, "vulkan") == 0) {
-            return "Vulkan";
+    void Renderer::flush_primitives() {
+        if (m_primitives.is_empty()) {
+            return;
         }
-        if (strcmp(sdl_gpu_driver_name, "direct3d12") == 0) {
-            return "Direct3D12";
-        }
-        if (strcmp(sdl_gpu_driver_name, "metal") == 0) {
-            return "Metal";
-        }
-        return {};
-    }
 
+        // Convert Renderer::Vertex to their SDL_Vertex equivalents.
+        static_assert(sizeof(Vertex) == sizeof(SDL_Vertex));
+        const SDL_Vertex* sdl_vertices {
+            reinterpret_cast<const SDL_Vertex*>(m_primitives.vertices.data())
+        };
+
+        // Issue a draw call for all primitives.
+        SDL_RenderGeometry(
+            m_handle,
+            nullptr,
+            sdl_vertices,
+            static_cast<int>(m_primitives.vertices.size()),
+            m_primitives.indices.data(),
+            static_cast<int>(m_primitives.indices.size())
+        );
+    }
 } // namespace vn

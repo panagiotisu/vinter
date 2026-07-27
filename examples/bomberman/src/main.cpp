@@ -10,7 +10,7 @@ auto main() -> int {
         },
         .renderer = {
             .backend = vn::RendererSettings::Backend::Automatic,
-            .vsync_enabled = false,
+            .vsync = vn::RendererSettings::VSyncMode::Adaptive,
         },
     };
 

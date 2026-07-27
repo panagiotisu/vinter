@@ -10,6 +10,8 @@ namespace vn {
 
     class Color {
     public:
+        Color() = default;
+
         constexpr Color(float red, float green, float blue, float alpha = 1.f)
             : m_r(std::max(0.0f, red))
             , m_g(std::max(0.0f, green))
@@ -34,6 +36,16 @@ namespace vn {
 
         static constexpr auto from_rgba(ColorRGBA8 rgba) -> Color {
             return from_rgba(rgba.r, rgba.g, rgba.b, rgba.a);
+        }
+
+        [[nodiscard]]
+        constexpr auto operator==(const Color& other) const -> bool {
+            return m_r == other.m_r && m_g == other.m_g && m_b == other.m_b && m_a == other.m_a;
+        }
+
+        [[nodiscard]]
+        constexpr auto operator!=(const Color& other) const -> bool {
+            return !(*this == other);
         }
 
         [[nodiscard]]
@@ -81,7 +93,7 @@ namespace vn {
         }
 
     private:
-        float m_r, m_g, m_b, m_a;
+        float m_r {}, m_g {}, m_b {}, m_a {};
     };
 
     namespace colors {

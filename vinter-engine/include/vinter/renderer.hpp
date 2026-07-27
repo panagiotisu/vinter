@@ -2,13 +2,12 @@
 
 #include <string>
 
+#include "glm/glm.hpp"
 #include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
-struct SDL_GPUDevice;
+struct SDL_Renderer;
 struct SDL_Window;
-struct SDL_GPUCommandBuffer;
-struct SDL_GPURenderPass;
 
 namespace vn {
     class Window;
@@ -17,34 +16,56 @@ namespace vn {
         friend class App;
 
     public:
+        struct Vertex {
+            glm::vec2 position {};
+            Color color {};
+            glm::vec2 tex_coords {};
+        };
+
+    public:
         Renderer(const RendererSettings& settings, const Window& window);
+
         ~Renderer();
 
         void set_clear_color(Color color);
 
-        void set_vsync(bool enabled);
+        void set_vsync(RendererSettings::VSyncMode vsync);
+
+        void draw_point(glm::vec2 position, Color color);
+        void draw_line(glm::vec2 start, glm::vec2 end, float weight, Color color);
+        void draw_aabb(glm::vec2 position, glm::vec2 size, Color color);
+        void draw_circle(glm::vec2 center, float radius, Color color, std::size_t segment = 100);
+        void draw_polygon(const std::vector<glm::vec2>& vertices, Color color);
 
     private:
         void begin_frame();
         void end_frame();
 
-        [[nodiscard]]
-        static auto to_sdl_gpu_shader_format(RendererSettings::Backend rendering_backend)
-            -> std::uint32_t;
+        void clear();
+        void set_draw_color(Color color);
 
-        [[nodiscard]]
-        static auto to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char*;
-
-        [[nodiscard]]
-        static auto to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string;
+        void flush_primitives();
 
     private:
         Color m_clear_color { colors::DarkBlue };
-        bool m_vsync_enabled { true };
 
-        SDL_GPUDevice* m_device {};
-        SDL_Window* m_window_backend {};
-        SDL_GPUCommandBuffer* m_cmd_buffer {};
-        SDL_GPURenderPass* m_render_pass {};
+        struct VertexArray {
+            std::vector<Vertex> vertices {};
+            std::vector<int> indices {};
+
+            void clear() {
+                vertices.clear();
+                indices.clear();
+            }
+
+            [[nodiscard]]
+            constexpr auto is_empty() const noexcept -> bool {
+                return vertices.empty() && indices.empty();
+            }
+        };
+
+        VertexArray m_primitives {};
+
+        SDL_Renderer* m_handle {};
     };
 } // namespace vn
