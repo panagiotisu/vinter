@@ -70,9 +70,18 @@ namespace vn {
         }
 
         switch (applied) {
-            case RendererSettings::VSyncMode::Enabled: VN_INFO("VSync Enabled"); break;
-            case RendererSettings::VSyncMode::Adaptive: VN_INFO("VSync Enabled (Adaptive)"); break;
-            case RendererSettings::VSyncMode::Disabled: VN_INFO("VSync Disabled"); break;
+            case RendererSettings::VSyncMode::Enabled: {
+                VN_INFO("VSync Enabled");
+                return;
+            }
+            case RendererSettings::VSyncMode::Adaptive: {
+                VN_INFO("VSync Enabled (Adaptive)");
+                return;
+            }
+            case RendererSettings::VSyncMode::Disabled: {
+                VN_INFO("VSync Disabled");
+                return;
+            }
         }
     }
 
