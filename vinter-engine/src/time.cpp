@@ -35,7 +35,7 @@ namespace vn {
     }
 
     auto Time::get_filtered_fps() const -> std::uint32_t {
-        const auto filtered_fps {m_frame_time_filter->get_value()};
+        const auto filtered_fps { m_frame_time_filter->get_value() };
         if (filtered_fps <= 0.f) {
             return 0;
         }
@@ -94,9 +94,9 @@ namespace vn {
     }
 
     void Time::update_timers() {
-        const TimePoint current_time {Clock::now()};
+        const TimePoint current_time = Clock::now();
 
-        const double raw_delta_time {Duration(current_time - m_last_frame_time).count()};
+        const double raw_delta_time { Duration(current_time - m_last_frame_time).count() };
         m_last_frame_time = current_time;
 
         m_unscaled_delta_time = static_cast<float>(raw_delta_time);

@@ -16,7 +16,7 @@ protected:
     }
 
     void update() override {
-        const auto delta { get_time().get_delta_time() };
+        const auto delta = get_time().get_delta_time();
 
         m_input_vector = get_devices().get_mouse().get_position() - m_player_pos;
         m_input_vector = glm::normalize(m_input_vector);

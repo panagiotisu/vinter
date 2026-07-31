@@ -88,7 +88,7 @@ namespace vn {
     void Renderer::draw_point(glm::vec2 position, Color color) {
         // Treat the point as a tiny 1x1 pixel rectangle.
         // Offset by -0.5f to center on the pixel coordinate.
-        std::vector<glm::vec2> points {
+        std::vector<glm::vec2> points = {
             { position.x - 0.5f, position.y - 0.5f }, // Top-Left.
             { position.x + 0.5f, position.y - 0.5f }, // Top-Right.
             { position.x + 0.5f, position.y + 0.5f }, // Bottom-Right.

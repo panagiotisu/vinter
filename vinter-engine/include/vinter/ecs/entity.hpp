@@ -13,14 +13,14 @@ namespace vn {
         using Version = std::uint16_t;
         using Index = std::uint64_t;
 
-        static constexpr std::uint32_t IdBits {sizeof(Id) * 8};
-        static constexpr std::uint32_t VersionBits {12};
-        static constexpr std::uint32_t IndexBits = IdBits - VersionBits;
+        static constexpr std::uint32_t IdBits { sizeof(Id) * 8 };
+        static constexpr std::uint32_t VersionBits { 12 };
+        static constexpr std::uint32_t IndexBits { IdBits - VersionBits };
 
-        static constexpr Id IndexMask {(static_cast<Id>(1) << IndexBits) - 1};
-        static constexpr Id VersionMask {~IndexMask};
-        static constexpr Version MaxVersion {(static_cast<Version>(1) << VersionBits) - 1};
-        static constexpr Id Null {std::numeric_limits<Id>::max()};
+        static constexpr Id IndexMask { (static_cast<Id>(1) << IndexBits) - 1 };
+        static constexpr Id VersionMask { ~IndexMask };
+        static constexpr Version MaxVersion { (static_cast<Version>(1) << VersionBits) - 1 };
+        static constexpr Id Null { std::numeric_limits<Id>::max() };
 
         [[nodiscard]]
         auto id() const noexcept -> Id {

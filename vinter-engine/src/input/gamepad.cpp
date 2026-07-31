@@ -113,7 +113,7 @@ namespace vn {
         const float strong_percent_magnitude,
         const float duration_sec
     ) const {
-        constexpr std::uint16_t MaxMotorMagnitude { 0xFFFF };
+        constexpr std::uint16_t MaxMotorMagnitude = 0xFFFF;
         const auto weak_magnitude = static_cast<std::uint16_t>(
             std::clamp(weak_percent_magnitude, 0.f, 1.f) * MaxMotorMagnitude
         );

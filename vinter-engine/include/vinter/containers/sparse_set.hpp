@@ -4,7 +4,7 @@
 #include <limits>
 #include <vector>
 
-#include "vinter/panic.hpp"
+#include "vinter/logger.hpp"
 
 namespace vn {
     // Base class of SparseSet that allows runtime polymprphism.
@@ -42,7 +42,7 @@ namespace vn {
         // m_dense[m_sparse[sparse_index]] == T
         template <typename U>
         auto set(SparseIndex sparse_index, U&& obj) -> T* {
-            const DenseIndex dense_index {get_dense_index(sparse_index)};
+            const DenseIndex dense_index = get_dense_index(sparse_index);
 
             // Overwrite if data exists at entity index.
             if (dense_index != Tombstone) {
@@ -63,7 +63,7 @@ namespace vn {
         // Returns a pointer to T if data exists in the dense array, or nullptr if not.
         [[nodiscard]]
         auto get(SparseIndex sparse_index) const -> T* {
-            const DenseIndex dense_index {get_dense_index(sparse_index)};
+            const DenseIndex dense_index = get_dense_index(sparse_index);
             if (dense_index == Tombstone) {
                 return nullptr;
             }
@@ -73,7 +73,7 @@ namespace vn {
         // Returns a reference to T, always assuming the data exists in the dense array.
         [[nodiscard]]
         auto get_ref(SparseIndex sparse_index) const -> T& {
-            const DenseIndex dense_index {get_dense_index(sparse_index)};
+            const DenseIndex dense_index = get_dense_index(sparse_index);
             VN_ASSERT(
                 dense_index != Tombstone,
                 "Tried to get reference from invalid sparse index {}",
@@ -85,7 +85,7 @@ namespace vn {
         // Returns a const reference to T, always assuming the data exists in the dense array.
         [[nodiscard]]
         auto get_const_ref(SparseIndex sparse_index) const -> const T& {
-            const DenseIndex dense_index {get_dense_index(sparse_index)};
+            const DenseIndex dense_index = get_dense_index(sparse_index);
             VN_ASSERT(
                 dense_index != Tombstone,
                 "Tried to get reference from invalid sparse index {}",
@@ -96,7 +96,7 @@ namespace vn {
 
         // Removes data from the dense array, and sets the sparse index to a tombstone (null) value.
         void unset(SparseIndex sparse_index) override {
-            const std::size_t deleted_dense_index {get_dense_index(sparse_index)};
+            const std::size_t deleted_dense_index = get_dense_index(sparse_index);
 
             if (m_dense.empty() || deleted_dense_index == Tombstone) {
                 return;
@@ -154,7 +154,7 @@ namespace vn {
         }
 
     private:
-        static constexpr std::size_t Tombstone {std::numeric_limits<std::size_t>::max()};
+        static constexpr std::size_t Tombstone = std::numeric_limits<std::size_t>::max();
 
         // Stores index into the dense array, where: (m_dense[m_sparse[sparse_index]] == T)
         std::vector<DenseIndex> m_sparse;

@@ -70,7 +70,7 @@ namespace vn {
 
         [[nodiscard]]
         auto operator==(const Color& other) const -> bool {
-            float tolerance { 1e-6 };
+            float tolerance = 1e-6;
             return (std::abs(m_r - other.m_r) < tolerance)
                    && (std::abs(m_g - other.m_g) < tolerance)
                    && (std::abs(m_b - other.m_b) < tolerance)
