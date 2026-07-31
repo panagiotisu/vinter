@@ -7,13 +7,13 @@
 
 namespace vn {
     Window::Window(const WindowSettings& window_settings)
-        : m_backend(SDL_CreateWindow(
+        : m_handle(SDL_CreateWindow(
               window_settings.title.c_str(),
               static_cast<int>(window_settings.initial_size.width),
               static_cast<int>(window_settings.initial_size.height),
               to_sdl_window_flags(window_settings.flags)
           )) {
-        if (m_backend == nullptr) {
+        if (m_handle == nullptr) {
             VN_FATAL("Failed to create Window: ", SDL_GetError());
         }
         VN_INFO("Window context created successfully");
@@ -21,33 +21,38 @@ namespace vn {
 
     Window::~Window() {
         VN_INFO("Destroying Window context...");
-        if (m_backend != nullptr) {
-            SDL_DestroyWindow(m_backend);
+        if (m_handle != nullptr) {
+            SDL_DestroyWindow(m_handle);
         }
         VN_INFO("Window context destroyed successfully");
     };
 
     auto Window::get_width() const noexcept -> std::uint32_t {
-        return m_size.width;
+        int w {};
+        int h {};
+        SDL_GetWindowSize(m_handle, &w, &h);
+        return static_cast<std::uint32_t>(w);
     }
 
     auto Window::get_height() const noexcept -> std::uint32_t {
-        return m_size.height;
+        int w {};
+        int h {};
+        SDL_GetWindowSize(m_handle, &w, &h);
+        return static_cast<std::uint32_t>(h);
     }
 
     auto Window::get_size() const noexcept -> WindowSettings::Size {
-        return m_size;
+        int w {};
+        int h {};
+        SDL_GetWindowSize(m_handle, &w, &h);
+        return WindowSettings::Size {
+            static_cast<std::uint32_t>(w),
+            static_cast<std::uint32_t>(h),
+        };
     }
 
     auto Window::get_native_handle() const -> SDL_Window* {
-        return m_backend;
-    }
-
-    void Window::handle_events(const SDL_Event& event) {
-        if (event.type == SDL_EVENT_WINDOW_RESIZED) {
-            m_size.width = event.window.data1;
-            m_size.height = event.window.data2;
-        }
+        return m_handle;
     }
 
     auto Window::to_sdl_window_flags(const WindowSettings::Flags& flags) -> SDL_WindowFlags {

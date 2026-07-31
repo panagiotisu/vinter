@@ -26,13 +26,9 @@ namespace vn {
         auto get_native_handle() const -> SDL_Window*;
 
     private:
-        void handle_events(const SDL_Event& event);
-
         static auto to_sdl_window_flags(const WindowSettings::Flags& flags) -> std::uint64_t;
 
     private:
-        WindowSettings::Size m_size {};
-
-        SDL_Window* m_backend {};
+        SDL_Window* m_handle {};
     };
 } // namespace vn

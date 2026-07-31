@@ -45,7 +45,6 @@ namespace vn {
                 if (sdl_event.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
-                m_window->handle_events(sdl_event);
                 m_devices->handle_events(sdl_event);
             }
 
