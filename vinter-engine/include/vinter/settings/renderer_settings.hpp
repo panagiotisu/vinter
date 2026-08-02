@@ -14,12 +14,7 @@ namespace vn {
         };
         Backend backend { Backend::Automatic };
 
-        enum class VSyncMode : std::int8_t {
-            Adaptive = -1,
-            Disabled = 0,
-            Enabled = 1,
-        };
-        VSyncMode vsync { VSyncMode::Adaptive };
+        bool vsync { true };
 
         Color default_clear_color { colors::DarkBlue };
     };

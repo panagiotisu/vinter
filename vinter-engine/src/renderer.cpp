@@ -9,14 +9,39 @@
 #include "vinter/window.hpp"
 
 namespace vn {
-    Renderer::Renderer(const RendererSettings& settings, const Window& window)
-        : m_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr)) {
+#ifdef NDEBUG
+    constexpr bool EnableGPUDebug = false;
+#else
+    constexpr bool EnableGPUDebug = true;
+#endif
+
+    Renderer::Renderer(const RendererSettings& settings, SDL_Window* window_handle)
+        : m_gpu_handle(SDL_CreateGPUDevice(
+              SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXBC | SDL_GPU_SHADERFORMAT_MSL,
+              EnableGPUDebug,
+              to_sdl_gpu_driver_name(settings.backend)
+          ))
+        , m_window_handle(window_handle) {
         VN_INFO("Creating Renderer...");
 
-        VN_ASSERT(m_handle, "Failed creating Graphics Device: {}", SDL_GetError());
+        VN_ASSERT(m_gpu_handle != nullptr, "Failed creating GPU Device: {}", SDL_GetError());
 
-        VN_INFO("Renderer Driver: {}", SDL_GetRendererName(m_handle));
+        VN_INFO(
+            "GPU Device created successfully: {}",
+            SDL_GetStringProperty(
+                SDL_GetGPUDeviceProperties(m_gpu_handle),
+                SDL_PROP_GPU_DEVICE_NAME_STRING,
+                "Unknown GPU"
+            )
+        );
+        VN_INFO(
+            "Selected GPU Backend: {}", to_gpu_backend_name(SDL_GetGPUDeviceDriver(m_gpu_handle))
+        );
 
+        if (!SDL_ClaimWindowForGPUDevice(m_gpu_handle, m_window_handle)) {
+            VN_FATAL("Failed claiming window for GPU Device: {}", SDL_GetError());
+        }
+        VN_INFO("Window context claimed for GPU Device successfully");
         VN_INFO("Renderer created successfully");
 
         set_clear_color(settings.default_clear_color);
@@ -24,13 +49,18 @@ namespace vn {
 
         // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
         // the window does not show blank state due to non-existent renderer.
-        SDL_ShowWindow(window.get_native_handle());
+        SDL_ShowWindow(window_handle);
     }
 
     Renderer::~Renderer() {
         VN_INFO("Destroying Renderer...");
-        if (m_handle != nullptr) {
-            SDL_DestroyRenderer(m_handle);
+        if (m_gpu_handle != nullptr) {
+            if (m_window_handle != nullptr) {
+                SDL_ReleaseWindowFromGPUDevice(m_gpu_handle, m_window_handle);
+                VN_INFO("Window released from GPU Device successfully");
+            }
+            SDL_DestroyGPUDevice(m_gpu_handle);
+            VN_INFO("GPU Device destroyed successfully");
         }
         VN_INFO("Renderer destroyed successfully");
     }
@@ -50,37 +80,36 @@ namespace vn {
         );
     }
 
-    void Renderer::set_vsync(RendererSettings::VSyncMode vsync) {
-        RendererSettings::VSyncMode applied = vsync;
+    void Renderer::set_vsync(bool enabled) {
+        SDL_GPUPresentMode present_mode = SDL_GPU_PRESENTMODE_IMMEDIATE;
 
-        if (!SDL_SetRenderVSync(m_handle, static_cast<int>(vsync))) {
-            if (vsync == RendererSettings::VSyncMode::Adaptive
-                && SDL_SetRenderVSync(
-                    m_handle, static_cast<int>(RendererSettings::VSyncMode::Enabled)
-                )) {
-                applied = RendererSettings::VSyncMode::Enabled;
-                VN_WARNING("Adaptive VSync unavailable, using enabled VSync");
-            } else {
-                SDL_SetRenderVSync(
-                    m_handle, static_cast<int>(RendererSettings::VSyncMode::Disabled)
-                );
-                applied = RendererSettings::VSyncMode::Disabled;
-                VN_WARNING("VSync unavailable, disabled");
-            }
+        const bool supports_mailbox = SDL_WindowSupportsGPUPresentMode(
+            m_gpu_handle, m_window_handle, SDL_GPU_PRESENTMODE_MAILBOX
+        );
+
+        if (enabled) {
+            present_mode = supports_mailbox ? SDL_GPU_PRESENTMODE_MAILBOX
+                                            : SDL_GPU_PRESENTMODE_VSYNC;
         }
 
-        switch (applied) {
-            case RendererSettings::VSyncMode::Enabled: {
-                VN_INFO("VSync Enabled");
-                return;
+        if (!SDL_SetGPUSwapchainParameters(
+                m_gpu_handle, m_window_handle, SDL_GPU_SWAPCHAINCOMPOSITION_SDR, present_mode
+            )) {
+            VN_FATAL("Failed setting up GPU swapchain parameters: {}", SDL_GetError());
+        }
+
+        switch (present_mode) {
+            case SDL_GPU_PRESENTMODE_IMMEDIATE: {
+                VN_INFO("VSync disabled");
+                break;
             }
-            case RendererSettings::VSyncMode::Adaptive: {
-                VN_INFO("VSync Enabled (Adaptive)");
-                return;
+            case SDL_GPU_PRESENTMODE_VSYNC: {
+                VN_INFO("VSync enabled");
+                break;
             }
-            case RendererSettings::VSyncMode::Disabled: {
-                VN_INFO("VSync Disabled");
-                return;
+            case SDL_GPU_PRESENTMODE_MAILBOX: {
+                VN_INFO("VSync enabled (Mailbox)");
+                break;
             }
         }
     }
@@ -155,65 +184,65 @@ namespace vn {
             VN_ERROR("A valid polygon requires at least 3 vertices. Found {}", vertices.size());
             return;
         }
-
-        int base_index = static_cast<int>(m_primitives.vertices.size());
-
-        // Push all vertices into the vertex buffer.
-        for (const auto& pos : vertices) {
-            Vertex vertex = { pos, color };
-            m_primitives.vertices.push_back(vertex);
-        }
-
-        // Build Triangle Fan Indices.
-        // Anchor the fan at the very first vertex (index 0).
-        // Then connect it to pairs of adjacent vertices to form triangles.
-        for (int i = 1; i < vertices.size() - 1; ++i) {
-            m_primitives.indices.push_back(base_index + 0);     // Anchor vertex.
-            m_primitives.indices.push_back(base_index + i);     // Current vertex.
-            m_primitives.indices.push_back(base_index + i + 1); // Next vertex.
-        }
     }
 
     void Renderer::begin_frame() {
-        clear();
+        m_command_buffer = SDL_AcquireGPUCommandBuffer(m_gpu_handle);
+        VN_ASSERT(
+            m_command_buffer != nullptr, "Error acquiring GPU command buffer. \n{}", SDL_GetError()
+        );
+
+        SDL_GPUTexture* swapchain_texture {};
+        if (!SDL_WaitAndAcquireGPUSwapchainTexture(
+                m_command_buffer, m_window_handle, &swapchain_texture, nullptr, nullptr
+            )
+            && swapchain_texture != nullptr) {
+            VN_FATAL("Error acquiring GPU swapchain texture. \n{}", SDL_GetError());
+        }
+
+        const SDL_GPUColorTargetInfo color_target {
+            .texture = swapchain_texture,
+            .clear_color = { 
+                .r = m_clear_color.red(),
+                .g = m_clear_color.green(),
+                .b = m_clear_color.blue(),
+                .a = m_clear_color.alpha(), 
+            },
+            .load_op = SDL_GPU_LOADOP_CLEAR,
+            .store_op = SDL_GPU_STOREOP_STORE,
+        };
+        m_render_pass = SDL_BeginGPURenderPass(m_command_buffer, &color_target, 1, nullptr);
     }
 
     void Renderer::end_frame() {
-        flush_primitives();
-        SDL_RenderPresent(m_handle);
+        SDL_EndGPURenderPass(m_render_pass);
+
+        if (!SDL_SubmitGPUCommandBuffer(m_command_buffer)) {
+            VN_FATAL("Error submitting GPU command buffer. \n{}", SDL_GetError());
+        }
     }
 
-    void Renderer::clear() {
-        m_primitives.clear();
-
-        set_draw_color(m_clear_color);
-        SDL_RenderClear(m_handle);
-    }
-
-    void Renderer::set_draw_color(Color color) {
-        ColorRGBA8 rgba8 { color.to_rgba8() };
-        SDL_SetRenderDrawColor(m_handle, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
-    }
-
-    void Renderer::flush_primitives() {
-        if (m_primitives.is_empty()) {
-            return;
+    auto Renderer::to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char* {
+        switch (backend) {
+            case RendererSettings::Backend::Vulkan: return "vulkan";
+            case RendererSettings::Backend::Direct3D12: return "direct3d12";
+            case RendererSettings::Backend::Metal: return "metal";
+            case RendererSettings::Backend::Automatic: return nullptr;
         }
 
-        // Convert Renderer::Vertex to their SDL_Vertex equivalents.
-        static_assert(sizeof(Vertex) == sizeof(SDL_Vertex));
-        const SDL_Vertex* sdl_vertices {
-            reinterpret_cast<const SDL_Vertex*>(m_primitives.vertices.data())
-        };
+        return nullptr;
+    }
 
-        // Issue a draw call for all primitives.
-        SDL_RenderGeometry(
-            m_handle,
-            nullptr,
-            sdl_vertices,
-            static_cast<int>(m_primitives.vertices.size()),
-            m_primitives.indices.data(),
-            static_cast<int>(m_primitives.indices.size())
-        );
+    auto Renderer::to_gpu_backend_name(const char* sdl_gpu_driver_name) -> std::string {
+        if (strcmp(sdl_gpu_driver_name, "vulkan") == 0) {
+            return "Vulkan";
+        }
+        if (strcmp(sdl_gpu_driver_name, "direct3d12") == 0) {
+            return "Direct3D12";
+        }
+        if (strcmp(sdl_gpu_driver_name, "metal") == 0) {
+            return "Metal";
+        }
+        return {};
     }
 } // namespace vn
