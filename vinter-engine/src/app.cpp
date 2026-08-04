@@ -1,6 +1,7 @@
 #include "vinter/app.hpp"
 
 #include <SDL3/SDL.h>
+#include <SDL3_shadercross/SDL_shadercross.h>
 
 #include "vinter/logger.hpp"
 
@@ -13,6 +14,10 @@ namespace vn {
                 | SDL_INIT_JOYSTICK | SDL_INIT_EVENTS | SDL_INIT_HAPTIC | SDL_INIT_SENSOR
             )) {
             VN_FATAL("Failed initializing SDL subsystems: {}", SDL_GetError());
+        }
+
+        if (!SDL_ShaderCross_Init()) {
+            VN_FATAL("Failed initializing SDL_ShaderCross. {}", SDL_GetError());
         }
 
         m_window = std::make_unique<Window>(project_settings.window);
@@ -33,6 +38,7 @@ namespace vn {
         m_renderer.reset();
         m_window.reset();
 
+        SDL_ShaderCross_Quit();
         SDL_Quit();
         VN_INFO("Shutting down");
     }
