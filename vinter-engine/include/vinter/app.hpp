@@ -4,13 +4,13 @@
 
 // TODO: Place these in a fwd.hpp.
 #include "vinter/color.hpp"
+#include "vinter/graphics/renderer.hpp"
 #include "vinter/input/device_manager.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/input_map.hpp"
 #include "vinter/input/keyboard.hpp"
 #include "vinter/input/mouse.hpp"
 #include "vinter/logger.hpp"
-#include "vinter/renderer.hpp"
 #include "vinter/settings/project_settings.hpp"
 #include "vinter/time.hpp"
 #include "vinter/window.hpp"
