@@ -4,7 +4,8 @@
 
 #include <SDL3/SDL.h>
 
-#include "SDL3_shadercross/SDL_shadercross.h"
+#include "stock/shaders/core_fragment_shader_spirv.hpp"
+#include "stock/shaders/core_vertex_shader_spirv.hpp"
 #include "vinter/logger.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
@@ -21,7 +22,23 @@ namespace vn {
               EnableGPUDebug,
               to_sdl_gpu_driver_name(settings.backend)
           ))
-        , m_window_handle(window_handle) {
+        , m_window_handle(window_handle)
+        , m_fragment_shader(
+              Shader::from_spirv(
+                  m_gpu_handle,
+                  core_frag_spv,
+                  core_frag_spv_len,
+                  Shader::Stage::Fragment
+              )
+          )
+        , m_vertex_shader(
+              Shader::from_spirv(
+                  m_gpu_handle,
+                  core_vert_spv,
+                  core_vert_spv_len,
+                  Shader::Stage::Vertex
+              )
+          ) {
         VN_INFO("Creating Renderer...");
 
         VN_ASSERT(m_gpu_handle != nullptr, "Failed creating GPU Device: {}", SDL_GetError());
@@ -44,9 +61,7 @@ namespace vn {
         VN_INFO("Window context claimed for GPU Device successfully");
         VN_INFO("Renderer created successfully");
 
-        if (!SDL_ShaderCross_Init())
-
-            set_clear_color(settings.default_clear_color);
+        set_clear_color(settings.default_clear_color);
         set_vsync(settings.vsync);
 
         // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
@@ -224,14 +239,14 @@ namespace vn {
         }
     }
 
-    auto Renderer::to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const char* {
+    constexpr auto Renderer::to_sdl_gpu_driver_name(RendererSettings::Backend backend) -> const
+        char* {
         switch (backend) {
             case RendererSettings::Backend::Vulkan: return "vulkan";
             case RendererSettings::Backend::Direct3D12: return "direct3d12";
             case RendererSettings::Backend::Metal: return "metal";
             case RendererSettings::Backend::Automatic: return nullptr;
         }
-
         return nullptr;
     }
 
