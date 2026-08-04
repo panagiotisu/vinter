@@ -8,18 +8,13 @@ namespace vn {
     App::App(const ProjectSettings& project_settings) {
         VN_INFO("Started {}", project_settings.window.title);
 
-        VN_INFO("Initializing SDL subsystems");
         if (!SDL_Init(
                 SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_CAMERA | SDL_INIT_GAMEPAD
                 | SDL_INIT_JOYSTICK | SDL_INIT_EVENTS | SDL_INIT_HAPTIC | SDL_INIT_SENSOR
             )) {
             VN_FATAL("Failed initializing SDL subsystems: {}", SDL_GetError());
         }
-        VN_INFO("SDL subsystems initialized successfully.");
 
-        // Forgo member initialization list to initialize SDL before other systems.
-        // TODO: Bring back member initialization for Engine constructor or find better
-        // alternative.
         m_window = std::make_unique<Window>(project_settings.window);
         m_renderer = std::make_unique<Renderer>(
             project_settings.renderer, m_window->get_native_handle()

@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "SDL3_shadercross/SDL_shadercross.h"
 #include "vinter/logger.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
@@ -43,11 +44,9 @@ namespace vn {
         VN_INFO("Window context claimed for GPU Device successfully");
         VN_INFO("Renderer created successfully");
 
-        VN_INFO("Initializing SDL_Shadercross...");
-        // if (!SDL_Shadercross)
-        VN_INFO("SDL_Shadercross initialized successfully.");
+        if (!SDL_ShaderCross_Init())
 
-        set_clear_color(settings.default_clear_color);
+            set_clear_color(settings.default_clear_color);
         set_vsync(settings.vsync);
 
         // Show the window (briefly hidden on startup) AFTER Renderer has been constructed, so that
