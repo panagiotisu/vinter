@@ -29,6 +29,11 @@ include_dependency(SDL3 https://github.com/libsdl-org/SDL.git release-3.4.0)
 set(SDLTTF_VENDORED ON)
 include_dependency(SDL3_ttf https://github.com/libsdl-org/SDL_ttf.git release-3.2.2)
 
+# --- SDL3_shadercross ---
+# Vendors SPIRV-Cross and DXC automatically (no system install required)
+set(SDLSHADERCROSS_VENDORED ON CACHE BOOL "Use vendored shader tools" FORCE)
+include_dependency(SDL3_shadercross https://github.com/libsdl-org/SDL_shadercross.git main)
+
 # --- glm Math ---
 set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE)
 include_dependency(glm https://github.com/g-truc/glm.git 1.0.2)
@@ -65,4 +70,5 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SDL3::SDL3
         SDL3_ttf::SDL3_ttf
+        SDL3_shadercross::SDL3_shadercross
 )
