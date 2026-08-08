@@ -54,10 +54,10 @@ namespace vn {
      * Typical usage:
      * @code{.cpp}
      * // Binding actions to physical input device methods.
-     * get_input->bind("jump", Keyboard::Key::T);              // Binds to keyboard's 'T' key.
-     * get_input->bind("jump", Mouse::Button::Middle);         // Binds to mouse's 'Middle' button.
-     * get_input->bind("jump", Mouse::Wheel::Up);              // Binds to mousewheel's 'Up' scroll.
-     * get_input->bind("jump", Gamepad::Button::East);         // Binds to all gamepads' 'East'
+     * get_input.bind("jump", Keyboard::Key::T);              // Binds to keyboard's 'T' key.
+     * get_input.bind("jump", Mouse::Button::Middle);         // Binds to mouse's 'Middle' button.
+     * get_input.bind("jump", Mouse::Wheel::Up);              // Binds to mousewheel's 'Up' scroll.
+     * get_input.bind("jump", Gamepad::Button::East);         // Binds to all gamepads' 'East'
      * button. get_input->bind("jump", Gamepad::Axis::LeftStickUp, 0); // Binds to 'Left Stick Up
      * Axis' of gamepad at slot '0'.
      *
@@ -146,7 +146,7 @@ namespace vn {
          * @return `true` if the action is currently pressed, `false` otherwise.
          */
         [[nodiscard]]
-        auto is_action_pressed(std::string_view action_name) const -> bool;
+        bool is_action_pressed(std::string_view action_name) const;
 
         /**
          * @brief Checks if a registered action was pressed this frame but not in the previous
@@ -158,7 +158,7 @@ namespace vn {
          * @return `true` if the action was just pressed in the current frame, `false` otherwise.
          */
         [[nodiscard]]
-        auto is_action_just_pressed(std::string_view action_name) const -> bool;
+        bool is_action_just_pressed(std::string_view action_name) const;
 
         /**
          * @brief Checks if a registered action was released this frame but was pressed in the
@@ -170,7 +170,7 @@ namespace vn {
          * @return `true` if the action was just released in the current frame, `false` otherwise.
          */
         [[nodiscard]]
-        auto is_action_just_released(std::string_view action_name) const -> bool;
+        bool is_action_just_released(std::string_view action_name) const;
 
         /**
          * @brief Returns the normalized strength of the specified action in the range [0.0, 1.0].
@@ -185,50 +185,47 @@ namespace vn {
          * @return The normalized strength of the action in the range [0.0, 1.0].
          */
         [[nodiscard]]
-        auto get_action_strength(std::string_view action_name) const -> float;
+        float get_action_strength(std::string_view action_name) const;
 
     private:
         enum class PressedState : std::uint8_t { Pressed, JustPressed, JustReleased };
 
         [[nodiscard]]
-        static constexpr auto to_action_id(const std::string_view name) noexcept -> ActionID {
+        static constexpr ActionID to_action_id(const std::string_view name) noexcept {
             return fnv1a64(name);
         }
 
         [[nodiscard]]
-        auto check_action_pressed_state(std::string_view action_name, PressedState state) const
-            -> bool;
+        bool check_action_pressed_state(std::string_view action_name, PressedState state) const;
 
         [[nodiscard]]
-        auto evaluate_binding_pressed(const Binding& binding, PressedState state) const -> bool;
+        bool evaluate_binding_pressed(const Binding& binding, PressedState state) const;
 
         [[nodiscard]]
-        auto evaluate_input_strength(const Binding& binding) const -> float;
+        float evaluate_input_strength(const Binding& binding) const;
 
         [[nodiscard]]
-        auto evaluate_key_pressed_state(Keyboard::Key key, PressedState state) const -> bool;
+        bool evaluate_key_pressed_state(Keyboard::Key key, PressedState state) const;
 
         [[nodiscard]]
-        auto evaluate_mouse_button_pressed_state(Mouse::Button button, PressedState state) const
-            -> bool;
+        bool evaluate_mouse_button_pressed_state(Mouse::Button button, PressedState state) const;
 
         [[nodiscard]]
-        auto evaluate_mouse_wheel_pressed_state(Mouse::Wheel wheel, PressedState state) const
-            -> bool;
+        bool evaluate_mouse_wheel_pressed_state(Mouse::Wheel wheel, PressedState state) const;
 
         [[nodiscard]]
-        auto evaluate_gamepad_button_pressed_state(
+        bool evaluate_gamepad_button_pressed_state(
             Gamepad::Button button,
             const Binding& binding,
             PressedState state
-        ) const -> bool;
+        ) const;
 
         [[nodiscard]]
-        auto evaluate_gamepad_axis_pressed_state(
+        bool evaluate_gamepad_axis_pressed_state(
             Gamepad::Axis axis,
             const Binding& binding,
             PressedState state
-        ) const -> bool;
+        ) const;
 
         DeviceManager& m_devices;
         std::unordered_map<ActionID, std::vector<Binding>> m_bindings {};

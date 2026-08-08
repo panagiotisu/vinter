@@ -19,13 +19,12 @@ namespace vn {
             , m_a(std::max(0.0f, alpha)) {
         }
 
-        static constexpr auto from_hdr(float red, float green, float blue, float alpha = 1.f)
-            -> Color {
+        static constexpr Color from_hdr(float red, float green, float blue, float alpha = 1.f) {
             return { red, green, blue, alpha };
         }
 
-        static constexpr auto
-        from_rgba(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) -> Color {
+        static constexpr Color
+        from_rgba(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255) {
             return {
                 static_cast<float>(r) / 255.0f,
                 static_cast<float>(g) / 255.0f,
@@ -34,12 +33,12 @@ namespace vn {
             };
         }
 
-        static constexpr auto from_rgba(ColorRGBA8 rgba) -> Color {
+        static constexpr Color from_rgba(ColorRGBA8 rgba) {
             return from_rgba(rgba.r, rgba.g, rgba.b, rgba.a);
         }
 
         [[nodiscard]]
-        constexpr auto to_rgba8() const -> ColorRGBA8 {
+        constexpr ColorRGBA8 to_rgba8() const {
             return {
                 .r = static_cast<std::uint8_t>(std::min(m_r, 1.0f) * 255.0f),
                 .g = static_cast<std::uint8_t>(std::min(m_g, 1.0f) * 255.0f),
@@ -49,27 +48,27 @@ namespace vn {
         }
 
         [[nodiscard]]
-        constexpr auto red() const -> float {
+        constexpr float red() const {
             return m_r;
         }
 
         [[nodiscard]]
-        constexpr auto green() const -> float {
+        constexpr float green() const {
             return m_g;
         }
 
         [[nodiscard]]
-        constexpr auto blue() const -> float {
+        constexpr float blue() const {
             return m_b;
         }
 
         [[nodiscard]]
-        constexpr auto alpha() const -> float {
+        constexpr float alpha() const {
             return m_a;
         }
 
         [[nodiscard]]
-        auto operator==(const Color& other) const -> bool {
+        bool operator==(const Color& other) const {
             float tolerance = 1e-6;
             return (std::abs(m_r - other.m_r) < tolerance)
                    && (std::abs(m_g - other.m_g) < tolerance)
@@ -78,7 +77,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        auto operator!=(const Color& other) const -> bool {
+        bool operator!=(const Color& other) const {
             return !(*this == other);
         }
 

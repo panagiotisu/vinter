@@ -21,7 +21,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        auto get_value() const -> T override {
+        T get_value() const override {
             if (this->m_samples.empty()) {
                 return T {};
             }

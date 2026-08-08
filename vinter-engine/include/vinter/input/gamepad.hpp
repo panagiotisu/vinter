@@ -97,40 +97,40 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto get_id() const noexcept -> unsigned int;
+        unsigned int get_id() const noexcept;
 
         [[nodiscard]]
-        auto get_guid_string() const noexcept -> std::string;
+        std::string get_guid_string() const noexcept;
 
         [[nodiscard]]
-        auto get_name() const noexcept -> std::string;
+        std::string get_name() const noexcept;
 
         [[nodiscard]]
-        auto get_type() const noexcept -> Type;
+        Type get_type() const noexcept;
 
         [[nodiscard]]
-        auto get_button_label(Button button) const noexcept -> ButtonLabel;
+        ButtonLabel get_button_label(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_button_pressed(Button button) const noexcept -> bool;
+        bool is_button_pressed(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_button_just_pressed(Button button) const noexcept -> bool;
+        bool is_button_just_pressed(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_button_just_released(Button button) const noexcept -> bool;
+        bool is_button_just_released(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_axis_pressed(Axis axis) const noexcept -> bool;
+        bool is_axis_pressed(Axis axis) const noexcept;
 
         [[nodiscard]]
-        auto is_axis_just_pressed(Axis axis) const noexcept -> bool;
+        bool is_axis_just_pressed(Axis axis) const noexcept;
 
         [[nodiscard]]
-        auto is_axis_just_released(Axis axis) const noexcept -> bool;
+        bool is_axis_just_released(Axis axis) const noexcept;
 
         [[nodiscard]]
-        auto get_axis_strength(Axis axis) const noexcept -> float;
+        float get_axis_strength(Axis axis) const noexcept;
 
         void begin_vibrate(
             float weak_percent_magnitude,
@@ -146,14 +146,14 @@ namespace vn {
         void update();
 
         [[nodiscard]]
-        static auto normalize_axis(float axis) noexcept -> float;
+        static float normalize_axis(float axis) noexcept;
         static void apply_trigger_deadzone(float& trigger_value, float deadzone);
         static void apply_stick_deadzone(float& stick_x, float& stick_y, float deadzone);
         [[nodiscard]]
-        static auto axis_to_index(Gamepad::Axis axis) -> std::size_t;
+        static std::size_t axis_to_index(Gamepad::Axis axis);
 
         [[nodiscard]]
-        static auto to_sdl_gamepad_button(Button button) noexcept -> int;
+        static int to_sdl_gamepad_button(Button button) noexcept;
         void remap_sdl_axes_to_gamepad_axes();
 
     private:

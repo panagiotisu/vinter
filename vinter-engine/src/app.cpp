@@ -63,23 +63,23 @@ namespace vn {
         m_running = false;
     }
 
-    auto App::get_window() noexcept -> Window& {
+    Window& App::get_window() noexcept {
         return *m_window;
     }
 
-    auto App::get_renderer() noexcept -> Renderer& {
+    Renderer& App::get_renderer() noexcept {
         return *m_renderer;
     }
 
-    auto App::get_time() noexcept -> Time& {
+    Time& App::get_time() noexcept {
         return *m_time;
     }
 
-    auto App::get_devices() noexcept -> DeviceManager& {
+    DeviceManager& App::get_devices() noexcept {
         return *m_devices;
     }
 
-    auto App::get_input() noexcept -> InputMap& {
+    InputMap& App::get_input() noexcept {
         return *m_input;
     }
 } // namespace vn

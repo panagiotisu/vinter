@@ -27,34 +27,34 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto is_button_pressed(Button button) const noexcept -> bool;
+        bool is_button_pressed(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_button_just_pressed(Button button) const noexcept -> bool;
+        bool is_button_just_pressed(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_button_just_released(Button button) const noexcept -> bool;
+        bool is_button_just_released(Button button) const noexcept;
 
         [[nodiscard]]
-        auto is_wheel_triggered(Wheel wheel) const noexcept -> bool;
+        bool is_wheel_triggered(Wheel wheel) const noexcept;
 
         [[nodiscard]]
-        auto get_position() const noexcept -> glm::vec2;
+        glm::vec2 get_position() const noexcept;
 
         [[nodiscard]]
-        auto get_delta() const noexcept -> glm::vec2;
+        glm::vec2 get_delta() const noexcept;
 
         [[nodiscard]]
-        auto get_scroll() const noexcept -> glm::vec2;
+        glm::vec2 get_scroll() const noexcept;
 
         [[nodiscard]]
-        auto get_scroll_vertical() const noexcept -> float;
+        float get_scroll_vertical() const noexcept;
 
         [[nodiscard]]
-        auto get_scroll_horizontal() const noexcept -> float;
+        float get_scroll_horizontal() const noexcept;
 
         [[nodiscard]]
-        auto is_cursor_visible() const noexcept -> bool;
+        bool is_cursor_visible() const noexcept;
         void set_cursor_visible(bool visible);
 
     private:
@@ -62,7 +62,7 @@ namespace vn {
         void update();
 
         [[nodiscard]]
-        static auto to_sdl_mouse_button(Mouse::Button button) noexcept -> std::size_t;
+        static std::size_t to_sdl_mouse_button(Mouse::Button button) noexcept;
 
     private:
         static constexpr std::size_t ButtonCount { 5 };

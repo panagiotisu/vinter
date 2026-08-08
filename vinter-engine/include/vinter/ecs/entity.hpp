@@ -23,22 +23,22 @@ namespace vn {
         static constexpr Id Null { std::numeric_limits<Id>::max() };
 
         [[nodiscard]]
-        auto id() const noexcept -> Id {
+        Id id() const noexcept {
             return m_id;
         };
 
         [[nodiscard]]
-        auto version() const noexcept -> Version {
+        Version version() const noexcept {
             return static_cast<Version>((m_id & VersionMask) >> IndexBits);
         }
 
         [[nodiscard]]
-        auto index() const noexcept -> Index {
+        Index index() const noexcept {
             return static_cast<Index>(m_id & IndexMask);
         }
 
         [[nodiscard]]
-        auto is_null() const noexcept -> bool {
+        bool is_null() const noexcept {
             return m_id == Null;
         }
 
@@ -46,11 +46,11 @@ namespace vn {
             return !is_null();
         }
 
-        friend constexpr auto operator==(Entity lhs, Entity rhs) -> bool {
+        friend constexpr bool operator==(Entity lhs, Entity rhs) {
             return lhs.m_id == rhs.m_id;
         }
 
-        friend constexpr auto operator!=(Entity lhs, Entity rhs) -> bool {
+        friend constexpr bool operator!=(Entity lhs, Entity rhs) {
             return !(lhs == rhs);
         }
 
@@ -63,7 +63,7 @@ namespace vn {
             static_assert(IndexBits <= sizeof(Index) * 8);
         }
 
-        static constexpr auto encode(Version version, Index index) -> Id {
+        static constexpr Id encode(Version version, Index index) {
             return ((static_cast<Id>(version) << IndexBits) & VersionMask)
                    | (static_cast<Id>(index) * IndexMask);
         }

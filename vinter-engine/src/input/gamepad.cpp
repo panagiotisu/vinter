@@ -23,11 +23,11 @@ namespace vn {
         }
     }
 
-    auto Gamepad::get_id() const noexcept -> unsigned int {
+    unsigned int Gamepad::get_id() const noexcept {
         return SDL_GetGamepadID(m_sdl_gamepad);
     }
 
-    auto Gamepad::get_guid_string() const noexcept -> std::string {
+    std::string Gamepad::get_guid_string() const noexcept {
         SDL_Joystick* joy = SDL_GetGamepadJoystick(m_sdl_gamepad);
         if (joy == nullptr) {
             return {};
@@ -39,12 +39,12 @@ namespace vn {
         return std::string { buf.data() };
     }
 
-    auto Gamepad::get_name() const noexcept -> std::string {
+    std::string Gamepad::get_name() const noexcept {
         const char* name = SDL_GetGamepadName(m_sdl_gamepad);
         return (name != nullptr) ? std::string { name } : std::string {};
     }
 
-    auto Gamepad::get_type() const noexcept -> Gamepad::Type {
+    Gamepad::Type Gamepad::get_type() const noexcept {
         switch (SDL_GetGamepadType(m_sdl_gamepad)) {
             default: return Type::Unknown;
             case SDL_GAMEPAD_TYPE_STANDARD: return Type::Standard;
@@ -61,7 +61,7 @@ namespace vn {
         }
     }
 
-    auto Gamepad::get_button_label(const Button button) const noexcept -> Gamepad::ButtonLabel {
+    Gamepad::ButtonLabel Gamepad::get_button_label(const Button button) const noexcept {
         switch (SDL_GetGamepadButtonLabel(
             m_sdl_gamepad, static_cast<SDL_GamepadButton>(to_sdl_gamepad_button(button))
         )) {
@@ -77,34 +77,34 @@ namespace vn {
         }
     }
 
-    auto Gamepad::is_button_pressed(const Button button) const noexcept -> bool {
+    bool Gamepad::is_button_pressed(const Button button) const noexcept {
         return m_button_states.is_pressed(to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_button_just_pressed(const Button button) const noexcept -> bool {
+    bool Gamepad::is_button_just_pressed(const Button button) const noexcept {
         return m_button_states.is_just_pressed(to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_button_just_released(const Button button) const noexcept -> bool {
+    bool Gamepad::is_button_just_released(const Button button) const noexcept {
         return m_button_states.is_just_released(to_sdl_gamepad_button(button));
     }
 
-    auto Gamepad::is_axis_pressed(const Axis axis) const noexcept -> bool {
+    bool Gamepad::is_axis_pressed(const Axis axis) const noexcept {
         const std::size_t i = axis_to_index(axis);
         return m_axis_states_current[i] > 0;
     }
 
-    auto Gamepad::is_axis_just_pressed(const Axis axis) const noexcept -> bool {
+    bool Gamepad::is_axis_just_pressed(const Axis axis) const noexcept {
         const std::size_t i = axis_to_index(axis);
         return m_axis_states_current[i] > 0 && !(m_axis_states_previous[i] > 0);
     }
 
-    auto Gamepad::is_axis_just_released(const Axis axis) const noexcept -> bool {
+    bool Gamepad::is_axis_just_released(const Axis axis) const noexcept {
         const std::size_t i = axis_to_index(axis);
         return !(m_axis_states_current[i] > 0) && m_axis_states_previous[i] > 0;
     }
 
-    auto Gamepad::get_axis_strength(const Axis axis) const noexcept -> float {
+    float Gamepad::get_axis_strength(const Axis axis) const noexcept {
         return m_axis_states_current[axis_to_index(axis)];
     }
 
@@ -177,7 +177,7 @@ namespace vn {
         remap_sdl_axes_to_gamepad_axes();
     }
 
-    auto Gamepad::normalize_axis(const float axis) noexcept -> float {
+    float Gamepad::normalize_axis(const float axis) noexcept {
         if (axis < 0.f) {
             return -axis / SDL_JOYSTICK_AXIS_MIN;
         }
@@ -206,12 +206,11 @@ namespace vn {
         }
     }
 
-    auto Gamepad::axis_to_index(const Gamepad::Axis axis) -> std::size_t {
+    std::size_t Gamepad::axis_to_index(const Gamepad::Axis axis) {
         return static_cast<std::size_t>(axis);
     }
 
-    [[nodiscard]]
-    auto Gamepad::to_sdl_gamepad_button(const Button button) noexcept -> int {
+    int Gamepad::to_sdl_gamepad_button(const Button button) noexcept {
         switch (button) {
             default: return SDL_GAMEPAD_BUTTON_INVALID;
 

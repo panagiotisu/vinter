@@ -3,22 +3,19 @@
 #include <SDL3/SDL.h>
 
 namespace vn {
-    [[nodiscard]]
-    auto Mouse::is_button_pressed(const Button button) const noexcept -> bool {
+    bool Mouse::is_button_pressed(const Button button) const noexcept {
         return m_buttons.is_pressed(to_sdl_mouse_button(button));
     }
 
-    [[nodiscard]]
-    auto Mouse::is_button_just_pressed(const Button button) const noexcept -> bool {
+    bool Mouse::is_button_just_pressed(const Button button) const noexcept {
         return m_buttons.is_just_pressed(to_sdl_mouse_button(button));
     }
 
-    [[nodiscard]]
-    auto Mouse::is_button_just_released(const Button button) const noexcept -> bool {
+    bool Mouse::is_button_just_released(const Button button) const noexcept {
         return m_buttons.is_just_released(to_sdl_mouse_button(button));
     }
 
-    auto Mouse::is_wheel_triggered(const Wheel wheel) const noexcept -> bool {
+    bool Mouse::is_wheel_triggered(const Wheel wheel) const noexcept {
         switch (wheel) {
             case Wheel::Up: return m_scroll.y > 0;
             case Wheel::Down: return m_scroll.y < 0;
@@ -28,27 +25,27 @@ namespace vn {
         return false;
     }
 
-    auto Mouse::get_position() const noexcept -> glm::vec2 {
+    glm::vec2 Mouse::get_position() const noexcept {
         return m_position;
     }
 
-    auto Mouse::get_delta() const noexcept -> glm::vec2 {
+    glm::vec2 Mouse::get_delta() const noexcept {
         return m_position - m_position_previous;
     }
 
-    auto Mouse::get_scroll() const noexcept -> glm::vec2 {
+    glm::vec2 Mouse::get_scroll() const noexcept {
         return m_scroll;
     }
 
-    auto Mouse::get_scroll_vertical() const noexcept -> float {
+    float Mouse::get_scroll_vertical() const noexcept {
         return m_scroll.y;
     }
 
-    auto Mouse::get_scroll_horizontal() const noexcept -> float {
+    float Mouse::get_scroll_horizontal() const noexcept {
         return m_scroll.x;
     }
 
-    auto Mouse::is_cursor_visible() const noexcept -> bool {
+    bool Mouse::is_cursor_visible() const noexcept {
         return SDL_CursorVisible();
     }
 
@@ -79,7 +76,7 @@ namespace vn {
         m_buttons.current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
     }
 
-    auto Mouse::to_sdl_mouse_button(Mouse::Button button) noexcept -> std::size_t {
+    std::size_t Mouse::to_sdl_mouse_button(Mouse::Button button) noexcept {
         return static_cast<std::size_t>(button);
     }
 } // namespace vn

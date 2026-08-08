@@ -22,16 +22,16 @@ namespace vn {
         SDL_free(joystick_ids);
     }
 
-    auto DeviceManager::get_keyboard() const noexcept -> Keyboard& {
+    Keyboard& DeviceManager::get_keyboard() const noexcept {
         return *m_keyboard;
     }
 
-    auto DeviceManager::get_mouse() const noexcept -> Mouse& {
+    Mouse& DeviceManager::get_mouse() const noexcept {
         return *m_mouse;
     }
 
-    auto DeviceManager::get_gamepads() const noexcept
-        -> std::array<Gamepad*, DeviceManager::MaxGamepadCount> {
+    std::array<Gamepad*, DeviceManager::MaxGamepadCount>
+    DeviceManager::get_gamepads() const noexcept {
         // NOTE: We could cache this but the construction cost is minimal.
         std::array<Gamepad*, MaxGamepadCount> result {};
 
@@ -45,7 +45,7 @@ namespace vn {
         return result;
     }
 
-    auto DeviceManager::get_active_gamepads() const noexcept -> std::vector<Gamepad*> {
+    std::vector<Gamepad*> DeviceManager::get_active_gamepads() const noexcept {
         std::vector<Gamepad*> result;
         result.reserve(MaxGamepadCount);
 
@@ -57,14 +57,14 @@ namespace vn {
         return result;
     }
 
-    auto DeviceManager::get_gamepad_by_id(DeviceID id) const noexcept -> Gamepad* {
+    Gamepad* DeviceManager::get_gamepad_by_id(DeviceID id) const noexcept {
         if (const auto it = m_gamepads.find(id); it != m_gamepads.end()) {
             return it->second.get();
         }
         return nullptr;
     }
 
-    auto DeviceManager::get_gamepad(const std::size_t slot) const noexcept -> Gamepad* {
+    Gamepad* DeviceManager::get_gamepad(const std::size_t slot) const noexcept {
         VN_ASSERT(slot < MaxGamepadCount, "Gamepad slot out of range.");
 
         if (const auto& optional_id = m_gamepad_slots[slot]; optional_id) {

@@ -16,17 +16,17 @@ namespace vn {
         ~Window();
 
         [[nodiscard]]
-        auto get_width() const noexcept -> std::uint32_t;
+        std::uint32_t get_width() const noexcept;
         [[nodiscard]]
-        auto get_height() const noexcept -> std::uint32_t;
+        std::uint32_t get_height() const noexcept;
         [[nodiscard]]
-        auto get_size() const noexcept -> WindowSettings::Size;
+        WindowSettings::Size get_size() const noexcept;
 
         [[nodiscard]]
-        auto get_native_handle() const -> SDL_Window*;
+        SDL_Window* get_native_handle() const;
 
     private:
-        static auto to_sdl_window_flags(const WindowSettings::Flags& flags) -> std::uint64_t;
+        static std::uint64_t to_sdl_window_flags(const WindowSettings::Flags& flags);
 
     private:
         SDL_Window* m_handle {};

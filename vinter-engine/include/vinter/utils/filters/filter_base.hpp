@@ -22,7 +22,7 @@ namespace vn {
         virtual void add_sample(T sample) = 0;
 
         [[nodiscard]]
-        virtual auto get_value() const -> T = 0;
+        virtual T get_value() const = 0;
 
         virtual void reset() = 0;
 

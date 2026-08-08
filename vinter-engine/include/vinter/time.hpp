@@ -21,7 +21,7 @@ namespace vn {
          * @note Is affected by scaling.
          */
         [[nodiscard]]
-        auto get_delta_time() const noexcept -> float;
+        float get_delta_time() const noexcept;
 
         /**
          * @return The time passed between two successive frames.
@@ -29,7 +29,7 @@ namespace vn {
          * @note Is NOT affected by scaling.
          */
         [[nodiscard]]
-        auto get_unscaled_delta_time() const noexcept -> float;
+        float get_unscaled_delta_time() const noexcept;
 
         /**
          * @return The time passed between two successive frames.
@@ -38,7 +38,7 @@ namespace vn {
          * @note Stops accumulating when the game is paused.
          */
         [[nodiscard]]
-        auto get_elapsed_time() const noexcept -> float;
+        float get_elapsed_time() const noexcept;
 
         /**
          * @return The time passed since the game launch, or the last reset.
@@ -47,7 +47,7 @@ namespace vn {
          * @note Stops accumulating when the game is paused
          */
         [[nodiscard]]
-        auto get_unscaled_elapsed_time() const noexcept -> float;
+        float get_unscaled_elapsed_time() const noexcept;
 
         /**
          * @return The time passed since the game launch, or the last reset.
@@ -56,7 +56,7 @@ namespace vn {
          * @note Continues to accumulate when the game is paused.
          */
         [[nodiscard]]
-        auto get_wall_clock_time() const noexcept -> float;
+        float get_wall_clock_time() const noexcept;
 
         /**
          * @return The current FPS calculated between current and last frame.
@@ -64,7 +64,7 @@ namespace vn {
          * @note Useful for time-sensitive and accurate statistics.
          */
         [[nodiscard]]
-        auto get_instant_fps() const -> float;
+        float get_instant_fps() const;
 
         /**
          * @return The averaged FPS filtered by m_fps_filter.
@@ -72,13 +72,13 @@ namespace vn {
          * @note Useful fur user-facing FPS infos.
          */
         [[nodiscard]]
-        auto get_filtered_fps() const -> std::uint32_t;
+        std::uint32_t get_filtered_fps() const;
 
         /**
          * @return The scale at which time passes, defaults to 1.0.
          */
         [[nodiscard]]
-        auto get_time_scale() const noexcept -> float;
+        float get_time_scale() const noexcept;
 
         /**
          * @brief Sets the desired scale at which time passes.
@@ -106,7 +106,7 @@ namespace vn {
          * @return 'true' if the game is paused, and 'false' otherwise.
          */
         [[nodiscard]]
-        auto is_paused() const noexcept -> bool;
+        bool is_paused() const noexcept;
 
         /**
          * @brief Resets all accumulated times.

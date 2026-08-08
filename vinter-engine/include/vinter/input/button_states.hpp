@@ -17,17 +17,17 @@ namespace vn {
         }
 
         [[nodiscard]]
-        auto is_pressed(std::size_t button_idx) const noexcept -> bool {
+        bool is_pressed(std::size_t button_idx) const noexcept {
             return current[button_idx];
         }
 
         [[nodiscard]]
-        auto is_just_pressed(std::size_t button_idx) const noexcept -> bool {
+        bool is_just_pressed(std::size_t button_idx) const noexcept {
             return current[button_idx] && !previous[button_idx];
         }
 
         [[nodiscard]]
-        auto is_just_released(std::size_t button_idx) const noexcept -> bool {
+        bool is_just_released(std::size_t button_idx) const noexcept {
             return !current[button_idx] && previous[button_idx];
         }
     };

@@ -5,7 +5,7 @@
 
 namespace vn {
     [[nodiscard]]
-    constexpr auto fnv1a64(const std::string_view str) noexcept -> std::uint64_t {
+    constexpr std::uint64_t fnv1a64(const std::string_view str) noexcept {
         std::uint64_t hash = 0xcbf29ce484222325ull; // FNV-1a 64-bit offset basis
         for (const unsigned char c : str) {
             hash ^= c;

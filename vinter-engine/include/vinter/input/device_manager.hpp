@@ -25,22 +25,22 @@ namespace vn {
         static constexpr std::size_t MaxGamepadCount { 8 };
 
         [[nodiscard]]
-        auto get_keyboard() const noexcept -> Keyboard&;
+        Keyboard& get_keyboard() const noexcept;
 
         [[nodiscard]]
-        auto get_mouse() const noexcept -> Mouse&;
+        Mouse& get_mouse() const noexcept;
 
         [[nodiscard]]
-        auto get_gamepad_by_id(DeviceID id) const noexcept -> Gamepad*;
+        Gamepad* get_gamepad_by_id(DeviceID id) const noexcept;
 
         [[nodiscard]]
-        auto get_gamepad(std::size_t slot = 0) const noexcept -> Gamepad*;
+        Gamepad* get_gamepad(std::size_t slot = 0) const noexcept;
 
         [[nodiscard]]
-        auto get_gamepads() const noexcept -> std::array<Gamepad*, MaxGamepadCount>;
+        std::array<Gamepad*, MaxGamepadCount> get_gamepads() const noexcept;
 
         [[nodiscard]]
-        auto get_active_gamepads() const noexcept -> std::vector<Gamepad*>;
+        std::vector<Gamepad*> get_active_gamepads() const noexcept;
 
     private:
         void handle_events(const SDL_Event& event);

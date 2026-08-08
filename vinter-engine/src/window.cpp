@@ -27,21 +27,21 @@ namespace vn {
         VN_INFO("Window context destroyed successfully");
     };
 
-    auto Window::get_width() const noexcept -> std::uint32_t {
+    std::uint32_t Window::get_width() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
         return static_cast<std::uint32_t>(w);
     }
 
-    auto Window::get_height() const noexcept -> std::uint32_t {
+    std::uint32_t Window::get_height() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
         return static_cast<std::uint32_t>(h);
     }
 
-    auto Window::get_size() const noexcept -> WindowSettings::Size {
+    WindowSettings::Size Window::get_size() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
@@ -51,11 +51,11 @@ namespace vn {
         };
     }
 
-    auto Window::get_native_handle() const -> SDL_Window* {
+    SDL_Window* Window::get_native_handle() const {
         return m_handle;
     }
 
-    auto Window::to_sdl_window_flags(const WindowSettings::Flags& flags) -> SDL_WindowFlags {
+    SDL_WindowFlags Window::to_sdl_window_flags(const WindowSettings::Flags& flags) {
         SDL_WindowFlags sdl_window_flags {};
 
         if (flags.fullscreen) {

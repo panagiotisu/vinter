@@ -41,19 +41,19 @@ namespace vn {
         );
     }
 
-    auto InputMap::is_action_pressed(const std::string_view action_name) const -> bool {
+    bool InputMap::is_action_pressed(const std::string_view action_name) const {
         return check_action_pressed_state(action_name, PressedState::Pressed);
     }
 
-    auto InputMap::is_action_just_pressed(const std::string_view action_name) const -> bool {
+    bool InputMap::is_action_just_pressed(const std::string_view action_name) const {
         return check_action_pressed_state(action_name, PressedState::JustPressed);
     }
 
-    auto InputMap::is_action_just_released(const std::string_view action_name) const -> bool {
+    bool InputMap::is_action_just_released(const std::string_view action_name) const {
         return check_action_pressed_state(action_name, PressedState::JustReleased);
     }
 
-    auto InputMap::get_action_strength(const std::string_view action_name) const -> float {
+    float InputMap::get_action_strength(const std::string_view action_name) const {
         const auto it = m_bindings.find(to_action_id(action_name));
         if (it == m_bindings.end()) {
             return 0.f;
@@ -66,10 +66,10 @@ namespace vn {
         return max_strength;
     }
 
-    auto InputMap::check_action_pressed_state(
+    bool InputMap::check_action_pressed_state(
         const std::string_view action_name,
         const PressedState state
-    ) const -> bool {
+    ) const {
         const auto it = m_bindings.find(to_action_id(action_name));
         if (it == m_bindings.end()) {
             return false;
@@ -83,8 +83,8 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::evaluate_binding_pressed(const Binding& binding, const PressedState state) const
-        -> bool {
+    bool
+    InputMap::evaluate_binding_pressed(const Binding& binding, const PressedState state) const {
         return std::visit(
             [&]<typename T>(T input_visitor) -> bool {
                 using InputT = std::decay_t<T>;
@@ -105,7 +105,7 @@ namespace vn {
         );
     }
 
-    auto InputMap::evaluate_input_strength(const Binding& binding) const -> float {
+    float InputMap::evaluate_input_strength(const Binding& binding) const {
         return std::visit(
             [&]<typename T>(T input_val) -> float {
                 using InputT = std::decay_t<T>;
@@ -156,9 +156,8 @@ namespace vn {
         );
     }
 
-    auto
-    InputMap::evaluate_key_pressed_state(const Keyboard::Key key, const PressedState state) const
-        -> bool {
+    bool
+    InputMap::evaluate_key_pressed_state(const Keyboard::Key key, const PressedState state) const {
         switch (state) {
             case PressedState::Pressed: return m_devices.get_keyboard().is_key_pressed(key);
             case PressedState::JustPressed:
@@ -169,10 +168,10 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::evaluate_mouse_button_pressed_state(
+    bool InputMap::evaluate_mouse_button_pressed_state(
         const Mouse::Button button,
         const PressedState state
-    ) const -> bool {
+    ) const {
         switch (state) {
             case PressedState::Pressed: return m_devices.get_mouse().is_button_pressed(button);
             case PressedState::JustPressed:
@@ -183,10 +182,10 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::evaluate_mouse_wheel_pressed_state(
+    bool InputMap::evaluate_mouse_wheel_pressed_state(
         const Mouse::Wheel wheel,
         const PressedState state
-    ) const -> bool {
+    ) const {
         switch (state) {
             case PressedState::JustPressed: return m_devices.get_mouse().is_wheel_triggered(wheel);
             case PressedState::Pressed:
@@ -195,11 +194,11 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::evaluate_gamepad_button_pressed_state(
+    bool InputMap::evaluate_gamepad_button_pressed_state(
         const Gamepad::Button button,
         const Binding& binding,
         const PressedState state
-    ) const -> bool {
+    ) const {
         // Check slot specific pressed state.
         if (binding.gamepad_slot) {
             const auto* gamepad = m_devices.get_gamepad(*binding.gamepad_slot);
@@ -236,11 +235,11 @@ namespace vn {
         return false;
     }
 
-    auto InputMap::evaluate_gamepad_axis_pressed_state(
+    bool InputMap::evaluate_gamepad_axis_pressed_state(
         const Gamepad::Axis axis,
         const Binding& binding,
         const PressedState state
-    ) const -> bool {
+    ) const {
         // Check slot specific pressed state.
         if (binding.gamepad_slot) {
             const auto* gamepad = m_devices.get_gamepad(*binding.gamepad_slot);

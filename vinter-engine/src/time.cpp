@@ -7,34 +7,34 @@ namespace vn {
         , m_frame_time_filter(std::make_unique<MovingAverageFilter<float>>(120)) {
     }
 
-    auto Time::get_delta_time() const noexcept -> float {
+    float Time::get_delta_time() const noexcept {
         return m_delta_time;
     }
 
-    auto Time::get_unscaled_delta_time() const noexcept -> float {
+    float Time::get_unscaled_delta_time() const noexcept {
         return m_unscaled_delta_time;
     }
 
-    auto Time::get_elapsed_time() const noexcept -> float {
+    float Time::get_elapsed_time() const noexcept {
         return m_elapsed_time;
     }
 
-    auto Time::get_unscaled_elapsed_time() const noexcept -> float {
+    float Time::get_unscaled_elapsed_time() const noexcept {
         return m_unscaled_elapsed_time;
     }
 
-    auto Time::get_wall_clock_time() const noexcept -> float {
+    float Time::get_wall_clock_time() const noexcept {
         return m_wall_clock_time;
     }
 
-    auto Time::get_instant_fps() const -> float {
+    float Time::get_instant_fps() const {
         if (m_unscaled_delta_time <= 0.f) {
             return 0.f;
         }
         return 1.f / m_unscaled_delta_time;
     }
 
-    auto Time::get_filtered_fps() const -> std::uint32_t {
+    std::uint32_t Time::get_filtered_fps() const {
         const auto filtered_fps { m_frame_time_filter->get_value() };
         if (filtered_fps <= 0.f) {
             return 0;
@@ -42,7 +42,7 @@ namespace vn {
         return static_cast<std::uint32_t>(1.f / filtered_fps);
     }
 
-    auto Time::get_time_scale() const noexcept -> float {
+    float Time::get_time_scale() const noexcept {
         return m_time_scale;
     }
 
@@ -69,7 +69,7 @@ namespace vn {
         }
     }
 
-    auto Time::is_paused() const noexcept -> bool {
+    bool Time::is_paused() const noexcept {
         return m_paused;
     }
 

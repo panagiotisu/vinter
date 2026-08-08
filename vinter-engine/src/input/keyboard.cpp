@@ -8,15 +8,15 @@ namespace vn {
         , m_sdl_state(SDL_GetKeyboardState(nullptr)) {
     }
 
-    auto Keyboard::is_key_pressed(const Key key) const noexcept -> bool {
+    bool Keyboard::is_key_pressed(const Key key) const noexcept {
         return m_key_states.is_pressed(to_sdl_scancode(key));
     }
 
-    auto Keyboard::is_key_just_pressed(const Key key) const noexcept -> bool {
+    bool Keyboard::is_key_just_pressed(const Key key) const noexcept {
         return m_key_states.is_just_pressed(to_sdl_scancode(key));
     }
 
-    auto Keyboard::is_key_just_released(const Key key) const noexcept -> bool {
+    bool Keyboard::is_key_just_released(const Key key) const noexcept {
         return m_key_states.is_just_released(to_sdl_scancode(key));
     }
 
@@ -32,7 +32,7 @@ namespace vn {
         }
     }
 
-    auto Keyboard::to_sdl_scancode(const Key key) noexcept -> int {
+    int Keyboard::to_sdl_scancode(const Key key) noexcept {
         switch (key) {
             default: return SDL_SCANCODE_UNKNOWN;
 

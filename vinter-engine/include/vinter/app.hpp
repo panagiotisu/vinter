@@ -36,15 +36,19 @@ namespace vn {
         void quit();
 
         [[nodiscard]]
-        auto get_window() noexcept -> Window&;
+        Window& get_window() noexcept;
+
         [[nodiscard]]
-        auto get_renderer() noexcept -> Renderer&;
+        Renderer& get_renderer() noexcept;
+
         [[nodiscard]]
-        auto get_time() noexcept -> Time&;
+        Time& get_time() noexcept;
+
         [[nodiscard]]
-        auto get_devices() noexcept -> DeviceManager&;
+        DeviceManager& get_devices() noexcept;
+
         [[nodiscard]]
-        auto get_input() noexcept -> InputMap&;
+        InputMap& get_input() noexcept;
 
     private:
         std::unique_ptr<Window> m_window {};

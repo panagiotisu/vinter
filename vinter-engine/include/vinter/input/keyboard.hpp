@@ -127,20 +127,20 @@ namespace vn {
         };
 
         [[nodiscard]]
-        auto is_key_pressed(Key key) const noexcept -> bool;
+        bool is_key_pressed(Key key) const noexcept;
 
         [[nodiscard]]
-        auto is_key_just_pressed(Key key) const noexcept -> bool;
+        bool is_key_just_pressed(Key key) const noexcept;
 
         [[nodiscard]]
-        auto is_key_just_released(Key key) const noexcept -> bool;
+        bool is_key_just_released(Key key) const noexcept;
 
     private:
         void handle_events(const SDL_Event& event);
         void update();
 
         [[nodiscard]]
-        static auto to_sdl_scancode(Key key) noexcept -> int;
+        static int to_sdl_scancode(Key key) noexcept;
 
     private:
         ButtonStates m_key_states;
