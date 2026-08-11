@@ -209,11 +209,11 @@ namespace vn {
          * @param entity Entity whose active status is queried.
          * @return true If entity is active.
          * @return false If entity is inactive
-         *   (entity.id() == Entity::Null || entity.index() == entity.version()).
+         *   (entity.id() == Entity::Null || entity.index() >= m_entity_infos.size()).
          */
         [[nodiscard]]
         bool is_alive(Entity entity) const {
-            if (entity.id() == Entity::Null || entity.index() == entity.version()) {
+            if (entity.id() == Entity::Null || entity.index() >= m_entity_infos.size()) {
                 return false;
             }
             return m_entity_infos[entity.index()].version == entity.version();
@@ -313,7 +313,7 @@ namespace vn {
                 return *component_pool.set(entity_index, std::forward<T>(component));
             }
 
-            const ComponentMask& component_mask = get_entity_component_mask(entity);
+            ComponentMask& component_mask = get_entity_component_mask(entity);
             set_component_mask_bit<T>(component_mask, true);
 
             VN_INFO(
@@ -533,6 +533,8 @@ namespace vn {
                 "Component index out of bounds for component '{}'",
                 typeid(T).name()
             );
+
+            return component_index;
         }
 
         /**
