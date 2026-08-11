@@ -21,7 +21,7 @@ protected:
     }
 
 private:
-    vn::Entity m_bomberman;
+    vn::Entity m_bomberman {};
 
     struct Transform2D {
         glm::vec2 position {};
