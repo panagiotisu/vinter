@@ -12,6 +12,9 @@ protected:
         m_bomberman = get_ecs().create_entity("Bomberman");
         get_ecs().add<Transform2D>(m_bomberman, {});
         get_ecs().add<Health>(m_bomberman, {});
+        m_bomberman = get_ecs().create_entity("Bomberman");
+        get_ecs().add<Transform2D>(m_bomberman, {});
+        get_ecs().add<Health>(m_bomberman, {});
     }
 
     void update() override {
@@ -32,6 +35,6 @@ private:
     struct Health {
         float max_health { 100.f };
         float regeneration { 1.f };
-        float current_health { 1.f }
+        float current_health { 1.f };
     };
 };
