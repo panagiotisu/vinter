@@ -4,6 +4,7 @@
 
 // TODO: Place these in a fwd.hpp.
 #include "vinter/color.hpp"
+#include "vinter/ecs.hpp"
 #include "vinter/input/device_manager.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/input_map.hpp"
@@ -50,12 +51,16 @@ namespace vn {
         [[nodiscard]]
         InputMap& get_input() noexcept;
 
+        [[nodiscard]]
+        ECS& get_ecs() noexcept;
+
     private:
         std::unique_ptr<Window> m_window {};
         std::unique_ptr<Renderer> m_renderer {};
         std::unique_ptr<Time> m_time {};
         std::unique_ptr<DeviceManager> m_devices {};
         std::unique_ptr<InputMap> m_input {};
+        std::unique_ptr<ECS> m_ecs {};
 
         bool m_running { false };
     };

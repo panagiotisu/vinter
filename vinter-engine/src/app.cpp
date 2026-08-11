@@ -15,11 +15,13 @@ namespace vn {
         m_time = std::make_unique<Time>();
         m_devices = std::make_unique<DeviceManager>();
         m_input = std::make_unique<InputMap>(*m_devices);
+        m_ecs = std::make_unique<ECS>();
     }
 
     App::~App() {
         VN_INFO("Destroying Vinter runtime...");
 
+        m_ecs->reset();
         m_input.reset();
         m_devices.reset();
         m_time.reset();
@@ -81,5 +83,9 @@ namespace vn {
 
     InputMap& App::get_input() noexcept {
         return *m_input;
+    }
+
+    ECS& App::get_ecs() noexcept {
+        return *m_ecs;
     }
 } // namespace vn

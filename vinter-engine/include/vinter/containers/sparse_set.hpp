@@ -62,7 +62,7 @@ namespace vn {
 
         // Returns a pointer to T if data exists in the dense array, or nullptr if not.
         [[nodiscard]]
-        T* get(SparseIndex sparse_index) const {
+        T* get(SparseIndex sparse_index) {
             const DenseIndex dense_index = get_dense_index(sparse_index);
             if (dense_index == Tombstone) {
                 return nullptr;
@@ -70,26 +70,32 @@ namespace vn {
             return &m_dense[dense_index];
         }
 
-        // Returns a reference to T, always assuming the data exists in the dense array.
+        // Returns a const pointer to T if data exists in the dense array, or nullptr if not.
         [[nodiscard]]
-        T& get_ref(SparseIndex sparse_index) const {
+        const T* get(SparseIndex sparse_index) const {
+            const DenseIndex dense_index = get_dense_index(sparse_index);
+            if (dense_index == Tombstone) {
+                return nullptr;
+            }
+            return &m_dense[dense_index];
+        }
+
+        // Returns a reference to T.
+        [[nodiscard]]
+        T& get_ref(SparseIndex sparse_index) {
             const DenseIndex dense_index = get_dense_index(sparse_index);
             VN_ASSERT(
-                dense_index != Tombstone,
-                "Tried to get reference from invalid sparse index {}",
-                sparse_index
+                dense_index != Tombstone, "get_ref called on invalid index: {}", sparse_index
             );
             return m_dense[dense_index];
         }
 
-        // Returns a const reference to T, always assuming the data exists in the dense array.
+        // Returns a constant reference to T.
         [[nodiscard]]
-        const T& get_const_ref(SparseIndex sparse_index) const {
+        const T& get_ref(SparseIndex sparse_index) const {
             const DenseIndex dense_index = get_dense_index(sparse_index);
             VN_ASSERT(
-                dense_index != Tombstone,
-                "Tried to get reference from invalid sparse index {}",
-                sparse_index
+                dense_index != Tombstone, "get_ref called on invalid index: {}", sparse_index
             );
             return m_dense[dense_index];
         }
