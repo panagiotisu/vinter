@@ -30,7 +30,7 @@ namespace vn {
     };
 
     template <typename T>
-    class SparseSet : ISparseSet {
+    class SparseSet : public ISparseSet {
     public:
         explicit SparseSet(std::size_t initial_size = 1000) {
             m_sparse.reserve(initial_size);
