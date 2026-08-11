@@ -162,7 +162,7 @@ namespace vn {
             }
 
             Entity entity(m_entity_infos[index].version, index);
-            VN_INFO("Created Entity: {}", get_entity_info_string(entity));
+            VN_INFO("Created {}", get_entity_info_string(entity));
             return entity;
         }
 
@@ -256,7 +256,7 @@ namespace vn {
             m_available_entities.push_back(index);
 
             entity.m_id = Entity::Null;
-            VN_INFO("Deleted Entity: {}", entity_info);
+            VN_INFO("Deleted {}", entity_info);
         }
 
         /**
