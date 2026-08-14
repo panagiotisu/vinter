@@ -11,6 +11,7 @@
 
 #include "vinter/containers/sparse_set.hpp"
 #include "vinter/containers/type_list.hpp"
+#include "vinter/utils/demangle.hpp"
 
 namespace vn {
     template <typename... Components>
@@ -281,11 +282,11 @@ namespace vn {
             VN_ASSERT(
                 m_component_pools[component_index] == nullptr,
                 "Attempted to register component '{}' twice.",
-                typeid(T).name()
+                demangle(typeid(T).name())
             );
 
             m_component_pools[component_index] = std::make_unique<SparseSet<T>>();
-            VN_INFO("Registered Component '{}'.", typeid(T).name());
+            VN_INFO("Registered Component '{}'.", demangle(typeid(T).name()));
         }
 
         /**
@@ -318,7 +319,9 @@ namespace vn {
             set_component_mask_bit<T>(component_mask, true);
 
             VN_INFO(
-                "Attached component '{}' to {},", typeid(T).name(), get_entity_info_string(entity)
+                "Attached component '{}' to {},",
+                demangle(typeid(T).name()),
+                get_entity_info_string(entity)
             );
             return *component_pool.set(entity_index, std::forward<T>(component));
         }
@@ -346,7 +349,7 @@ namespace vn {
                 component != nullptr,
                 "{} missing component in '{}' pool.",
                 get_entity_info_string(entity),
-                typeid(T).name()
+                demangle(typeid(T).name())
             );
             return *component;
         }
@@ -396,7 +399,9 @@ namespace vn {
 
             component_pool.unset(entity_index);
             VN_INFO(
-                "Removed component '{}' from {},", typeid(T).name(), get_entity_info_string(entity)
+                "Removed component '{}' from {},",
+                demangle(typeid(T).name()),
+                get_entity_info_string(entity)
             );
         }
 
@@ -532,7 +537,7 @@ namespace vn {
             VN_ASSERT(
                 component_index < m_component_pools.size(),
                 "Component index out of bounds for component '{}'",
-                typeid(T).name()
+                demangle(typeid(T).name())
             );
 
             return component_index;
