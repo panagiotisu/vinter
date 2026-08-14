@@ -87,7 +87,7 @@ namespace vn {
 
         static constexpr Id encode(Version version, Index index) {
             return ((static_cast<Id>(version) << IndexBits) & VersionMask)
-                   | (static_cast<Id>(index) * IndexMask);
+                   | (static_cast<Id>(index) & IndexMask);
         }
     };
 
