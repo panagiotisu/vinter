@@ -12,8 +12,8 @@ namespace vn {
     Gamepad::Gamepad(const unsigned int joystick_id)
         : m_sdl_gamepad(SDL_OpenGamepad(joystick_id))
         , m_button_states(SDL_GAMEPAD_BUTTON_COUNT)
-        , m_sdl_axis_states_current(SDL_GAMEPAD_AXIS_COUNT, 0.f)
-        , m_sdl_axis_states_previous(SDL_GAMEPAD_AXIS_COUNT, 0.f) {
+        , m_axis_states(static_cast<std::size_t>(Axis::Count))
+        , m_sdl_axis_states(SDL_GAMEPAD_AXIS_COUNT) {
         VN_ASSERT(m_sdl_gamepad != nullptr, "Failed to open SDL gamepad with id = {}.", get_id());
     }
 
@@ -90,22 +90,19 @@ namespace vn {
     }
 
     bool Gamepad::is_axis_pressed(const Axis axis) const noexcept {
-        const std::size_t i = axis_to_index(axis);
-        return m_axis_states_current[i] > 0;
+        return m_axis_states.is_pressed(axis_to_index(axis));
     }
 
     bool Gamepad::is_axis_just_pressed(const Axis axis) const noexcept {
-        const std::size_t i = axis_to_index(axis);
-        return m_axis_states_current[i] > 0 && !(m_axis_states_previous[i] > 0);
+        return m_axis_states.is_just_pressed(axis_to_index(axis));
     }
 
     bool Gamepad::is_axis_just_released(const Axis axis) const noexcept {
-        const std::size_t i = axis_to_index(axis);
-        return !(m_axis_states_current[i] > 0) && m_axis_states_previous[i] > 0;
+        return m_axis_states.is_just_released(axis_to_index(axis));
     }
 
     float Gamepad::get_axis_strength(const Axis axis) const noexcept {
-        return m_axis_states_current[axis_to_index(axis)];
+        return m_axis_states.current[axis_to_index(axis)];
     }
 
     void Gamepad::begin_vibrate(
@@ -139,8 +136,8 @@ namespace vn {
 
     void Gamepad::update() {
         m_button_states.refresh();
-        m_sdl_axis_states_previous = m_sdl_axis_states_current;
-        m_axis_states_previous = m_axis_states_current;
+        m_axis_states.refresh();
+        m_sdl_axis_states.refresh();
 
         // Synchronize buttons with sdl buttons.
         for (std::size_t i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; i++) {
@@ -151,27 +148,27 @@ namespace vn {
 
         // Normalize and store sdl axes.
         for (std::size_t i = 0; i < SDL_GAMEPAD_AXIS_COUNT; i++) {
-            m_sdl_axis_states_current[i] = normalize_axis(
+            m_sdl_axis_states.current[i] = normalize_axis(
                 SDL_GetGamepadAxis(m_sdl_gamepad, static_cast<SDL_GamepadAxis>(i))
             );
         }
 
         // Deadzone sdl axes.
         apply_stick_deadzone(
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTX],
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTY],
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTX],
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTY],
             m_stick_deadzone
         );
         apply_stick_deadzone(
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTX],
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTY],
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTX],
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTY],
             m_stick_deadzone
         );
         apply_trigger_deadzone(
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFT_TRIGGER], m_trigger_deadzone
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFT_TRIGGER], m_trigger_deadzone
         );
         apply_trigger_deadzone(
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER], m_trigger_deadzone
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER], m_trigger_deadzone
         );
 
         remap_sdl_axes_to_gamepad_axes();
@@ -252,36 +249,36 @@ namespace vn {
 
     void Gamepad::remap_sdl_axes_to_gamepad_axes() {
         // Split and remap stick axes so that they are always between [0, 1] instead of [-1, 1].
-        m_axis_states_current[axis_to_index(Axis::LeftStickLeft)] = std::max(
-            0.f, -m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTX]
+        m_axis_states.current[axis_to_index(Axis::LeftStickLeft)] = std::max(
+            0.f, -m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTX]
         );
-        m_axis_states_current[axis_to_index(Axis::LeftStickRight)] = std::max(
-            0.f, m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTX]
+        m_axis_states.current[axis_to_index(Axis::LeftStickRight)] = std::max(
+            0.f, m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTX]
         );
-        m_axis_states_current[axis_to_index(Axis::LeftStickUp)] = std::max(
-            0.f, -m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTY]
+        m_axis_states.current[axis_to_index(Axis::LeftStickUp)] = std::max(
+            0.f, -m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTY]
         );
-        m_axis_states_current[axis_to_index(Axis::LeftStickDown)] = std::max(
-            0.f, m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFTY]
+        m_axis_states.current[axis_to_index(Axis::LeftStickDown)] = std::max(
+            0.f, m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFTY]
         );
 
-        m_axis_states_current[axis_to_index(Axis::RightStickLeft)] = std::max(
-            0.f, -m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTX]
+        m_axis_states.current[axis_to_index(Axis::RightStickLeft)] = std::max(
+            0.f, -m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTX]
         );
-        m_axis_states_current[axis_to_index(Axis::RightStickRight)] = std::max(
-            0.f, m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTX]
+        m_axis_states.current[axis_to_index(Axis::RightStickRight)] = std::max(
+            0.f, m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTX]
         );
-        m_axis_states_current[axis_to_index(Axis::RightStickUp)] = std::max(
-            0.f, -m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTY]
+        m_axis_states.current[axis_to_index(Axis::RightStickUp)] = std::max(
+            0.f, -m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTY]
         );
-        m_axis_states_current[axis_to_index(Axis::RightStickDown)] = std::max(
-            0.f, m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHTY]
+        m_axis_states.current[axis_to_index(Axis::RightStickDown)] = std::max(
+            0.f, m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHTY]
         );
 
         // Trigger axes do not require remapping since they are already between [0, 1].
-        m_axis_states_current[axis_to_index(Axis::LeftTrigger)] =
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_LEFT_TRIGGER];
-        m_axis_states_current[axis_to_index(Axis::RightTrigger)] =
-            m_sdl_axis_states_current[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER];
+        m_axis_states.current[axis_to_index(Axis::LeftTrigger)] =
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_LEFT_TRIGGER];
+        m_axis_states.current[axis_to_index(Axis::RightTrigger)] =
+            m_sdl_axis_states.current[SDL_GAMEPAD_AXIS_RIGHT_TRIGGER];
     };
 } // namespace vn

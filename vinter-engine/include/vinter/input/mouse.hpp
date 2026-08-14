@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "vinter/input/button_states.hpp"
+#include "vinter/input/input_states.hpp"
 
 union SDL_Event;
 
@@ -66,7 +66,7 @@ namespace vn {
 
     private:
         static constexpr std::size_t ButtonCount { 5 };
-        ButtonStates m_buttons { ButtonCount };
+        InputStates<bool> m_buttons { ButtonCount };
         glm::vec2 m_position {};
         glm::vec2 m_position_previous {};
         glm::vec2 m_scroll {};

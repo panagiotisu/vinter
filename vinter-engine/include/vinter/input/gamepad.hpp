@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "vinter/color.hpp"
-#include "vinter/input/button_states.hpp"
+#include "vinter/input/input_states.hpp"
 
 union SDL_Event;
 struct SDL_Gamepad;
@@ -161,10 +161,8 @@ namespace vn {
         float m_trigger_deadzone { 0.05f };
 
         SDL_Gamepad* m_sdl_gamepad {};
-        ButtonStates m_button_states;
-        std::vector<float> m_sdl_axis_states_current {};
-        std::vector<float> m_sdl_axis_states_previous {};
-        std::array<float, static_cast<std::size_t>(Axis::Count)> m_axis_states_current {};
-        std::array<float, static_cast<std::size_t>(Axis::Count)> m_axis_states_previous {};
+        InputStates<bool> m_button_states;
+        InputStates<float> m_axis_states;
+        InputStates<float> m_sdl_axis_states;
     };
 } // namespace vn

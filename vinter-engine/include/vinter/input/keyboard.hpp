@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "vinter/input/button_states.hpp"
+#include "vinter/input/input_states.hpp"
 
 union SDL_Event;
 
@@ -143,7 +143,7 @@ namespace vn {
         static int to_sdl_scancode(Key key) noexcept;
 
     private:
-        ButtonStates m_key_states;
+        InputStates<bool> m_key_states;
         const bool* m_sdl_state {};
     };
 } // namespace vn
