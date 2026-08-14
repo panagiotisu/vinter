@@ -284,7 +284,8 @@ namespace vn {
                 typeid(T).name()
             );
 
-            VN_INFO("Registered component '{}'.", typeid(T).name());
+            m_component_pools[component_index] = std::make_unique<SparseSet<T>>();
+            VN_INFO("Registered Component '{}'.", typeid(T).name());
         }
 
         /**

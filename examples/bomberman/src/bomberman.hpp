@@ -10,7 +10,7 @@ public:
 protected:
     void load() override {
         m_bomberman = get_ecs().create_entity("Bomberman");
-        get_ecs().add<Transform2D>(m_bomberman, {});
+        // get_ecs().add<Transform2D>(m_bomberman, {});
         get_ecs().add<Health>(m_bomberman, {});
     }
 
