@@ -666,7 +666,7 @@ namespace vn {
 
         explicit View(ECS* ecs)
             : m_ecs(ecs)
-            , m_view_pools(ecs->get_component_pool_ptr<Components>()...) {
+            , m_view_pools { ecs->get_component_pool_ptr<Components>()... } {
             VN_ASSERT(
                 ComponentTypes::size == m_view_pools.size(),
                 "Component type list and component pool array size must be the same."
