@@ -135,7 +135,13 @@ namespace vn {
          */
         using ComponentMask = std::bitset<MaxComponents>;
 
-        ECS() = default;
+        ECS() {
+            VN_INFO("Created ECS.");
+        }
+
+        ~ECS() {
+            VN_INFO("Destroyed ECS.");
+        }
 
         /**
          * @brief Creates an entity and returns its handle.

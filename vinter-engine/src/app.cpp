@@ -21,7 +21,7 @@ namespace vn {
     App::~App() {
         VN_INFO("Destroying Vinter runtime...");
 
-        m_ecs->reset();
+        m_ecs.reset();
         m_input.reset();
         m_devices.reset();
         m_time.reset();
