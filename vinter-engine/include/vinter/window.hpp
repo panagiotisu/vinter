@@ -26,7 +26,7 @@ namespace vn {
         SDL_Window* get_native_handle() const;
 
     private:
-        static std::uint64_t to_sdl_window_flags(const WindowSettings::Flags& flags);
+        static std::uint64_t to_native_window_flags(const WindowSettings::Flags& flags);
 
     private:
         SDL_Window* m_handle {};

@@ -4,15 +4,15 @@
 
 namespace vn {
     bool Mouse::is_button_pressed(const Button button) const noexcept {
-        return m_buttons.is_pressed(to_sdl_mouse_button(button));
+        return m_buttons.is_pressed(to_native_mouse_button(button));
     }
 
     bool Mouse::is_button_just_pressed(const Button button) const noexcept {
-        return m_buttons.is_just_pressed(to_sdl_mouse_button(button));
+        return m_buttons.is_just_pressed(to_native_mouse_button(button));
     }
 
     bool Mouse::is_button_just_released(const Button button) const noexcept {
-        return m_buttons.is_just_released(to_sdl_mouse_button(button));
+        return m_buttons.is_just_released(to_native_mouse_button(button));
     }
 
     bool Mouse::is_wheel_triggered(const Wheel wheel) const noexcept {
@@ -76,7 +76,7 @@ namespace vn {
         m_buttons.current[4] = (sdl_buttons & SDL_BUTTON_X2MASK) != 0;
     }
 
-    std::size_t Mouse::to_sdl_mouse_button(Mouse::Button button) noexcept {
+    std::size_t Mouse::to_native_mouse_button(Mouse::Button button) noexcept {
         return static_cast<std::size_t>(button);
     }
 } // namespace vn

@@ -140,10 +140,10 @@ namespace vn {
         void update();
 
         [[nodiscard]]
-        static int to_sdl_scancode(Key key) noexcept;
+        static int to_native_scancode(Key key) noexcept;
 
     private:
         InputStates<bool> m_key_states;
-        const bool* m_sdl_state {};
+        const bool* m_native_key_states {};
     };
 } // namespace vn

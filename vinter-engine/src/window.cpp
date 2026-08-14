@@ -11,7 +11,7 @@ namespace vn {
               window_settings.title.c_str(),
               static_cast<int>(window_settings.initial_size.width),
               static_cast<int>(window_settings.initial_size.height),
-              to_sdl_window_flags(window_settings.flags)
+              to_native_window_flags(window_settings.flags)
           )) {
         if (m_handle == nullptr) {
             VN_FATAL("Failed to create Window: ", SDL_GetError());
@@ -55,7 +55,7 @@ namespace vn {
         return m_handle;
     }
 
-    SDL_WindowFlags Window::to_sdl_window_flags(const WindowSettings::Flags& flags) {
+    SDL_WindowFlags Window::to_native_window_flags(const WindowSettings::Flags& flags) {
         SDL_WindowFlags sdl_window_flags {};
 
         if (flags.fullscreen) {

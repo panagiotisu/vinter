@@ -153,16 +153,16 @@ namespace vn {
         static std::size_t axis_to_index(Gamepad::Axis axis);
 
         [[nodiscard]]
-        static int to_sdl_gamepad_button(Button button) noexcept;
-        void remap_sdl_axes_to_gamepad_axes();
+        static int to_native_gamepad_button(Button button) noexcept;
+        void remap_native_to_gamepad_axes();
 
     private:
         float m_stick_deadzone { 0.1f };
         float m_trigger_deadzone { 0.05f };
 
-        SDL_Gamepad* m_sdl_gamepad {};
+        SDL_Gamepad* m_handle {};
         InputStates<bool> m_button_states;
         InputStates<float> m_axis_states;
-        InputStates<float> m_sdl_axis_states;
+        InputStates<float> m_native_axis_states;
     };
 } // namespace vn

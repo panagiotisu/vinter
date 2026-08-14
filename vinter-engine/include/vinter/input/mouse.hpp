@@ -62,7 +62,7 @@ namespace vn {
         void update();
 
         [[nodiscard]]
-        static std::size_t to_sdl_mouse_button(Mouse::Button button) noexcept;
+        static std::size_t to_native_mouse_button(Mouse::Button button) noexcept;
 
     private:
         static constexpr std::size_t ButtonCount { 5 };
