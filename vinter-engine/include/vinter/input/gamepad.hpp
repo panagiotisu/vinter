@@ -1,9 +1,7 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
 #include <string>
-#include <vector>
 
 #include "vinter/color.hpp"
 #include "vinter/input/input_states.hpp"
