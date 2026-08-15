@@ -37,6 +37,9 @@ namespace vn {
         void draw_circle(glm::vec2 center, float radius, Color color, std::size_t segment = 100);
         void draw_polygon(const std::vector<glm::vec2>& vertices, Color color);
 
+        [[nodiscard]]
+        SDL_Renderer* get_native_handle() const;
+
     private:
         void begin_frame();
         void end_frame();

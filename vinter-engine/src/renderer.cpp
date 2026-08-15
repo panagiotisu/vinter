@@ -195,6 +195,10 @@ namespace vn {
         SDL_SetRenderDrawColor(m_handle, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
     }
 
+    SDL_Renderer* Renderer::get_native_handle() const {
+        return m_handle;
+    }
+
     void Renderer::flush_primitives() {
         if (m_primitives.is_empty()) {
             return;
