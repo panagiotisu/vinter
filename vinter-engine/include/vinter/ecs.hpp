@@ -457,23 +457,14 @@ namespace vn {
             VN_ECS_ASSERT_ENTITY_VALID(entity);
             VN_ECS_ASSERT_ENTITY_ALIVE(entity);
 
-            std::string result = get_entity_info_string(entity);
-            result += " Components:";
+            VN_DEBUG("{}", get_entity_info_string(entity));
 
             const ComponentMask& component_mask = get_entity_component_mask(entity);
-            bool first = true;
-
             for (std::size_t i = 0; i < MaxComponents; i++) {
                 if (component_mask[i]) {
-                    if (!first) {
-                        result += "\n";
-                    }
-
-                    result += m_component_names[i];
-                    first = false;
+                    VN_DEBUG("└──{}", m_component_names[i]);
                 }
             }
-            VN_DEBUG("{}", result);
         }
 
         /**
@@ -499,7 +490,7 @@ namespace vn {
          */
         static std::size_t next_component_index(const std::string& type_name) {
             static std::size_t index = 0;
-            m_component_names.push_back(type_name);
+            m_component_names.push_back(demangle(type_name.c_str()));
             return index++;
         }
 
