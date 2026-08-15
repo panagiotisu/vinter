@@ -34,6 +34,9 @@ namespace vn {
         virtual void render() {
         }
 
+        virtual void unload() {
+        }
+
         void quit();
 
         [[nodiscard]]
@@ -53,6 +56,10 @@ namespace vn {
 
         [[nodiscard]]
         ECS& get_ecs() noexcept;
+
+    protected:
+        virtual void handle_debug_gui_events(const SDL_Event& event) {
+        }
 
     private:
         std::unique_ptr<Window> m_window {};
