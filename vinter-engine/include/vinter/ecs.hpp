@@ -462,7 +462,7 @@ namespace vn {
             const ComponentMask& component_mask = get_entity_component_mask(entity);
             for (std::size_t i = 0; i < MaxComponents; i++) {
                 if (component_mask[i]) {
-                    VN_DEBUG("└──{}", m_component_names[i]);
+                    VN_DEBUG("└── {}", m_component_names[i]);
                 }
             }
         }
