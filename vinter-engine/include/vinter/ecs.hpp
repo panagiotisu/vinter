@@ -292,7 +292,6 @@ namespace vn {
             );
 
             m_component_pools[component_index] = std::make_unique<SparseSet<T>>();
-            VN_DEBUG("Registered Component '{}'.", demangle(typeid(T).name()));
         }
 
         /**
