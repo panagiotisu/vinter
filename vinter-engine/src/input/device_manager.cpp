@@ -36,7 +36,7 @@ namespace vn {
         std::array<Gamepad*, MaxGamepadCount> result {};
 
         for (std::size_t i = 0; i < MaxGamepadCount; i++) {
-            if (const auto& optional_id = m_gamepad_slots[i]; optional_id) {
+            if (const auto& optional_id = m_gamepad_slots_to_ids[i]; optional_id) {
                 if (auto it = m_gamepads.find(*optional_id); it != m_gamepads.end()) {
                     result[i] = it->second.get();
                 }
@@ -67,7 +67,7 @@ namespace vn {
     Gamepad* DeviceManager::get_gamepad(const std::size_t slot) const noexcept {
         VN_ASSERT(slot < MaxGamepadCount, "Gamepad slot out of range.");
 
-        if (const auto& optional_id = m_gamepad_slots[slot]; optional_id) {
+        if (const auto& optional_id = m_gamepad_slots_to_ids[slot]; optional_id) {
             return get_gamepad_by_id(*optional_id);
         }
         return nullptr;
@@ -109,9 +109,10 @@ namespace vn {
         }
 
         // Assign to first free slot.
-        for (auto& slot : m_gamepad_slots) {
-            if (!slot) {
-                slot = id;
+        for (std::size_t slot = 0; slot < m_gamepad_slots_to_ids.size(); slot++) {
+            if (!m_gamepad_slots_to_ids[slot].has_value()) {
+                m_gamepad_slots_to_ids[slot] = id;
+                VN_INFO("Gamepad with ID {} connected to slot {}.", id, slot);
                 break;
             }
         }
@@ -124,9 +125,11 @@ namespace vn {
         }
 
         // Remove from slot assignment.
-        for (auto& slot : m_gamepad_slots) {
-            if (slot && *slot == id) {
-                slot.reset();
+        for (std::size_t slot = 0; slot < m_gamepad_slots_to_ids.size(); slot++) {
+            if (m_gamepad_slots_to_ids[slot].has_value()
+                && m_gamepad_slots_to_ids[slot].value() == id) {
+                m_gamepad_slots_to_ids[slot].reset();
+                VN_INFO("Gamepad with ID {} disconnected from slot {}.", id, slot);
                 break;
             }
         }
