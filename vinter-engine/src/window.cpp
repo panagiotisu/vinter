@@ -17,6 +17,7 @@ namespace vn {
             VN_FATAL("Failed to create Window: ", SDL_GetError());
         }
         VN_INFO("Window context created successfully");
+        SDL_SetWindowPosition(m_handle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     }
 
     Window::~Window() {
