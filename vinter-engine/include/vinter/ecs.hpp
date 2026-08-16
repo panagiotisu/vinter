@@ -77,7 +77,7 @@ namespace vn {
         }
 
     private:
-        Id m_id {};
+        Id m_id { Null };
 
         Entity(Version version, Index index) : m_id(encode(version, index)) {
             static_assert(IdBits == sizeof(Id) * 8);
@@ -347,7 +347,7 @@ namespace vn {
             VN_ECS_ASSERT_ENTITY_VALID(entity);
             VN_ECS_ASSERT_ENTITY_ALIVE(entity);
 
-            const SparseSet<T>& component_pool = get_component_pool<T>();
+            SparseSet<T>& component_pool = get_component_pool<T>();
             T* component = component_pool.get(entity.index());
 
             VN_ASSERT(
