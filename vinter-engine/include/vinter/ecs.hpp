@@ -308,7 +308,7 @@ namespace vn {
          * @return T& The attached component reference.
          */
         template <typename T>
-        T& add(Entity entity, T&& component = {}) {
+        T& add(Entity entity, T component = {}) {
             VN_ECS_ASSERT_ENTITY_VALID(entity);
             VN_ECS_ASSERT_ENTITY_ALIVE(entity);
 
@@ -317,7 +317,7 @@ namespace vn {
 
             // If component already exists, overwrite its data with new data.
             if (component_pool.get(entity_index)) {
-                return *component_pool.set(entity_index, std::forward<T>(component));
+                return *component_pool.set(entity_index, std::move(component));
             }
 
             ComponentMask& component_mask = get_entity_component_mask(entity);
@@ -328,7 +328,7 @@ namespace vn {
                 demangle(typeid(T).name()),
                 get_entity_info_string(entity)
             );
-            return *component_pool.set(entity_index, std::forward<T>(component));
+            return *component_pool.set(entity_index, std::move(component));
         }
 
         /**
@@ -374,7 +374,7 @@ namespace vn {
             VN_ECS_ASSERT_ENTITY_VALID(entity);
             VN_ECS_ASSERT_ENTITY_ALIVE(entity);
 
-            const SparseSet<T>& component_pool = get_component_pool<T>();
+            SparseSet<T>& component_pool = get_component_pool<T>();
             return component_pool.get(entity.index());
         }
 
@@ -392,7 +392,7 @@ namespace vn {
             VN_ECS_ASSERT_ENTITY_VALID(entity);
             VN_ECS_ASSERT_ENTITY_ALIVE(entity);
 
-            const SparseSet<T>& component_pool = get_component_pool<T>();
+            SparseSet<T>& component_pool = get_component_pool<T>();
             const Entity::Index entity_index = entity.index();
 
             if (component_pool.get(entity_index) == nullptr) {
