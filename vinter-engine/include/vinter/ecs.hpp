@@ -324,7 +324,7 @@ namespace vn {
             set_component_mask_bit<T>(component_mask, true);
 
             VN_DEBUG(
-                "Attached component '{}' to {},",
+                "Attached Component '{}' to {},",
                 demangle(typeid(T).name()),
                 get_entity_info_string(entity)
             );
@@ -352,7 +352,7 @@ namespace vn {
 
             VN_ASSERT(
                 component != nullptr,
-                "{} missing component in '{}' pool.",
+                "{} missing Component in '{}' pool.",
                 get_entity_info_string(entity),
                 demangle(typeid(T).name())
             );
@@ -404,7 +404,7 @@ namespace vn {
 
             component_pool.unset(entity_index);
             VN_DEBUG(
-                "Removed component '{}' from {},",
+                "Removed Component '{}' from {},",
                 demangle(typeid(T).name()),
                 get_entity_info_string(entity)
             );
