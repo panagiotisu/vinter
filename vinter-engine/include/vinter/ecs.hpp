@@ -60,7 +60,7 @@ namespace vn {
         }
 
         [[nodiscard]]
-        bool is_null() const noexcept {
+        constexpr bool is_null() const noexcept {
             return m_id == Null;
         }
 
