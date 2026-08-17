@@ -8,6 +8,11 @@ namespace vn {
     App::App(const ProjectSettings& project_settings) {
         VN_INFO("Started {}", project_settings.window.title);
 
+        SDL_Init(
+            SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMEPAD
+            | SDL_INIT_EVENTS | SDL_INIT_SENSOR | SDL_INIT_CAMERA
+        );
+
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
         m_window = std::make_unique<Window>(project_settings.window);
@@ -47,6 +52,7 @@ namespace vn {
                 if (sdl_event.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
+                handle_debug_gui_events(sdl_event);
                 m_devices->handle_events(sdl_event);
             }
 
@@ -58,6 +64,8 @@ namespace vn {
             render();
             m_renderer->end_frame();
         }
+
+        unload();
     }
 
     void App::quit() {
