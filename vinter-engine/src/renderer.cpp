@@ -143,7 +143,7 @@ namespace vn {
         for (int i = 0; i < segments; ++i) {
             float angle = static_cast<float>(i) * increment;
             points.emplace_back(
-                center.x + (cosf(angle) * radius), center.y + (sinf(angle) * radius)
+                center.x + (std::cos(angle) * radius), center.y + (std::sin(angle) * radius)
             );
         }
 
