@@ -105,16 +105,16 @@ namespace vn {
         }
 
         // Calculate the direction vector and the line's perpendicular normal.
-        glm::vec2 direction { end - start };
+        glm::vec2 direction = end - start;
 
         // Rotate vector by 90 degrees (-y, x).
-        glm::vec2 normal { glm::normalize(glm::vec2(-direction.y, direction.x)) };
+        glm::vec2 normal = glm::normalize(glm::vec2(-direction.y, direction.x));
 
         // Offset the points by half of the thickness on both sides of the line.
-        glm::vec2 offset { normal * (weight * 0.5f) };
+        glm::vec2 offset = normal * weight * 0.5f;
 
         // Generate the 4 corners of the thick line rectangle.
-        std::vector<glm::vec2> points {
+        std::vector<glm::vec2> points = {
             start + offset, // Top-Left corner of the line
             end + offset,   // Top-Right corner of the line
             end - offset,   // Bottom-Right corner of the line
@@ -125,7 +125,7 @@ namespace vn {
     }
 
     void Renderer::draw_aabb(glm::vec2 position, glm::vec2 size, Color color) {
-        std::vector<glm::vec2> points {
+        std::vector<glm::vec2> points = {
             position,                                     // Top-Left.
             { position.x + size.x, position.y },          // Top-Right.
             { position.x + size.x, position.y + size.y }, // Bottom-Right.
@@ -136,7 +136,7 @@ namespace vn {
     }
 
     void Renderer::draw_circle(glm::vec2 center, float radius, Color color, std::size_t segments) {
-        std::vector<glm::vec2> points;
+        std::vector<glm::vec2> points {};
         points.reserve(segments);
 
         const float increment = 2.0f * std::numbers::pi_v<float> / static_cast<float>(segments);
@@ -167,7 +167,7 @@ namespace vn {
         // Build Triangle Fan Indices.
         // Anchor the fan at the very first vertex (index 0).
         // Then connect it to pairs of adjacent vertices to form triangles.
-        for (int i = 1; i < vertices.size() - 1; ++i) {
+        for (int i = 1; i < vertices.size() - 1; i++) {
             m_primitives.indices.push_back(base_index + 0);     // Anchor vertex.
             m_primitives.indices.push_back(base_index + i);     // Current vertex.
             m_primitives.indices.push_back(base_index + i + 1); // Next vertex.
