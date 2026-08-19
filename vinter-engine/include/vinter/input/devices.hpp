@@ -16,11 +16,11 @@ namespace vn {
 
     using DeviceID = std::uint32_t;
 
-    class DeviceManager {
+    class Devices {
         friend class App;
 
     public:
-        DeviceManager();
+        Devices();
 
         static constexpr std::size_t MaxGamepadCount { 8 };
 

@@ -8,7 +8,7 @@ union SDL_Event;
 
 namespace vn {
     class Mouse {
-        friend class DeviceManager;
+        friend class Devices;
 
     public:
         enum class Button : std::uint8_t {

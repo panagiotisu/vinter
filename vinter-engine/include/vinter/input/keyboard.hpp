@@ -8,7 +8,7 @@ union SDL_Event;
 
 namespace vn {
     class Keyboard {
-        friend class DeviceManager;
+        friend class Devices;
 
     public:
         Keyboard();

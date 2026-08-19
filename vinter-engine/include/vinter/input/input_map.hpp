@@ -10,7 +10,7 @@
 #include "vinter/utils/hash.hpp"
 
 namespace vn {
-    class DeviceManager;
+    class Devices;
 
     /**
      * @brief The unique hashed identifier corresponding to an action name.
@@ -79,7 +79,7 @@ namespace vn {
          *
          * @param devices The reference to the DeviceManager object.
          */
-        explicit InputMap(DeviceManager& devices);
+        explicit InputMap(Devices& devices);
 
         /**
          * @brief Binds a registered action to a key.
@@ -227,7 +227,7 @@ namespace vn {
             PressedState state
         ) const;
 
-        DeviceManager& m_devices;
+        Devices& m_devices;
         std::unordered_map<ActionID, std::vector<Binding>> m_bindings {};
     };
 } // namespace vn

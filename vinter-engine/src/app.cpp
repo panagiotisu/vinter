@@ -18,7 +18,7 @@ namespace vn {
         m_window = std::make_unique<Window>(project_settings.window);
         m_renderer = std::make_unique<Renderer>(project_settings.renderer, *m_window);
         m_time = std::make_unique<Time>();
-        m_devices = std::make_unique<DeviceManager>();
+        m_devices = std::make_unique<Devices>();
         m_input = std::make_unique<InputMap>(*m_devices);
         m_ecs = std::make_unique<ECS>();
     }
@@ -85,7 +85,7 @@ namespace vn {
         return *m_time;
     }
 
-    DeviceManager& App::get_devices() noexcept {
+    Devices& App::get_devices() noexcept {
         return *m_devices;
     }
 

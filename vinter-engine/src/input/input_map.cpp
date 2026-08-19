@@ -2,10 +2,10 @@
 
 #include <string_view>
 
-#include "vinter/input/device_manager.hpp"
+#include "vinter/input/devices.hpp"
 
 namespace vn {
-    InputMap::InputMap(DeviceManager& devices) : m_devices(devices) {
+    InputMap::InputMap(Devices& devices) : m_devices(devices) {
     }
 
     void InputMap::bind(const std::string_view action_name, Keyboard::Key key) {

@@ -13,7 +13,7 @@ namespace vn {
     struct Color;
 
     class Gamepad {
-        friend class DeviceManager;
+        friend class Devices;
 
     public:
         explicit Gamepad(unsigned int joystick_id);
