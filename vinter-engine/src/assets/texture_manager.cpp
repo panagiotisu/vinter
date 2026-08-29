@@ -12,7 +12,7 @@ namespace vn {
         );
     }
 
-    Texture::Handle TextureManager::load(const std::filesystem::path& path) {
+    Texture TextureManager::load(const std::filesystem::path& path) {
         const auto normalized_path = std::filesystem::canonical(path);
 
         if (const auto it = m_loaded_textures.find(normalized_path);
@@ -20,13 +20,31 @@ namespace vn {
             return it->second;
         }
 
-        Texture::Handle::Index index {};
+        SDL_Surface* surface = SDL_LoadPNG(normalized_path.c_str());
+        VN_ASSERT(
+            surface != nullptr,
+            "Failed to load PNG '{}': {}",
+            normalized_path.string(),
+            SDL_GetError()
+        );
+
+        SDL_Texture* native = SDL_CreateTextureFromSurface(m_renderer.get_native_handle(), surface);
+        SDL_DestroySurface(surface);
+        VN_ASSERT(
+            native != nullptr,
+            "Failed to create texture '{}': {}",
+            normalized_path.string(),
+            SDL_GetError()
+        );
+
+        const glm::uvec2 size = { surface->w, surface->h };
+        Texture::Index index {};
 
         if (!m_free_indices.empty()) {
             index = m_free_indices.back();
             m_free_indices.pop_back();
         } else {
-            index = static_cast<Handle::Index>(m_slots.size());
+            index = static_cast<Texture::Index>(m_slots.size());
             m_slots.emplace_back(Slot {});
         }
 
@@ -38,15 +56,15 @@ namespace vn {
             slot.version = 1;
         }
 
-        slot.texture.emplace(create_texture(normalized_path));
+        slot.native_texture = native;
 
-        const Texture::Handle texture { slot.version, index };
+        Texture texture(slot.version, index, size);
         m_loaded_textures.emplace(normalized_path, texture);
 
         return texture;
     }
 
-    void TextureManager::unload(Texture::Handle texture) {
+    void TextureManager::unload(Texture texture) {
         if (texture.is_null()) {
             return;
         }
@@ -64,85 +82,47 @@ namespace vn {
             return;
         }
 
-        if (!slot.texture.has_value()) {
+        if (slot.native_texture != nullptr) {
             return;
         }
 
-        // Remove the texture handle from the map.
-        for (auto it = m_loaded_textures.begin(); it != m_loaded_textures.end(); ++it) {
-            if (it->second == texture) {
-                m_loaded_textures.erase(it);
-                break;
-            }
-        }
-
-        slot.texture.reset();
+        SDL_DestroyTexture(slot.native_texture);
+        slot.native_texture = nullptr;
 
         ++slot.version;
 
-        if (slot.version > Texture::Handle::MaxVersion) {
+        if (slot.version > Texture::MaxVersion) {
             slot.version = 1;
         }
 
         m_free_indices.push_back(index);
     }
 
-    const Texture* TextureManager::try_get(Texture::Handle texture) const noexcept {
+    SDL_Texture* TextureManager::try_get(Texture texture) const noexcept {
         if (texture.is_null()) {
             return nullptr;
         }
 
         const auto index = texture.index();
-
         if (index >= m_slots.size()) {
             return nullptr;
         }
 
         const auto& slot = m_slots[index];
-
         if (slot.version != texture.version()) {
             return nullptr;
         }
 
-        if (!slot.texture.has_value()) {
-            return nullptr;
-        }
-
-        return &slot.texture.value();
+        return slot.native_texture;
     }
 
-    const Texture& TextureManager::get(Texture::Handle texture) const {
-        const Texture* texture_ptr = try_get(texture);
-        VN_ASSERT(texture_ptr != nullptr, "Invalid or stale Texture::Handle: {}", texture.id());
-        return *texture_ptr;
+    SDL_Texture* TextureManager::get(Texture texture) const {
+        auto* native_texture = try_get(texture);
+        VN_ASSERT(native_texture != nullptr, "Invalid or stale Texture: {}", texture.id());
+        return native_texture;
     }
 
-    bool TextureManager::contains(Texture::Handle texture) const noexcept {
+    bool TextureManager::contains(Texture texture) const noexcept {
         return try_get(texture) != nullptr;
-    }
-
-    Texture TextureManager::create_texture(const std::filesystem::path& path) const {
-        VN_ASSERT(
-            path.extension() == ".png",
-            "Unsupported texture image format:\n{}\n"
-            "Only PNGs are currently supported.",
-            path.string()
-        );
-
-        SDL_Surface* surface = SDL_LoadPNG(path.c_str());
-        VN_ASSERT(surface != nullptr, "Failed to load PNG '{}': {}", path.string(), SDL_GetError());
-        const glm::uvec2 size { surface->w, surface->h };
-
-        SDL_Texture* native_handle = SDL_CreateTextureFromSurface(
-            m_renderer.get_native_handle(), surface
-        );
-        VN_ASSERT(
-            native_handle != nullptr,
-            "Failed to create texture '{}': {}",
-            path.string(),
-            SDL_GetError()
-        );
-
-        return Texture { size, native_handle };
     }
 } // namespace vn

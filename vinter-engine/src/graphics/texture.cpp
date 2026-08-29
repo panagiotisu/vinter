@@ -3,9 +3,9 @@
 #include <SDL3/SDL.h>
 
 namespace vn {
-    Texture::Texture(glm::uvec2 size, SDL_Texture* handle) noexcept
-        : m_size(size)
-        , m_handle(handle, SDL_DestroyTexture) {
+    Texture::Texture(Version version, Index index, glm::uvec2 size)
+        : Handle(version, index)
+        , m_size(size) {
     }
 
     std::size_t Texture::get_width() const noexcept {
