@@ -1,11 +1,10 @@
 #include "vinter/graphics/renderer.hpp"
 
-#include <numbers>
-
 #include <SDL3/SDL.h>
 
 #include "vinter/logger.hpp"
 #include "vinter/settings/renderer_settings.hpp"
+#include "vinter/spatial/geometry.hpp"
 #include "vinter/window.hpp"
 
 namespace vn {
@@ -98,14 +97,14 @@ namespace vn {
         draw_polygon(points, color);
     }
 
-    void Renderer::draw_line(glm::vec2 start, glm::vec2 end, float weight, Color color) {
+    void Renderer::draw_line(const Line& line, float weight, Color color) {
         // Avoid division by zero if the start and end points are identical.
-        if (start == end) {
-            draw_point(start, color);
+        if (line.start == line.end) {
+            draw_point(line.start, color);
         }
 
         // Calculate the direction vector and the line's perpendicular normal.
-        glm::vec2 direction = end - start;
+        glm::vec2 direction = line.end - line.start;
 
         // Rotate vector by 90 degrees (-y, x).
         glm::vec2 normal = glm::normalize(glm::vec2(-direction.y, direction.x));
@@ -115,27 +114,27 @@ namespace vn {
 
         // Generate the 4 corners of the thick line rectangle.
         std::vector<glm::vec2> points = {
-            start + offset, // Top-Left corner of the line
-            end + offset,   // Top-Right corner of the line
-            end - offset,   // Bottom-Right corner of the line
-            start - offset  // Bottom-Left corner of the line
+            line.start + offset, // Top-Left corner of the line
+            line.end + offset,   // Top-Right corner of the line
+            line.end - offset,   // Bottom-Right corner of the line
+            line.start - offset  // Bottom-Left corner of the line
         };
 
         draw_polygon(points, color);
     }
 
-    void Renderer::draw_aabb(glm::vec2 position, glm::vec2 size, Color color) {
+    void Renderer::draw_aabb(const AABB& aabb, Color color) {
         std::vector<glm::vec2> points = {
-            position,                                     // Top-Left.
-            { position.x + size.x, position.y },          // Top-Right.
-            { position.x + size.x, position.y + size.y }, // Bottom-Right.
-            { position.x, position.y + size.y }           // Bottom-Left.
+            aabb.position,                                                    // Top-Left.
+            { aabb.position.x + aabb.size.x, aabb.position.y },               // Top-Right.
+            { aabb.position.x + aabb.size.x, aabb.position.y + aabb.size.y }, // Bottom-Right.
+            { aabb.position.x, aabb.position.y + aabb.size.y }                // Bottom-Left.
         };
 
         draw_polygon(points, color);
     }
 
-    void Renderer::draw_circle(glm::vec2 center, float radius, Color color, std::size_t segments) {
+    void Renderer::draw_circle(const Circle& circle, Color color, std::size_t segments) {
         std::vector<glm::vec2> points {};
         points.reserve(segments);
 
@@ -143,7 +142,8 @@ namespace vn {
         for (int i = 0; i < segments; ++i) {
             float angle = static_cast<float>(i) * increment;
             points.emplace_back(
-                center.x + (std::cos(angle) * radius), center.y + (std::sin(angle) * radius)
+                circle.center.x + (std::cos(angle) * circle.radius),
+                circle.center.y + (std::sin(angle) * circle.radius)
             );
         }
 

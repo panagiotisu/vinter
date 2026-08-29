@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
+#include <glm/glm.hpp>
 
-#include "glm/glm.hpp"
 #include "vinter/color.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
@@ -11,6 +10,9 @@ struct SDL_Window;
 
 namespace vn {
     class Window;
+    struct Line;
+    struct AABB;
+    struct Circle;
 
     class Renderer {
         friend class App;
@@ -24,17 +26,15 @@ namespace vn {
 
     public:
         Renderer(const RendererSettings& settings, const Window& window);
-
         ~Renderer();
 
         void set_clear_color(Color color);
-
         void set_vsync(RendererSettings::VSyncMode vsync);
 
         void draw_point(glm::vec2 position, Color color);
-        void draw_line(glm::vec2 start, glm::vec2 end, float weight, Color color);
-        void draw_aabb(glm::vec2 position, glm::vec2 size, Color color);
-        void draw_circle(glm::vec2 center, float radius, Color color, std::size_t segment = 100);
+        void draw_line(const Line& line, float weight, Color color);
+        void draw_aabb(const AABB& aabb, Color color);
+        void draw_circle(const Circle& circle, Color color, std::size_t segment = 100);
         void draw_polygon(const std::vector<glm::vec2>& vertices, Color color);
 
         [[nodiscard]]
