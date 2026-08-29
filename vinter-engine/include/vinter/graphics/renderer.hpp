@@ -13,6 +13,8 @@ namespace vn {
     struct Line;
     struct AABB;
     struct Circle;
+    class Texture;
+    class TextureManager;
 
     class Renderer {
         friend class App;
@@ -25,7 +27,11 @@ namespace vn {
         };
 
     public:
-        Renderer(const RendererSettings& settings, const Window& window);
+        Renderer(
+            const RendererSettings& settings,
+            const Window& window,
+            TextureManager& texture_manager
+        );
         ~Renderer();
 
         void set_clear_color(Color color);
@@ -36,6 +42,14 @@ namespace vn {
         void draw_aabb(const AABB& aabb, Color color);
         void draw_circle(const Circle& circle, Color color, std::size_t segment = 100);
         void draw_polygon(const std::vector<glm::vec2>& vertices, Color color);
+        void draw_texture(
+            const Texture& texture,
+            const AABB& src_aabb,
+            const AABB& dest_aabb,
+            float angle_deg = {},
+            glm::vec2 pivot = {},
+            glm::bvec2 flip = {}
+        );
 
         [[nodiscard]]
         SDL_Renderer* get_native_handle() const;
@@ -70,5 +84,6 @@ namespace vn {
         VertexArray m_primitives {};
 
         SDL_Renderer* m_handle {};
+        TextureManager& m_texture_manager;
     };
 } // namespace vn

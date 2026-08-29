@@ -2,14 +2,21 @@
 
 #include <SDL3/SDL.h>
 
+#include "vinter/assets/texture_manager.hpp"
+#include "vinter/graphics/texture.hpp"
 #include "vinter/logger.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 #include "vinter/spatial/geometry.hpp"
 #include "vinter/window.hpp"
 
 namespace vn {
-    Renderer::Renderer(const RendererSettings& settings, const Window& window)
-        : m_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr)) {
+    Renderer::Renderer(
+        const RendererSettings& settings,
+        const Window& window,
+        TextureManager& texture_manager
+    )
+        : m_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr))
+        , m_texture_manager(texture_manager) {
         VN_INFO("Creating Renderer...");
 
         VN_ASSERT(m_handle, "Failed creating Graphics Device: {}", SDL_GetError());
@@ -172,6 +179,50 @@ namespace vn {
             m_primitives.indices.push_back(base_index + i);     // Current vertex.
             m_primitives.indices.push_back(base_index + i + 1); // Next vertex.
         }
+    }
+
+    void Renderer::draw_texture(
+        const Texture& texture,
+        const AABB& src_aabb,
+        const AABB& dest_aabb,
+        float angle_deg,
+        glm::vec2 pivot,
+        glm::bvec2 flip
+    ) {
+        const SDL_FRect native_src_aabb = {
+            .x = src_aabb.position.x,
+            .y = src_aabb.position.y,
+            .w = src_aabb.size.x,
+            .h = src_aabb.size.y,
+        };
+
+        const SDL_FRect native_dest_aabb = {
+            .x = dest_aabb.position.x,
+            .y = dest_aabb.position.y,
+            .w = dest_aabb.size.x,
+            .h = dest_aabb.size.y,
+        };
+
+        const SDL_FPoint native_pivot = { pivot.x, pivot.y };
+
+        SDL_FlipMode native_flip_mode = SDL_FlipMode::SDL_FLIP_NONE;
+        if (flip.x && !flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_HORIZONTAL;
+        } else if (!flip.x && flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_VERTICAL;
+        } else if (flip.x && flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_HORIZONTAL_AND_VERTICAL;
+        }
+
+        SDL_RenderTextureRotated(
+            m_handle,
+            m_texture_manager.get(texture),
+            &native_src_aabb,
+            &native_dest_aabb,
+            angle_deg,
+            &native_pivot,
+            native_flip_mode
+        );
     }
 
     void Renderer::begin_frame() {
