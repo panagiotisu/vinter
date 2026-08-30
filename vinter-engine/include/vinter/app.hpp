@@ -7,6 +7,8 @@
 #include "vinter/color.hpp"
 #include "vinter/ecs.hpp"
 #include "vinter/graphics/renderer.hpp"
+#include "vinter/graphics/sprite.hpp"
+#include "vinter/graphics/texture.hpp"
 #include "vinter/input/devices.hpp"
 #include "vinter/input/gamepad.hpp"
 #include "vinter/input/input_map.hpp"
@@ -14,6 +16,8 @@
 #include "vinter/input/mouse.hpp"
 #include "vinter/logger.hpp"
 #include "vinter/settings/project_settings.hpp"
+#include "vinter/spatial/geometry.hpp"
+#include "vinter/spatial/transform.hpp"
 #include "vinter/time.hpp"
 #include "vinter/window.hpp"
 
@@ -58,12 +62,15 @@ namespace vn {
         [[nodiscard]]
         ECS& get_ecs() noexcept;
 
+        [[nodiscard]]
+        TextureManager& get_textures() noexcept;
+
     protected:
         virtual void handle_debug_gui_events(const SDL_Event& event) {
         }
 
     private:
-        std::unique_ptr<TextureManager> m_texture_manager {};
+        std::unique_ptr<TextureManager> m_textures {};
         std::unique_ptr<Window> m_window {};
         std::unique_ptr<Renderer> m_renderer {};
         std::unique_ptr<Time> m_time {};

@@ -17,17 +17,15 @@ namespace vn {
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
-        m_texture_manager = std::make_unique<TextureManager>();
+        m_textures = std::make_unique<TextureManager>();
         m_window = std::make_unique<Window>(project_settings.window);
-        m_renderer = std::make_unique<Renderer>(
-            project_settings.renderer, *m_window, *m_texture_manager
-        );
+        m_renderer = std::make_unique<Renderer>(project_settings.renderer, *m_window, *m_textures);
         m_time = std::make_unique<Time>();
         m_devices = std::make_unique<Devices>();
         m_input = std::make_unique<InputMap>(*m_devices);
         m_ecs = std::make_unique<ECS>();
 
-        m_texture_manager->attach_renderer(*m_renderer);
+        m_textures->attach_renderer(*m_renderer);
     }
 
     App::~App() {
@@ -39,7 +37,7 @@ namespace vn {
         m_time.reset();
         m_renderer.reset();
         m_window.reset();
-        m_texture_manager.reset();
+        m_textures.reset();
 
         SDL_Quit();
         VN_INFO("Shutting down");
@@ -103,5 +101,9 @@ namespace vn {
 
     ECS& App::get_ecs() noexcept {
         return *m_ecs;
+    }
+
+    TextureManager& App::get_textures() noexcept {
+        return *m_textures;
     }
 } // namespace vn
