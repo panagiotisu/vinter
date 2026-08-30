@@ -16,62 +16,59 @@ protected:
         get_input().bind("move_up", vn::Keyboard::Key::W);
         get_input().bind("move_down", vn::Keyboard::Key::S);
 
-        m_circly = get_ecs().create_entity("Circly");
-        get_ecs().add<Transform2D>(
-            m_circly,
-            {
-                .local = { .position = { get_window().get_width() / 2,
-                                         get_window().get_height() / 2 } },
-                .global = { .position = { get_window().get_width() / 2,
-                                          get_window().get_height() / 2 } },
-
+        m_player = get_ecs().create_entity("Player");
+        get_ecs().add<vn::component::Transform>(
+            m_player,
+            { 
+                .local = { 
+                    .position = {
+                        get_window().get_width() / 2,
+                        get_window().get_height() / 2,
+                    } 
+                },
+                .global = { 
+                    .position = {
+                        get_window().get_width() / 2,
+                        get_window().get_height() / 2,
+                    } 
+                } 
             }
         );
-        get_ecs().add<Health>(m_circly);
-        get_ecs().add<LinearKinematics2D>(m_circly);
-        get_ecs().add<Player>(m_circly);
-
-        vn::Entity circly_circle = get_ecs().create_entity();
-        get_ecs().add<Transform2D>(circly_circle, { .parent = m_circly });
-        get_ecs().add<Circle>(
-            circly_circle,
+        m_player_sprite = get_ecs().create_entity();
+        get_ecs().add<vn::component::Transform>(m_player_sprite, { .parent = m_player });
+        get_ecs().add<vn::component::Sprite>(
+            m_player_sprite,
             {
-                .color = vn::colors::Yellow,
-                .radius = 100.f,
+                .texture =
+                    get_textures().load("../../../examples/bomberman/assets/textures/player.png"),
+                .frame_size = { 32, 32 },
+                .frames_per_row = 36,
+                .frames_per_col = 1,
             }
         );
-
-        m_squary = get_ecs().create_entity("Squary");
-        get_ecs().add<Transform2D>(m_squary, {});
-        get_ecs().add<Health>(m_squary, {});
-        get_ecs().add<AABB>(
-            m_squary,
-            {
-                .color = vn::colors::Red,
-                .size = { 100.f, 120.f },
-            }
-        );
-
-        get_ecs().print_entity_components(m_circly);
-        get_ecs().print_entity_components(m_squary);
     }
 
     void update() override {
         const float delta = get_time().get_delta_time();
 
+        auto& player_sprite_transform = get_ecs().get<vn::component::Transform>(m_player_sprite);
+        if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Up)) {
+            player_sprite_transform.local.scale *= 1.5f;
+        } else if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Down)) {
+            player_sprite_transform.local.scale /= 1.5f;
+        }
+
         player_input_system(get_ecs(), get_input());
         integrate_acceleration_system(get_ecs(), delta);
         integrate_velocity_system(get_ecs(), delta);
-        transform_hierarchy_system(get_ecs());
+        vn::system::resolve_transform_tree(get_ecs());
     }
 
     void render() override {
-        aabb_drawing_system(get_ecs(), get_renderer());
-        circle_drawing_system(get_ecs(), get_renderer());
+        vn::system::draw_sprites(get_ecs(), get_renderer());
     }
 
 private:
-    vn::Entity m_circly {};
-    vn::Entity m_squary {};
-    vn::Entity m_camera {};
+    vn::Entity m_player {};
+    vn::Entity m_player_sprite {};
 };
