@@ -93,12 +93,11 @@ namespace vn::system {
     void draw_sprites(ECS& ecs, const Renderer& renderer) {
         ecs.view<component::Sprite, component::Transform>().for_each(
             [&](const component::Sprite& sprite, const component::Transform& transform) {
+                const auto col = sprite.current_frame % sprite.frames_per_row;
+                const auto row = sprite.current_frame / sprite.frames_per_row;
                 const AABB src_aabb = {
-                    .position = { static_cast<float>(sprite.current_frame % sprite.frames_per_row)
-                                      * sprite.frame_size.x,
-                                  static_cast<float>(sprite.current_frame)
-                                      / static_cast<float>(sprite.frames_per_row)
-                                      * sprite.frame_size.y },
+                    .position = { static_cast<float>(col) * sprite.frame_size.x,
+                                  static_cast<float>(row) * sprite.frame_size.y },
                     .size = sprite.frame_size,
                 };
 
