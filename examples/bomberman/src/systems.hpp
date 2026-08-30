@@ -42,8 +42,8 @@ inline void integrate_acceleration_system(vn::ECS& ecs, float delta) {
 }
 
 inline void integrate_velocity_system(vn::ECS& ecs, float delta) {
-    auto view = ecs.view<Transform2D, LinearKinematics2D>();
-    view.for_each([&](Transform2D& t, const LinearKinematics2D& lkin) {
+    auto view = ecs.view<vn::component::Transform, LinearKinematics2D>();
+    view.for_each([&](vn::component::Transform& t, const LinearKinematics2D& lkin) {
         t.local.position += lkin.velocity * delta;
     });
 }

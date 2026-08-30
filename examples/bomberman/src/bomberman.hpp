@@ -34,9 +34,18 @@ protected:
                 } 
             }
         );
+        get_ecs().add<LinearKinematics2D>(
+            m_player,
+            {
+                .max_speed = 300.f,
+                .acceleration_coefficient = 200.f,
+            }
+        );
+        get_ecs().add<Player>(m_player);
+
         m_player_sprite = get_ecs().create_entity();
         get_ecs().add<vn::component::Transform>(m_player_sprite, { .parent = m_player });
-        get_ecs().add<vn::component::Sprite>(
+        auto& player_sprite = get_ecs().add<vn::component::Sprite>(
             m_player_sprite,
             {
                 .texture =
@@ -46,6 +55,19 @@ protected:
                 .frames_per_col = 1,
             }
         );
+
+        auto& player_sprite_animator = get_ecs().add<vn::component::SpriteAnimator>(
+            m_player_sprite
+        );
+        player_sprite_animator.add("idle_down", 0, 3, 3, true);
+        player_sprite_animator.add("idle_downright", 3, 6, 3, true);
+        player_sprite_animator.add("idle_upright", 6, 9, 3, true);
+        player_sprite_animator.add("idle_up", 9, 12, 3, true);
+        player_sprite_animator.add("walking_down", 12, 15, 3, true);
+        player_sprite_animator.add("walking_downright", 15, 18, 3, true);
+        player_sprite_animator.add("walking_upright", 18, 21, 3, true);
+        player_sprite_animator.add("walking_up", 21, 24, 3, true);
+        player_sprite_animator.play(player_sprite, "idle_down");
     }
 
     void update() override {
@@ -62,6 +84,7 @@ protected:
         integrate_acceleration_system(get_ecs(), delta);
         integrate_velocity_system(get_ecs(), delta);
         vn::system::resolve_transform_tree(get_ecs());
+        vn::system::update_sprite_animations(get_ecs(), delta);
     }
 
     void render() override {
