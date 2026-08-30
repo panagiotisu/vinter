@@ -49,7 +49,7 @@ namespace vn {
             float angle_deg = {},
             glm::vec2 pivot = {},
             glm::bvec2 flip = {}
-        );
+        ) const;
 
         [[nodiscard]]
         SDL_Renderer* get_native_handle() const;

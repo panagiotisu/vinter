@@ -188,7 +188,7 @@ namespace vn {
         float angle_deg,
         glm::vec2 pivot,
         glm::bvec2 flip
-    ) {
+    ) const {
         const SDL_FRect native_src_aabb = {
             .x = src_aabb.position.x,
             .y = src_aabb.position.y,
