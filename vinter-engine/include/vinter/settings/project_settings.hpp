@@ -2,6 +2,7 @@
 
 #include "vinter/settings/physics_settings.hpp"
 #include "vinter/settings/renderer_settings.hpp"
+#include "vinter/settings/texture_settings.hpp"
 #include "vinter/settings/window_settings.hpp"
 
 namespace vn {
@@ -9,5 +10,6 @@ namespace vn {
         WindowSettings window {};
         RendererSettings renderer {};
         PhysicsSettings physics {};
+        TextureSettings textures {};
     };
 } // namespace vn

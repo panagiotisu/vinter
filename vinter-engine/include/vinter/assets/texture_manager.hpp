@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "vinter/graphics/texture.hpp"
+#include "vinter/settings/texture_settings.hpp"
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -14,7 +15,7 @@ namespace vn {
 
     class TextureManager {
     public:
-        TextureManager() = default;
+        explicit TextureManager(const TextureSettings& settings);
         ~TextureManager() = default;
 
         TextureManager(const TextureManager&) = delete;
@@ -26,6 +27,9 @@ namespace vn {
     public:
         [[nodiscard]]
         Texture load(const std::filesystem::path& path);
+        [[nodiscard]]
+        Texture
+        load(const std::filesystem::path& path, TextureSettings::ScaleMode scale_mode_override);
 
         void unload(Texture texture);
 
@@ -40,6 +44,9 @@ namespace vn {
 
         void attach_renderer(const Renderer& renderer);
 
+        [[nodiscard]]
+        static int to_native_scale_mode(TextureSettings::ScaleMode scale_mode);
+
     private:
         struct Slot {
             SDL_Texture* native_texture {};
@@ -49,7 +56,8 @@ namespace vn {
     private:
         SDL_Renderer* m_renderer_native_handle {};
 
-        std::vector<Slot> m_slots;
+        TextureSettings::ScaleMode m_global_scale_mode { TextureSettings::ScaleMode::Nearest };
+        std::vector<Slot> m_slots {};
         std::vector<Texture::Index> m_free_indices {};
         std::unordered_map<std::filesystem::path, Texture> m_loaded_textures {};
     };

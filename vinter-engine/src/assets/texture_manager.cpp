@@ -6,7 +6,18 @@
 #include "vinter/logger.hpp"
 
 namespace vn {
+    TextureManager::TextureManager(const TextureSettings& settings)
+        : m_global_scale_mode(settings.global_scale_mode) {
+    }
+
     Texture TextureManager::load(const std::filesystem::path& path) {
+        return load(path, m_global_scale_mode);
+    }
+
+    Texture TextureManager::load(
+        const std::filesystem::path& path,
+        TextureSettings::ScaleMode scale_mode_override
+    ) {
         const auto normalized_path = std::filesystem::canonical(path);
 
         if (const auto it = m_loaded_textures.find(normalized_path);
@@ -23,6 +34,9 @@ namespace vn {
         );
 
         SDL_Texture* native = SDL_CreateTextureFromSurface(m_renderer_native_handle, surface);
+        SDL_SetTextureScaleMode(
+            native, static_cast<SDL_ScaleMode>(to_native_scale_mode(scale_mode_override))
+        );
         SDL_DestroySurface(surface);
         VN_ASSERT(
             native != nullptr,
@@ -125,5 +139,13 @@ namespace vn {
         VN_ASSERT(
             m_renderer_native_handle != nullptr, "TextureManager must reference a valid renderer."
         );
+    }
+
+    int TextureManager::to_native_scale_mode(TextureSettings::ScaleMode scale_mode) {
+        switch (scale_mode) {
+            case TextureSettings::ScaleMode::Nearest: return SDL_SCALEMODE_NEAREST;
+            case TextureSettings::ScaleMode::Linear: return SDL_SCALEMODE_LINEAR;
+            case TextureSettings::ScaleMode::PixelArt: return SDL_SCALEMODE_PIXELART;
+        }
     }
 } // namespace vn

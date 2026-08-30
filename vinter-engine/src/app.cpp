@@ -17,7 +17,7 @@ namespace vn {
 
         // Forgo member initialization list to initialize SDL before other systems.
         // TODO: Bring back member initialization for Engine constructor or find better alternative.
-        m_textures = std::make_unique<TextureManager>();
+        m_textures = std::make_unique<TextureManager>(project_settings.textures);
         m_window = std::make_unique<Window>(project_settings.window);
         m_renderer = std::make_unique<Renderer>(project_settings.renderer, *m_window, *m_textures);
         m_time = std::make_unique<Time>();
