@@ -6,12 +6,6 @@
 #include "vinter/logger.hpp"
 
 namespace vn {
-    TextureManager::TextureManager(const Renderer& renderer) : m_renderer(renderer) {
-        VN_ASSERT(
-            m_renderer.get_native_handle() != nullptr, "TextureManager requires a valid renderer."
-        );
-    }
-
     Texture TextureManager::load(const std::filesystem::path& path) {
         const auto normalized_path = std::filesystem::canonical(path);
 
@@ -28,7 +22,7 @@ namespace vn {
             SDL_GetError()
         );
 
-        SDL_Texture* native = SDL_CreateTextureFromSurface(m_renderer.get_native_handle(), surface);
+        SDL_Texture* native = SDL_CreateTextureFromSurface(m_renderer_native_handle, surface);
         SDL_DestroySurface(surface);
         VN_ASSERT(
             native != nullptr,
@@ -124,5 +118,12 @@ namespace vn {
 
     bool TextureManager::contains(Texture texture) const noexcept {
         return try_get(texture) != nullptr;
+    }
+
+    void TextureManager::attach_renderer(const Renderer& renderer) {
+        m_renderer_native_handle = renderer.get_native_handle();
+        VN_ASSERT(
+            m_renderer_native_handle != nullptr, "TextureManager must reference a valid renderer."
+        );
     }
 } // namespace vn

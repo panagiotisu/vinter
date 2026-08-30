@@ -3,6 +3,7 @@
 #include <memory>
 
 // TODO: Place these in a fwd.hpp.
+#include "vinter/assets/texture_manager.hpp"
 #include "vinter/color.hpp"
 #include "vinter/ecs.hpp"
 #include "vinter/graphics/renderer.hpp"
@@ -62,6 +63,7 @@ namespace vn {
         }
 
     private:
+        std::unique_ptr<TextureManager> m_texture_manager {};
         std::unique_ptr<Window> m_window {};
         std::unique_ptr<Renderer> m_renderer {};
         std::unique_ptr<Time> m_time {};

@@ -216,7 +216,7 @@ namespace vn {
 
         SDL_RenderTextureRotated(
             m_handle,
-            m_texture_manager.get(texture),
+            m_texture_manager.try_get(texture),
             &native_src_aabb,
             &native_dest_aabb,
             angle_deg,
