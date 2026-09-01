@@ -90,7 +90,7 @@ namespace vn::ecs {
             }
 
             Entity entity(m_entity_infos[index].version, index);
-            VN_DEBUG("Created {}", get_entity_info_string(entity));
+            VN_INFO("Created {}", get_entity_info_string(entity));
             return entity;
         }
 
@@ -184,7 +184,7 @@ namespace vn::ecs {
             m_available_entities.push_back(index);
 
             entity.m_id = Entity::Null;
-            VN_DEBUG("Deleted {}", entity_info);
+            VN_INFO("Deleted {}", entity_info);
         }
 
         /**
@@ -244,8 +244,8 @@ namespace vn::ecs {
             ComponentMask& component_mask = get_entity_component_mask(entity);
             set_component_mask_bit<T>(component_mask, true);
 
-            VN_DEBUG(
-                "Attached Component '{}' to {},",
+            VN_INFO(
+                "Attached Component '{}' to {}",
                 demangle(typeid(T).name()),
                 get_entity_info_string(entity)
             );
@@ -324,7 +324,7 @@ namespace vn::ecs {
             set_component_mask_bit<T>(component_mask, false);
 
             component_pool.unset(entity_index);
-            VN_DEBUG(
+            VN_INFO(
                 "Removed Component '{}' from {},",
                 demangle(typeid(T).name()),
                 get_entity_info_string(entity)
