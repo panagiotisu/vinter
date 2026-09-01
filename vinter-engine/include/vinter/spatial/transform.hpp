@@ -1,10 +1,15 @@
 #pragma once
 
+#include <cmath>
+
 #include <glm/glm.hpp>
 
-#include "vinter/ecs.hpp"
+#include "vinter/ecs/entity.hpp"
+#include "vinter/ecs/system.hpp"
 
-namespace vn::component {
+namespace vn::ecs {
+    class Database;
+
     struct Transform {
         struct Data {
             glm::vec2 position {};
@@ -33,10 +38,13 @@ namespace vn::component {
 
         Data local {};
         Data global {};
-        vn::Entity parent {};
+        ecs::Entity parent {};
     };
-} // namespace vn::component
 
-namespace vn::system {
-    void resolve_transform_tree(ECS& ecs);
-} // namespace vn::system
+    class ResolveTransformTreeSystem : public ISystem {
+    public:
+        explicit ResolveTransformTreeSystem(Database& database);
+
+        void update(float delta) override;
+    };
+} // namespace vn::ecs

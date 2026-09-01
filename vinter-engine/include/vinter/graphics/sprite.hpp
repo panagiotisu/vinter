@@ -4,29 +4,31 @@
 
 #include <glm/glm.hpp>
 
+#include "vinter/ecs/system.hpp"
 #include "vinter/graphics/texture.hpp"
 
 namespace vn {
     struct Renderer;
-    struct ECS;
+} // namespace vn
 
-    namespace component {
-        struct Sprite {
-            Texture texture {};
-            glm::vec2 frame_size {};
-            std::size_t frames_per_row { 1 };
-            std::size_t frames_per_col { 1 };
-            std::size_t current_frame {};
-            glm::bvec2 flip {};
+namespace vn::ecs {
+    class Database;
 
-            [[nodiscard]]
-            static Sprite create(
-                Texture texture = {},
-                std::size_t frames_per_row = 1,
-                std::size_t frames_per_col = 1
-            );
-        };
-    } // namespace component
+    struct Sprite {
+        Texture texture {};
+        glm::vec2 frame_size {};
+        std::size_t frames_per_row { 1 };
+        std::size_t frames_per_col { 1 };
+        std::size_t current_frame {};
+        glm::bvec2 flip {};
+
+        [[nodiscard]]
+        static Sprite create(
+            Texture texture = {},
+            std::size_t frames_per_row = 1,
+            std::size_t frames_per_col = 1
+        );
+    };
 
     struct SpriteAnimation {
         float frame_time_elapsed {};
@@ -42,27 +44,32 @@ namespace vn {
         }
     };
 
-    namespace component {
-        struct SpriteAnimator {
-            std::unordered_map<std::string, SpriteAnimation> animations {};
-            SpriteAnimation* current_animation {};
-            float speed_scale = 1.f;
+    struct SpriteAnimator {
+        std::unordered_map<std::string, SpriteAnimation> animations {};
+        SpriteAnimation* current_animation {};
+        float speed_scale = 1.f;
 
-            void
-            add(const std::string& name,
-                std::size_t start_frame = 0,
-                std::size_t end_frame = 0,
-                float fps = 3,
-                bool looping = false);
+        void
+        add(const std::string& name,
+            std::size_t start_frame = 0,
+            std::size_t end_frame = 0,
+            float fps = 3,
+            bool looping = false);
 
-            void play(Sprite& sprite, const std::string& animation_name);
+        void play(Sprite& sprite, const std::string& animation_name);
 
-            void remove(const std::string& name);
-        };
-    } // namespace component
+        void remove(const std::string& name);
+    };
 
-    namespace system {
-        void update_sprite_animations(ECS& ecs, float delta);
-        void draw_sprites(ECS& ecs, const Renderer& renderer);
-    } // namespace system
-} // namespace vn
+    class SpriteSystem : public ISystem {
+    public:
+        explicit SpriteSystem(Database& database, Renderer& renderer);
+
+        void update(float delta) override;
+        void render() override;
+
+    private:
+        Renderer& m_renderer;
+    };
+
+} // namespace vn::ecs

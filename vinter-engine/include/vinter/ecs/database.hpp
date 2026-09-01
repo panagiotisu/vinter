@@ -1,35 +1,20 @@
 #pragma once
 
-#include <algorithm>
 #include <bitset>
-#include <cstddef>
 #include <functional>
 #include <memory>
-#include <string>
 #include <vector>
 
-#include "vinter/assets/handle.hpp"
 #include "vinter/containers/sparse_set.hpp"
 #include "vinter/containers/type_list.hpp"
+#include "vinter/ecs/entity.hpp"
+#include "vinter/logger.hpp"
 #include "vinter/utils/demangle.hpp"
 
-namespace vn {
-    template <typename... Components>
-    class View;
-    class ECS;
-
-    class Entity : public Handle {
-        friend class ECS;
-
+namespace vn::ecs {
+    class Database {
         template <typename... Components>
-        friend class View;
-
-        using Handle::Handle;
-    };
-
-    class ECS {
-        template <typename... Components>
-        friend class View;
+        friend class Query;
 
         // clang-format off
         #define VN_ECS_ASSERT_ENTITY_VALID(entity)                \
@@ -71,11 +56,11 @@ namespace vn {
          */
         using ComponentMask = std::bitset<MaxComponents>;
 
-        ECS() {
+        Database() {
             VN_INFO("Created ECS.");
         }
 
-        ~ECS() {
+        ~Database() {
             VN_INFO("Destroyed ECS.");
         }
 
@@ -380,8 +365,8 @@ namespace vn {
         }
 
         template <typename... Components>
-        View<Components...> view() {
-            return View<Components...> { this };
+        Query<Components...> query() {
+            return Query<Components...> { this };
         }
 
         [[nodiscard]]
@@ -586,7 +571,7 @@ namespace vn {
     };
 
     template <typename... Components>
-    class View {
+    class Query {
         /**
          * @brief Gives each component in Components an associated index which we can index.
          */
@@ -596,9 +581,9 @@ namespace vn {
         using ForEachFunc = std::function<void(Components&...)>;
         using ForEachFuncWithEntity = std::function<void(Entity, Components&...)>;
 
-        explicit View(ECS* ecs)
-            : m_ecs(ecs)
-            , m_view_pools { ecs->get_component_pool_ptr<Components>()... } {
+        explicit Query(Database* database)
+            : m_database(database)
+            , m_view_pools { database->get_component_pool_ptr<Components>()... } {
             VN_ASSERT(
                 ComponentTypes::size == m_view_pools.size(),
                 "Component type list and component pool array size must be the same."
@@ -630,8 +615,8 @@ namespace vn {
          */
         template <typename... ExcludedComponents>
         [[nodiscard]]
-        View& without() const {
-            m_excluded_pools = { m_ecs->get_component_pool_ptr<ExcludedComponents>()... };
+        Query& without() const {
+            m_excluded_pools = { m_database->get_component_pool_ptr<ExcludedComponents>()... };
             return *this;
         }
 
@@ -740,7 +725,7 @@ namespace vn {
 
         [[nodiscard]]
         Entity entity_from_index(Entity::Index entity_index) const {
-            return { m_ecs->m_entity_infos[entity_index].version, entity_index };
+            return { m_database->m_entity_infos[entity_index].version, entity_index };
         }
 
         /**
@@ -806,7 +791,7 @@ namespace vn {
         }
 
     private:
-        ECS* m_ecs {};
+        Database* m_database {};
 
         /**
          * @brief Stores component pools associated with the view via their component index from
@@ -821,4 +806,4 @@ namespace vn {
          */
         ISparseSet* m_smallest_pool {};
     };
-} // namespace vn
+} // namespace vn::ecs

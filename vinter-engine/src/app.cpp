@@ -23,7 +23,8 @@ namespace vn {
         m_time = std::make_unique<Time>();
         m_devices = std::make_unique<Devices>();
         m_input = std::make_unique<InputMap>(*m_devices);
-        m_ecs = std::make_unique<ECS>();
+        m_database = std::make_unique<ecs::Database>();
+        m_systems = std::make_unique<ecs::SystemQueue>();
 
         m_textures->attach_renderer(*m_renderer);
     }
@@ -31,7 +32,8 @@ namespace vn {
     App::~App() {
         VN_INFO("Destroying Vinter runtime...");
 
-        m_ecs.reset();
+        m_systems.reset();
+        m_database.reset();
         m_input.reset();
         m_devices.reset();
         m_time.reset();
@@ -51,26 +53,32 @@ namespace vn {
         load();
         VN_INFO("Assets loaded successfully");
 
+        m_systems->pre_update();
+
         VN_INFO("Starting game loop");
         while (m_running) {
-            SDL_Event sdl_event;
-            while (SDL_PollEvent(&sdl_event)) {
-                if (sdl_event.type == SDL_EVENT_QUIT) {
+            SDL_Event native_event;
+            while (SDL_PollEvent(&native_event)) {
+                if (native_event.type == SDL_EVENT_QUIT) {
                     m_running = false;
                 }
-                handle_debug_gui_events(sdl_event);
-                m_devices->handle_events(sdl_event);
+                handle_debug_gui_events(native_event);
+                m_devices->handle_events(native_event);
             }
 
             m_time->update();
-            update();
+            const auto delta = m_time->get_delta_time();
+            update(delta);
+            m_systems->update(delta);
             m_devices->update();
 
             m_renderer->begin_frame();
             render();
+            m_systems->render();
             m_renderer->end_frame();
         }
 
+        m_systems->post_update();
         unload();
     }
 
@@ -99,8 +107,12 @@ namespace vn {
         return *m_input;
     }
 
-    ECS& App::get_ecs() noexcept {
-        return *m_ecs;
+    ecs::Database& App::get_ecs() noexcept {
+        return *m_database;
+    }
+
+    ecs::SystemQueue& App::get_systems() noexcept {
+        return *m_systems;
     }
 
     TextureManager& App::get_textures() noexcept {

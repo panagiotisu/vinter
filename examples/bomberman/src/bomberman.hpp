@@ -17,7 +17,7 @@ protected:
         get_input().bind("move_down", vn::Keyboard::Key::S);
 
         m_player = get_ecs().create_entity("Player");
-        get_ecs().add<vn::component::Transform>(
+        get_ecs().add<vn::ecs::Transform>(
             m_player,
             { 
                 .local = { 
@@ -34,7 +34,7 @@ protected:
                 } 
             }
         );
-        get_ecs().add<LinearKinematics2D>(
+        get_ecs().add<LinearKinematics>(
             m_player,
             {
                 .max_speed = 300.f,
@@ -44,8 +44,8 @@ protected:
         get_ecs().add<Player>(m_player);
 
         m_player_sprite = get_ecs().create_entity();
-        get_ecs().add<vn::component::Transform>(m_player_sprite, { .parent = m_player });
-        auto& player_sprite = get_ecs().add<vn::component::Sprite>(
+        get_ecs().add<vn::ecs::Transform>(m_player_sprite, { .parent = m_player });
+        auto& player_sprite = get_ecs().add<vn::ecs::Sprite>(
             m_player_sprite,
             {
                 .texture =
@@ -56,9 +56,7 @@ protected:
             }
         );
 
-        auto& player_sprite_animator = get_ecs().add<vn::component::SpriteAnimator>(
-            m_player_sprite
-        );
+        auto& player_sprite_animator = get_ecs().add<vn::ecs::SpriteAnimator>(m_player_sprite);
         player_sprite_animator.add("idle_down", 0, 3, 3, true);
         player_sprite_animator.add("idle_downright", 3, 6, 3, true);
         player_sprite_animator.add("idle_upright", 6, 9, 3, true);
@@ -68,30 +66,23 @@ protected:
         player_sprite_animator.add("walking_upright", 18, 21, 3, true);
         player_sprite_animator.add("walking_up", 21, 24, 3, true);
         player_sprite_animator.play(player_sprite, "idle_down");
+
+        get_systems().add(PlayerInputSystem(get_ecs(), get_input()));
+        get_systems().add(KinematicsIntegrationSystem(get_ecs()));
+        get_systems().add(vn::ecs::ResolveTransformTreeSystem(get_ecs()));
+        get_systems().add(vn::ecs::SpriteSystem(get_ecs(), get_renderer()));
     }
 
-    void update() override {
-        const float delta = get_time().get_delta_time();
-
-        auto& player_sprite_transform = get_ecs().get<vn::component::Transform>(m_player_sprite);
+    void update(float /*delta*/) override {
+        auto& player_sprite_transform = get_ecs().get<vn::ecs::Transform>(m_player_sprite);
         if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Up)) {
             player_sprite_transform.local.scale *= 1.5f;
         } else if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Down)) {
             player_sprite_transform.local.scale /= 1.5f;
         }
-
-        player_input_system(get_ecs(), get_input());
-        integrate_acceleration_system(get_ecs(), delta);
-        integrate_velocity_system(get_ecs(), delta);
-        vn::system::resolve_transform_tree(get_ecs());
-        vn::system::update_sprite_animations(get_ecs(), delta);
-    }
-
-    void render() override {
-        vn::system::draw_sprites(get_ecs(), get_renderer());
     }
 
 private:
-    vn::Entity m_player {};
-    vn::Entity m_player_sprite {};
+    vn::ecs::Entity m_player {};
+    vn::ecs::Entity m_player_sprite {};
 };

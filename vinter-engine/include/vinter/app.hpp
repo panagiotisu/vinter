@@ -5,7 +5,9 @@
 // TODO: Place these in a fwd.hpp.
 #include "vinter/assets/texture_manager.hpp"
 #include "vinter/color.hpp"
-#include "vinter/ecs.hpp"
+#include "vinter/ecs/database.hpp"
+#include "vinter/ecs/entity.hpp"
+#include "vinter/ecs/system.hpp"
 #include "vinter/graphics/renderer.hpp"
 #include "vinter/graphics/sprite.hpp"
 #include "vinter/graphics/texture.hpp"
@@ -33,7 +35,7 @@ namespace vn {
         virtual void load() {
         }
 
-        virtual void update() {
+        virtual void update(float delta) {
         }
 
         virtual void render() {
@@ -60,7 +62,10 @@ namespace vn {
         InputMap& get_input() noexcept;
 
         [[nodiscard]]
-        ECS& get_ecs() noexcept;
+        ecs::Database& get_ecs() noexcept;
+
+        [[nodiscard]]
+        ecs::SystemQueue& get_systems() noexcept;
 
         [[nodiscard]]
         TextureManager& get_textures() noexcept;
@@ -76,7 +81,8 @@ namespace vn {
         std::unique_ptr<Time> m_time {};
         std::unique_ptr<Devices> m_devices {};
         std::unique_ptr<InputMap> m_input {};
-        std::unique_ptr<ECS> m_ecs {};
+        std::unique_ptr<ecs::Database> m_database {};
+        std::unique_ptr<ecs::SystemQueue> m_systems {};
 
         bool m_running { false };
     };
