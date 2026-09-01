@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <queue>
-#include <vector>
 
 #include <vinter/app.hpp>
 
