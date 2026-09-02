@@ -159,6 +159,7 @@ namespace vn {
     #define VN_INFO(...)    ((void)0)
     #define VN_WARNING(...) ((void)0)
     #define VN_ERROR(...)   ((void)0)
+    #define VN_FATAL(...)   ((void)0)
     #define VN_ASSERT(...)  ((void)0)
 
 #else
