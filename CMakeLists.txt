@@ -11,15 +11,25 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # In case of QTCreator.
 set(QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER ON CACHE INTERNAL "")
 
-# ASan profiling
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
+# Address Sanitizing (ASan).
 add_library(project_asan_flags INTERFACE)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "ASan configured for project-specific targets")
-    target_compile_options(project_asan_flags INTERFACE -fsanitize=address -fno-omit-frame-pointer)
-    target_link_options(project_asan_flags INTERFACE -fsanitize=address)
+if(MSVC)
+    target_compile_options(project_asan_flags INTERFACE
+        $<$<CONFIG:Debug>:/fsanitize=address>
+    )
+    # MSVC ASan requires turning off incremental linking.
+    target_link_options(project_asan_flags INTERFACE
+        $<$<CONFIG:Debug>:/fsanitize=address;/INCREMENTAL:NO>
+    )
+else() # GCC / Clang (Linux, macOS, MinGW).
+    target_compile_options(project_asan_flags INTERFACE
+        $<$<CONFIG:Debug>:-fsanitize=address;-fno-omit-frame-pointer>
+    )
+    target_link_options(project_asan_flags INTERFACE
+        $<$<CONFIG:Debug>:-fsanitize=address>
+    )
 endif()
+
 
 add_subdirectory("vinter-engine")
 add_subdirectory("vinter-editor")
