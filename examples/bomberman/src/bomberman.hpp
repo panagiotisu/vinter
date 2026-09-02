@@ -11,6 +11,8 @@ public:
 
 protected:
     void load() override {
+        m_font = get_fonts().load("../../../examples/bomberman/assets/fonts/ponde___.ttf", 24);
+
         get_input().bind("move_right", vn::Keyboard::Key::D);
         get_input().bind("move_left", vn::Keyboard::Key::A);
         get_input().bind("move_up", vn::Keyboard::Key::W);
@@ -82,7 +84,19 @@ protected:
         }
     }
 
+    void render() override {
+        get_renderer().draw_text(
+            std::format("FPS: {}", get_time().get_filtered_fps()),
+            m_font,
+            { 10.f, 10.f },
+            vn::colors::Green,
+            0,
+            1.5f
+        );
+    }
+
 private:
     vn::ecs::Entity m_player {};
     vn::ecs::Entity m_player_sprite {};
+    vn::Font m_font {};
 };

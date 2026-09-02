@@ -1,8 +1,12 @@
 #pragma once
 
+#include <string_view>
+
 #include <glm/glm.hpp>
 
+#include "vinter/assets/font_manager.hpp"
 #include "vinter/color.hpp"
+#include "vinter/graphics/font.hpp"
 #include "vinter/settings/renderer_settings.hpp"
 
 struct SDL_Renderer;
@@ -30,7 +34,8 @@ namespace vn {
         Renderer(
             const RendererSettings& settings,
             const Window& window,
-            TextureManager& texture_manager
+            TextureManager& texture_manager,
+            FontManager& font_manager
         );
         ~Renderer();
 
@@ -42,6 +47,7 @@ namespace vn {
         void draw_aabb(const AABB& aabb, Color color);
         void draw_circle(const Circle& circle, Color color, std::size_t segment = 100);
         void draw_polygon(const std::vector<glm::vec2>& vertices, Color color);
+
         void draw_texture(
             const Texture& texture,
             const AABB& src_aabb,
@@ -50,6 +56,17 @@ namespace vn {
             glm::vec2 pivot = {},
             glm::bvec2 flip = {}
         ) const;
+
+        void draw_text(
+            const std::string& text,
+            Font font,
+            glm::vec2 position,
+            Color color,
+            float angle_deg = {},
+            float scale = 1.f,
+            glm::vec2 pivot = {},
+            glm::bvec2 flip = {}
+        );
 
         [[nodiscard]]
         SDL_Renderer* get_native_handle() const;
@@ -83,7 +100,8 @@ namespace vn {
 
         VertexArray m_primitives {};
 
-        SDL_Renderer* m_handle {};
+        SDL_Renderer* m_native_handle {};
         TextureManager& m_texture_manager;
+        FontManager& m_font_manager;
     };
 } // namespace vn

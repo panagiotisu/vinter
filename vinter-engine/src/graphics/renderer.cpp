@@ -1,7 +1,9 @@
 #include "vinter/graphics/renderer.hpp"
 
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
+#include "vinter/assets/font_manager.hpp"
 #include "vinter/assets/texture_manager.hpp"
 #include "vinter/graphics/texture.hpp"
 #include "vinter/logger.hpp"
@@ -13,15 +15,17 @@ namespace vn {
     Renderer::Renderer(
         const RendererSettings& settings,
         const Window& window,
-        TextureManager& texture_manager
+        TextureManager& texture_manager,
+        FontManager& font_manager
     )
-        : m_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr))
-        , m_texture_manager(texture_manager) {
+        : m_native_handle(SDL_CreateRenderer(window.get_native_handle(), nullptr))
+        , m_texture_manager(texture_manager)
+        , m_font_manager(font_manager) {
         VN_INFO("Creating Renderer...");
 
-        VN_ASSERT(m_handle, "Failed creating Graphics Device: {}", SDL_GetError());
+        VN_ASSERT(m_native_handle, "Failed creating Graphics Device: {}", SDL_GetError());
 
-        VN_INFO("Renderer Driver: {}", SDL_GetRendererName(m_handle));
+        VN_INFO("Renderer Driver: {}", SDL_GetRendererName(m_native_handle));
 
         VN_INFO("Renderer created successfully");
 
@@ -35,8 +39,8 @@ namespace vn {
 
     Renderer::~Renderer() {
         VN_INFO("Destroying Renderer...");
-        if (m_handle != nullptr) {
-            SDL_DestroyRenderer(m_handle);
+        if (m_native_handle != nullptr) {
+            SDL_DestroyRenderer(m_native_handle);
         }
         VN_INFO("Renderer destroyed successfully");
     }
@@ -59,16 +63,16 @@ namespace vn {
     void Renderer::set_vsync(RendererSettings::VSyncMode vsync) {
         RendererSettings::VSyncMode applied = vsync;
 
-        if (!SDL_SetRenderVSync(m_handle, static_cast<int>(vsync))) {
+        if (!SDL_SetRenderVSync(m_native_handle, static_cast<int>(vsync))) {
             if (vsync == RendererSettings::VSyncMode::Adaptive
                 && SDL_SetRenderVSync(
-                    m_handle, static_cast<int>(RendererSettings::VSyncMode::Enabled)
+                    m_native_handle, static_cast<int>(RendererSettings::VSyncMode::Enabled)
                 )) {
                 applied = RendererSettings::VSyncMode::Enabled;
                 VN_WARNING("Adaptive VSync unavailable, using enabled VSync");
             } else {
                 SDL_SetRenderVSync(
-                    m_handle, static_cast<int>(RendererSettings::VSyncMode::Disabled)
+                    m_native_handle, static_cast<int>(RendererSettings::VSyncMode::Disabled)
                 );
                 applied = RendererSettings::VSyncMode::Disabled;
                 VN_WARNING("VSync unavailable, disabled");
@@ -215,10 +219,69 @@ namespace vn {
         }
 
         SDL_RenderTextureRotated(
-            m_handle,
+            m_native_handle,
             m_texture_manager.try_get(texture),
             &native_src_aabb,
             &native_dest_aabb,
+            angle_deg,
+            &native_pivot,
+            native_flip_mode
+        );
+    }
+
+    void Renderer::draw_text(
+        const std::string& text,
+        Font font,
+        glm::vec2 position,
+        Color color,
+        float angle_deg,
+        float scale,
+        glm::vec2 pivot,
+        glm::bvec2 flip
+    ) {
+        if (text.empty()) {
+            return;
+        }
+
+        TTF_Font* native_font = m_font_manager.try_get(font);
+        VN_ASSERT(native_font != nullptr, "Invalid font handle: {}", font.id());
+
+        auto rgba = color.to_rgba8();
+        SDL_Color native_color = { rgba.r, rgba.g, rgba.b, rgba.a };
+
+        SDL_Surface* surface = TTF_RenderText_Blended(
+            native_font, text.c_str(), text.length(), native_color
+        );
+        VN_ASSERT(surface != nullptr, "Failed to render text: {}", SDL_GetError());
+
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(m_native_handle, surface);
+        VN_ASSERT(texture != nullptr, "Failed to create texture for text: {}", SDL_GetError());
+
+        const SDL_FRect dest_aabb = {
+            position.x,
+            position.y,
+            static_cast<float>(surface->w) * scale,
+            static_cast<float>(surface->h) * scale,
+        };
+
+        SDL_DestroySurface(surface);
+
+        const SDL_FPoint native_pivot = { pivot.x, pivot.y };
+
+        SDL_FlipMode native_flip_mode = SDL_FlipMode::SDL_FLIP_NONE;
+        if (flip.x && !flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_HORIZONTAL;
+        } else if (!flip.x && flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_VERTICAL;
+        } else if (flip.x && flip.y) {
+            native_flip_mode = SDL_FlipMode::SDL_FLIP_HORIZONTAL_AND_VERTICAL;
+        }
+
+        SDL_RenderTextureRotated(
+            m_native_handle,
+            texture,
+            nullptr,
+            &dest_aabb,
             angle_deg,
             &native_pivot,
             native_flip_mode
@@ -231,23 +294,23 @@ namespace vn {
 
     void Renderer::end_frame() {
         flush_primitives();
-        SDL_RenderPresent(m_handle);
+        SDL_RenderPresent(m_native_handle);
     }
 
     void Renderer::clear() {
         m_primitives.clear();
 
         set_draw_color(m_clear_color);
-        SDL_RenderClear(m_handle);
+        SDL_RenderClear(m_native_handle);
     }
 
     void Renderer::set_draw_color(Color color) {
         ColorRGBA8 rgba8 { color.to_rgba8() };
-        SDL_SetRenderDrawColor(m_handle, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
+        SDL_SetRenderDrawColor(m_native_handle, rgba8.r, rgba8.g, rgba8.b, rgba8.a);
     }
 
     SDL_Renderer* Renderer::get_native_handle() const {
-        return m_handle;
+        return m_native_handle;
     }
 
     void Renderer::flush_primitives() {
@@ -263,7 +326,7 @@ namespace vn {
 
         // Issue a draw call for all primitives.
         SDL_RenderGeometry(
-            m_handle,
+            m_native_handle,
             nullptr,
             sdl_vertices,
             static_cast<int>(m_primitives.vertices.size()),

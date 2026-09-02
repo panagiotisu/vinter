@@ -3,11 +3,13 @@
 #include <memory>
 
 // TODO: Place these in a fwd.hpp.
+#include "vinter/assets/font_manager.hpp"
 #include "vinter/assets/texture_manager.hpp"
 #include "vinter/color.hpp"
 #include "vinter/ecs/database.hpp"
 #include "vinter/ecs/entity.hpp"
 #include "vinter/ecs/system.hpp"
+#include "vinter/graphics/font.hpp"
 #include "vinter/graphics/renderer.hpp"
 #include "vinter/graphics/sprite.hpp"
 #include "vinter/graphics/texture.hpp"
@@ -70,6 +72,9 @@ namespace vn {
         [[nodiscard]]
         TextureManager& get_textures() noexcept;
 
+        [[nodiscard]]
+        FontManager& get_fonts() noexcept;
+
     protected:
         virtual void handle_debug_gui_events(const SDL_Event& event) {
         }
@@ -84,6 +89,7 @@ namespace vn {
     private:
         std::unique_ptr<SDLContext> m_ctx {};
         std::unique_ptr<TextureManager> m_textures {};
+        std::unique_ptr<FontManager> m_fonts {};
         std::unique_ptr<Window> m_window {};
         std::unique_ptr<Renderer> m_renderer {};
         std::unique_ptr<Time> m_time {};

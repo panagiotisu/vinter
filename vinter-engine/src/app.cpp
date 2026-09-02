@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "vinter/logger.hpp"
 
@@ -10,9 +11,11 @@ namespace vn {
     App::SDLContext::SDLContext(int init_flags) {
         VN_INFO("Started Vinter Engine.");
         SDL_Init(init_flags);
+        TTF_Init();
     }
 
     App::SDLContext::~SDLContext() {
+        TTF_Quit();
         SDL_Quit();
         VN_INFO("Shutting down.");
     }
@@ -25,8 +28,16 @@ namespace vn {
               )
           )
         , m_textures(std::make_unique<TextureManager>(project_settings.textures))
+        , m_fonts(std::make_unique<FontManager>())
         , m_window(std::make_unique<Window>(project_settings.window))
-        , m_renderer(std::make_unique<Renderer>(project_settings.renderer, *m_window, *m_textures))
+        , m_renderer(
+              std::make_unique<Renderer>(
+                  project_settings.renderer,
+                  *m_window,
+                  *m_textures,
+                  *m_fonts
+              )
+          )
         , m_time(std::make_unique<Time>())
         , m_devices(std::make_unique<Devices>())
         , m_input(std::make_unique<InputMap>(*m_devices))
@@ -113,5 +124,9 @@ namespace vn {
 
     TextureManager& App::get_textures() noexcept {
         return *m_textures;
+    }
+
+    FontManager& App::get_fonts() noexcept {
+        return *m_fonts;
     }
 } // namespace vn
