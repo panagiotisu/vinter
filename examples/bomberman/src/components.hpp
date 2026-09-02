@@ -26,4 +26,16 @@ struct SpriteDirector {
         DownRight,
         Down,
     };
+
+    enum class FacePattern : std::uint8_t {
+        Linear,
+        Square,
+        Rhombus,
+        Hexagon,
+        Octagon,
+    };
+
+    Cardinal cardinal { Cardinal::Right };
+    FacePattern face_pattern { FacePattern::Linear };
+    glm::vec2 face_direction { 1.f, 0.f };
 };
