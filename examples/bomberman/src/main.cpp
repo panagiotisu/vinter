@@ -10,7 +10,7 @@ auto main() -> int {
         },
         .renderer = {
             .backend = vn::RendererSettings::Backend::Automatic,
-            .vsync = vn::RendererSettings::VSyncMode::Adaptive,
+            .vsync = vn::RendererSettings::VSyncMode::Disabled,
         },
         .textures = {
             .global_scale_mode = vn::TextureSettings::ScaleMode::PixelArt,
