@@ -37,7 +37,7 @@ include_dependency(glm https://github.com/g-truc/glm.git 1.0.2)
 # Library
 ######################################################################################################################
 add_library(${PROJECT_NAME} STATIC)
-target_link_libraries(${PROJECT_NAME} PUBLIC project_asan_flags)
+target_link_libraries(${PROJECT_NAME} PUBLIC asan_flags)
 
 file(GLOB PUBLIC_HEADERS CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_LIST_DIR}/include/vinter/*.h"

@@ -12,20 +12,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER ON CACHE INTERNAL "")
 
 # Address Sanitizing (ASan).
-add_library(project_asan_flags INTERFACE)
+add_library(asan_flags INTERFACE)
 if(MSVC)
-    target_compile_options(project_asan_flags INTERFACE
+    target_compile_options(asan_flags INTERFACE
         $<$<CONFIG:Debug>:/fsanitize=address>
     )
     # MSVC ASan requires turning off incremental linking.
-    target_link_options(project_asan_flags INTERFACE
+    target_link_options(asan_flags INTERFACE
         $<$<CONFIG:Debug>:/fsanitize=address;/INCREMENTAL:NO>
     )
 else() # GCC / Clang (Linux, macOS, MinGW).
-    target_compile_options(project_asan_flags INTERFACE
+    target_compile_options(asan_flags INTERFACE
         $<$<CONFIG:Debug>:-fsanitize=address;-fno-omit-frame-pointer>
     )
-    target_link_options(project_asan_flags INTERFACE
+    target_link_options(asan_flags INTERFACE
         $<$<CONFIG:Debug>:-fsanitize=address>
     )
 endif()
