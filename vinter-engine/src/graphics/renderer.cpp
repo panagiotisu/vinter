@@ -286,6 +286,8 @@ namespace vn {
             &native_pivot,
             native_flip_mode
         );
+
+        SDL_DestroyTexture(texture);
     }
 
     void Renderer::begin_frame() {
