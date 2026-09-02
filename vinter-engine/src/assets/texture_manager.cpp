@@ -37,7 +37,6 @@ namespace vn {
         SDL_SetTextureScaleMode(
             native, static_cast<SDL_ScaleMode>(to_native_scale_mode(scale_mode_override))
         );
-        SDL_DestroySurface(surface);
         VN_ASSERT(
             native != nullptr,
             "Failed to create texture '{}': {}",
@@ -46,6 +45,9 @@ namespace vn {
         );
 
         const glm::uvec2 size = { surface->w, surface->h };
+
+        SDL_DestroySurface(surface);
+
         Texture::Index index {};
 
         if (!m_free_indices.empty()) {
