@@ -20,6 +20,7 @@
 #include "vinter/input/mouse.hpp"
 #include "vinter/logger.hpp"
 #include "vinter/settings/project_settings.hpp"
+#include "vinter/spatial/angle.hpp"
 #include "vinter/spatial/geometry.hpp"
 #include "vinter/spatial/transform.hpp"
 #include "vinter/time.hpp"
