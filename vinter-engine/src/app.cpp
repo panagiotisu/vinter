@@ -7,55 +7,51 @@
 #include "vinter/logger.hpp"
 
 namespace vn {
-    App::App(const ProjectSettings& project_settings) {
+    App::SDLContext::SDLContext(int init_flags) {
+        VN_INFO("Started Vinter Engine.");
+        SDL_Init(init_flags);
+    }
+
+    App::SDLContext::~SDLContext() {
+        SDL_Quit();
+        VN_INFO("Shutting down.");
+    }
+
+    App::App(const ProjectSettings& project_settings)
+        : m_ctx(
+              std::make_unique<SDLContext>(
+                  SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC
+                  | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS | SDL_INIT_SENSOR | SDL_INIT_CAMERA
+              )
+          )
+        , m_textures(std::make_unique<TextureManager>(project_settings.textures))
+        , m_window(std::make_unique<Window>(project_settings.window))
+        , m_renderer(std::make_unique<Renderer>(project_settings.renderer, *m_window, *m_textures))
+        , m_time(std::make_unique<Time>())
+        , m_devices(std::make_unique<Devices>())
+        , m_input(std::make_unique<InputMap>(*m_devices))
+        , m_database(std::make_unique<ecs::Database>())
+        , m_systems(std::make_unique<ecs::SystemQueue>()) {
+        VN_INFO("Vinter Engine subsystems initialized successfully.");
         VN_INFO("Started {}", project_settings.window.title);
-
-        SDL_Init(
-            SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMEPAD
-            | SDL_INIT_EVENTS | SDL_INIT_SENSOR | SDL_INIT_CAMERA
-        );
-
-        // Forgo member initialization list to initialize SDL before other systems.
-        // TODO: Bring back member initialization for Engine constructor or find better alternative.
-        m_textures = std::make_unique<TextureManager>(project_settings.textures);
-        m_window = std::make_unique<Window>(project_settings.window);
-        m_renderer = std::make_unique<Renderer>(project_settings.renderer, *m_window, *m_textures);
-        m_time = std::make_unique<Time>();
-        m_devices = std::make_unique<Devices>();
-        m_input = std::make_unique<InputMap>(*m_devices);
-        m_database = std::make_unique<ecs::Database>();
-        m_systems = std::make_unique<ecs::SystemQueue>();
-
         m_textures->attach_renderer(*m_renderer);
     }
 
     App::~App() {
         VN_INFO("Destroying Vinter runtime...");
-
-        m_systems.reset();
-        m_database.reset();
-        m_input.reset();
-        m_devices.reset();
-        m_time.reset();
-        m_renderer.reset();
-        m_window.reset();
-        m_textures.reset();
-
-        SDL_Quit();
-        VN_INFO("Shutting down");
     }
 
     void App::run() {
-        VN_INFO("Executing Vinter runtime");
+        VN_INFO("Executing Vinter runtime...");
         m_running = true;
 
         VN_INFO("Loading assets...");
         load();
-        VN_INFO("Assets loaded successfully");
+        VN_INFO("Assets loaded successfully.");
 
         m_systems->pre_update();
 
-        VN_INFO("Starting game loop");
+        VN_INFO("Starting game loop...");
         while (m_running) {
             SDL_Event native_event;
             while (SDL_PollEvent(&native_event)) {
@@ -83,7 +79,7 @@ namespace vn {
     }
 
     void App::quit() {
-        VN_INFO("Game loop terminated successfully");
+        VN_INFO("Game loop terminated.");
         m_running = false;
     }
 

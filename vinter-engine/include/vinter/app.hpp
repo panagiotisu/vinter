@@ -75,6 +75,14 @@ namespace vn {
         }
 
     private:
+        class SDLContext {
+        public:
+            explicit SDLContext(int init_flags);
+            ~SDLContext();
+        };
+
+    private:
+        std::unique_ptr<SDLContext> m_ctx {};
         std::unique_ptr<TextureManager> m_textures {};
         std::unique_ptr<Window> m_window {};
         std::unique_ptr<Renderer> m_renderer {};
