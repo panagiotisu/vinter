@@ -12,6 +12,7 @@ namespace vn {
         VN_INFO("Started Vinter Engine.");
         SDL_Init(init_flags);
         TTF_Init();
+        VN_INFO("Running on platform: {}", SDL_GetPlatform());
     }
 
     App::SDLContext::~SDLContext() {
