@@ -69,9 +69,13 @@ protected:
         player_sprite_animator.add("walking_up", 21, 24, 3, true);
         player_sprite_animator.play(player_sprite, "idle_down");
 
-        get_systems().add(PlayerInputSystem(get_ecs(), get_input()));
-        get_systems().add(KinematicsIntegrationSystem(get_ecs()));
+        get_ecs().add<SpriteDirector>(
+            m_player_sprite, { .face_pattern = SpriteDirector::FacePattern::Hexagon }
+        );
+
         get_systems().add(vn::ecs::ResolveTransformTreeSystem(get_ecs()));
+        get_systems().add(PlayerInputSystem(get_ecs(), get_input(), get_devices().get_mouse()));
+        get_systems().add(KinematicsIntegrationSystem(get_ecs()));
         get_systems().add(vn::ecs::SpriteSystem(get_ecs(), get_renderer()));
     }
 

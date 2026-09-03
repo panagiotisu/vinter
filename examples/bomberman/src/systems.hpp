@@ -8,12 +8,19 @@
 
 class PlayerInputSystem : public vn::ecs::ISystem {
 public:
-    PlayerInputSystem(vn::ecs::Database& database, vn::InputMap& input)
+    PlayerInputSystem(vn::ecs::Database& database, vn::InputMap& input, vn::Mouse& mouse)
         : ISystem(database)
-        , m_input(input) {
+        , m_input(input)
+        , m_mouse(mouse) {
     }
 
-    void update(float /*delta*/) override {
+    void update(float delta) override {
+        update_player_movement(delta);
+        update_player_face_direction(delta);
+    }
+
+private:
+    void update_player_movement(float /*delta*/) {
         m_database.query<Player, LinearKinematics>().for_each([&](const Player&,
                                                                   LinearKinematics& lkin) {
             lkin.acceleration_direction = {};
@@ -35,8 +42,20 @@ public:
         });
     }
 
+    void update_player_face_direction(float /*delta*/) {
+        m_database.query<vn::ecs::Transform, SpriteDirector>().for_each(
+            [&](const vn::ecs::Transform& transform, SpriteDirector& director) {
+                const glm::vec2 mouse_position = m_mouse.get_position();
+                director.face_direction = glm::normalize(
+                    mouse_position - transform.global.position
+                );
+            }
+        );
+    }
+
 private:
     vn::InputMap& m_input;
+    vn::Mouse& m_mouse;
 };
 
 class KinematicsIntegrationSystem : public vn::ecs::ISystem {
@@ -74,16 +93,21 @@ public:
     explicit DirectionalAnimationSystem(vn::ecs::Database& database) : ISystem(database) {
     }
 
-    void update(float /* delta */) override {
+    void update(float /*delta*/) override {
         update_animation_cardinal_direction();
         update_sprite_flipping();
     }
 
 private:
     void update_animation_cardinal_direction() {
-        m_database.query<SpriteDirector, vn::ecs::SpriteAnimator>().for_each(
-            [&](SpriteDirector& director, vn::ecs::SpriteAnimator& animator) {
-
+        m_database.query<SpriteDirector, vn::ecs::Sprite, vn::ecs::SpriteAnimator>().for_each(
+            [&](SpriteDirector& director,
+                vn::ecs::Sprite& sprite,
+                vn::ecs::SpriteAnimator& animator) {
+                director.cardinal = cardinal_from_vector(
+                    director.face_pattern, director.face_direction
+                );
+                animator.play(sprite, "idle" + cardinal_to_string(director.cardinal));
             }
         );
     }
@@ -96,6 +120,17 @@ private:
                 );
             }
         );
+    }
+
+    [[nodiscard]]
+    static std::string cardinal_to_string(SpriteDirector::Cardinal cardinal) {
+        switch (cardinal) {
+            case SpriteDirector::Cardinal::Up: return "_up";
+            case SpriteDirector::Cardinal::UpRight: return "_upright";
+            case SpriteDirector::Cardinal::Right: return "_right";
+            case SpriteDirector::Cardinal::DownRight: return "_downright";
+            case SpriteDirector::Cardinal::Down: return "_down";
+        }
     }
 
     [[nodiscard]]
