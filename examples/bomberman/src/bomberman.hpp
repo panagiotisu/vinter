@@ -75,6 +75,7 @@ protected:
 
         get_systems().add(vn::ecs::ResolveTransformTreeSystem(get_ecs()));
         get_systems().add(PlayerInputSystem(get_ecs(), get_input(), get_devices().get_mouse()));
+        get_systems().add(DirectionalAnimationSystem(get_ecs()));
         get_systems().add(KinematicsIntegrationSystem(get_ecs()));
         get_systems().add(vn::ecs::SpriteSystem(get_ecs(), get_renderer()));
     }
