@@ -6,7 +6,7 @@
 
 namespace vn {
     /**
-     * @brief Convenience Angle object representation to conveniently switch between degree and
+     * @brief Angle object to conveniently switch between degree and
      * radians representations.
      */
     class Angle {
