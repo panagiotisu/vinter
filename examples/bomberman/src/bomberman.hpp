@@ -49,13 +49,9 @@ protected:
         get_ecs().add<vn::ecs::Transform>(m_player_sprite, { .parent = m_player });
         auto& player_sprite = get_ecs().add<vn::ecs::Sprite>(
             m_player_sprite,
-            {
-                .texture =
-                    get_textures().load("../../../examples/bomberman/assets/textures/player.png"),
-                .frame_size = { 32, 32 },
-                .frames_per_row = 36,
-                .frames_per_col = 1,
-            }
+            vn::ecs::Sprite::create(
+                get_textures().load("../../../examples/bomberman/assets/textures/player.png"), 36, 1
+            )
         );
 
         auto& player_sprite_animator = get_ecs().add<vn::ecs::SpriteAnimator>(m_player_sprite);
@@ -95,6 +91,19 @@ protected:
             m_font,
             { 10.f, 10.f },
             vn::colors::Green,
+            0,
+            1.5f
+        );
+
+        get_renderer().draw_text(
+            std::format(
+                "Mouse X: {}, Y: {}",
+                get_devices().get_mouse().get_position().x,
+                get_devices().get_mouse().get_position().y
+            ),
+            m_font,
+            { 10.f, 50.f },
+            vn::colors::Yellow,
             0,
             1.5f
         );
