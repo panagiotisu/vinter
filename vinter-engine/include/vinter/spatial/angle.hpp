@@ -99,7 +99,7 @@ namespace vn {
         }
 
     private:
-        static constexpr float Pi { std::numbers::pi_v<decltype(Pi)> };
+        static constexpr float Pi { std::numbers::pi_v<float> };
         static constexpr float Tau { 2 * Pi };
 
         float m_radians {};

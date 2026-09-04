@@ -25,7 +25,7 @@ namespace vn {
             return it->second;
         }
 
-        SDL_Surface* surface = SDL_LoadPNG(normalized_path.c_str());
+        SDL_Surface* surface = SDL_LoadPNG(normalized_path.string().c_str());
         VN_ASSERT(
             surface != nullptr,
             "Failed to load PNG '{}': {}",

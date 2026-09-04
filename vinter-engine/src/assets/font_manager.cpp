@@ -23,7 +23,7 @@ namespace vn {
             return it->second;
         }
 
-        TTF_Font* native_font = TTF_OpenFont(normalized_path.c_str(), static_cast<float>(size));
+        TTF_Font* native_font = TTF_OpenFont(normalized_path.string().c_str(), static_cast<float>(size));
         VN_ASSERT(
             native_font != nullptr,
             "Failed to load font '{}': {}",
