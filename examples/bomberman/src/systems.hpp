@@ -113,11 +113,9 @@ private:
     }
 
     void update_sprite_flipping() {
-        m_database.query<vn::ecs::Transform, SpriteDirector>().for_each(
-            [&](vn::ecs::Transform& transform, const SpriteDirector& director) {
-                transform.local.scale.x = std::copysign(
-                    transform.local.scale.x, director.face_direction.x
-                );
+        m_database.query<vn::ecs::Sprite, SpriteDirector>().for_each(
+            [&](vn::ecs::Sprite& sprite, const SpriteDirector& director) {
+                sprite.flip.x = director.face_direction.x < 0;
             }
         );
     }
