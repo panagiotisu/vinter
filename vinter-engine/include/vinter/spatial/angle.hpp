@@ -38,10 +38,10 @@ namespace vn {
          * between the vector and the x-axis.
          *
          * @param vector The vector whose angle with the x-axis forms the Angle object.
-         * @return constexpr Angle The constructed Angle object.
+         * @return Angle The constructed Angle object.
          */
         [[nodiscard]]
-        static constexpr Angle from_vector(glm::vec2 vector) {
+        static Angle from_vector(glm::vec2 vector) {
             return Angle(std::atan2(vector.y, vector.x));
         }
 
@@ -69,10 +69,10 @@ namespace vn {
         /**
          * @brief Wraps the angle into the range: [-π, π) radians.
          *
-         * @return constexpr Angle The signed wrapped angle.
+         * @return Angle The signed wrapped angle.
          */
         [[nodiscard]]
-        constexpr Angle wrap_signed() const {
+        Angle wrap_signed() const {
             float wrapped = std::fmod(m_radians + Pi, Tau);
             if (wrapped < 0) {
                 wrapped += Tau;
@@ -83,10 +83,10 @@ namespace vn {
         /**
          * @brief Wraps the angle into the range: [0, 2π) radians.
          *
-         * @return constexpr Angle The unsigned wrapped angle.
+         * @return Angle The unsigned wrapped angle.
          */
         [[nodiscard]]
-        constexpr Angle wrap_unsigned() const {
+         Angle wrap_unsigned() const {
             float wrapped = std::fmod(m_radians, Tau);
             if (wrapped < 0) {
                 wrapped += Tau;
