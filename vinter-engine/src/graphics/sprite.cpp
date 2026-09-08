@@ -110,8 +110,10 @@ namespace vn::ecs {
 
             const glm::vec2 pivot = { dest_aabb.size.x / 2, dest_aabb.size.y / 2 };
 
+            const glm::bvec2 flip = { transform.global.scale.x < 0, transform.global.scale.y < 0 };
+
             m_renderer.draw_texture(
-                sprite.texture, src_aabb, dest_aabb, transform.global.rotation, pivot, sprite.flip
+                sprite.texture, src_aabb, dest_aabb, transform.global.rotation, pivot, flip
             );
         });
     }
