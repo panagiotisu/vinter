@@ -103,12 +103,14 @@ namespace vn::ecs {
                 .size = sprite.frame_size,
             };
 
-            const AABB dest_aabb = {
-                .position = { transform.global.position.x, transform.global.position.y },
-                .size = src_aabb.size * transform.global.scale,
-            };
+            const glm::vec2 scale = glm::abs(transform.global.scale);
+            const glm::vec2 size = src_aabb.size * scale;
+            const glm::vec2 pivot = size * 0.5f;
 
-            const glm::vec2 pivot = { dest_aabb.size.x / 2, dest_aabb.size.y / 2 };
+            const AABB dest_aabb = {
+                .position = transform.global.position - pivot,
+                .size = size,
+            };
 
             const glm::bvec2 flip = { transform.global.scale.x < 0, transform.global.scale.y < 0 };
 
