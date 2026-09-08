@@ -9,8 +9,8 @@ namespace vn {
     Window::Window(const WindowSettings& window_settings)
         : m_handle(SDL_CreateWindow(
               window_settings.title.c_str(),
-              static_cast<int>(window_settings.initial_size.width),
-              static_cast<int>(window_settings.initial_size.height),
+              static_cast<int>(window_settings.initial_size.x),
+              static_cast<int>(window_settings.initial_size.y),
               to_native_window_flags(window_settings.flags)
           )) {
         if (m_handle == nullptr) {
@@ -28,28 +28,32 @@ namespace vn {
         VN_INFO("Window context destroyed successfully");
     };
 
-    std::uint32_t Window::get_width() const noexcept {
+    std::size_t Window::get_width() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
-        return static_cast<std::uint32_t>(w);
+        return static_cast<std::size_t>(w);
     }
 
-    std::uint32_t Window::get_height() const noexcept {
+    std::size_t Window::get_height() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
-        return static_cast<std::uint32_t>(h);
+        return static_cast<std::size_t>(h);
     }
 
-    WindowSettings::Size Window::get_size() const noexcept {
+    glm::uvec2 Window::get_size() const noexcept {
         int w {};
         int h {};
         SDL_GetWindowSize(m_handle, &w, &h);
-        return WindowSettings::Size {
-            static_cast<std::uint32_t>(w),
-            static_cast<std::uint32_t>(h),
+        return {
+            static_cast<std::size_t>(w),
+            static_cast<std::size_t>(h),
         };
+    }
+
+    void Window::set_title(const std::string& title) {
+        SDL_SetWindowTitle(m_handle, title.c_str());
     }
 
     SDL_Window* Window::get_native_handle() const {

@@ -83,30 +83,11 @@ protected:
         } else if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Down)) {
             player_sprite_transform.local.scale /= 1.5f;
         }
+
+        get_window().set_title(std::format("Bomberman | FPS: {}", get_time().get_filtered_fps()));
     }
 
     void render() override {
-        get_renderer().draw_text(
-            std::format("FPS: {}", get_time().get_filtered_fps()),
-            m_font,
-            { 10.f, 10.f },
-            vn::colors::Green,
-            0,
-            1.5f
-        );
-
-        get_renderer().draw_text(
-            std::format(
-                "Mouse X: {}, Y: {}",
-                get_devices().get_mouse().get_position().x,
-                get_devices().get_mouse().get_position().y
-            ),
-            m_font,
-            { 10.f, 50.f },
-            vn::colors::Yellow,
-            0,
-            1.5f
-        );
     }
 
 private:

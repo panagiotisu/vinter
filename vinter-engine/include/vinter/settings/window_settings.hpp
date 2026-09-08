@@ -3,16 +3,14 @@
 #include <cstdint>
 #include <string>
 
+#include <glm/glm.hpp>
+
 namespace vn {
     struct WindowSettings {
         std::string title { "Vinter App" };
 
-        struct Size {
-            std::uint32_t width, height;
-        };
-
-        Size initial_size { .width = 1280, .height = 720 };
-        Size virtual_size { .width = 640, .height = 360 };
+        glm::uvec2 initial_size { 1280, 720 };
+        glm::uvec2 virtual_size { 640, 360 };
 
         struct Flags {
             bool fullscreen { false };
