@@ -28,7 +28,7 @@ namespace vn {
             return m_running_sum / static_cast<T>(this->m_samples.size());
         }
 
-        void reset() {
+        void reset() override {
         }
 
     private:

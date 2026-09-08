@@ -4,7 +4,7 @@ namespace vn {
     Time::Time()
         : m_start_time(Clock::now())
         , m_last_frame_time(m_start_time)
-        , m_frame_time_filter(std::make_unique<MovingAverageFilter<float>>(120)) {
+        , m_frame_time_filter(std::make_unique<ExponentialMovingAverageFilter<float>>(120)) {
     }
 
     float Time::get_delta_time() const noexcept {

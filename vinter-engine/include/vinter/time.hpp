@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-#include "vinter/utils/filters/moving_average_filter.hpp"
+#include "vinter/utils/filters/exponential_moving_average_filter.hpp"
 
 namespace vn {
     class Time {
@@ -133,7 +133,7 @@ namespace vn {
         float m_wall_clock_time {};
 
         float m_fps {};
-        std::unique_ptr<MovingAverageFilter<float>> m_frame_time_filter {};
+        std::unique_ptr<ExponentialMovingAverageFilter<float>> m_frame_time_filter {};
 
         bool m_paused { false };
     };
