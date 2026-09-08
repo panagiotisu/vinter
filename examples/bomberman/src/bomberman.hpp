@@ -59,10 +59,10 @@ protected:
         player_sprite_animator.add("idle_downright", 4, 7, 3, true);
         player_sprite_animator.add("idle_upright", 8, 11, 3, true);
         player_sprite_animator.add("idle_up", 12, 15, 3, true);
-        player_sprite_animator.add("walking_down", 15, 18, 3, true);
-        player_sprite_animator.add("walking_downright", 19, 22, 3, true);
-        player_sprite_animator.add("walking_upright", 23, 26, 3, true);
-        player_sprite_animator.add("walking_up", 27, 30, 3, true);
+        player_sprite_animator.add("walking_down", 16, 19, 6, true);
+        player_sprite_animator.add("walking_downright", 20, 23, 8, true);
+        player_sprite_animator.add("walking_upright", 24, 27, 8, true);
+        player_sprite_animator.add("walking_up", 28, 31, 6, true);
         player_sprite_animator.play(player_sprite, "idle_down");
 
         get_ecs().add<SpriteDirector>(

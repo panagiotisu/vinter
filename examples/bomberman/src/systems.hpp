@@ -108,7 +108,7 @@ private:
                 director.cardinal = cardinal_from_vector(
                     director.face_pattern, director.face_direction
                 );
-                animator.play(sprite, "idle" + cardinal_to_string(director.cardinal));
+                animator.play(sprite, "walking" + cardinal_to_string(director.cardinal));
             }
         );
     }
