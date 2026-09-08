@@ -45,28 +45,28 @@ protected:
         );
         get_ecs().add<Player>(m_player);
 
-        m_player_sprite = get_ecs().create_entity();
-        get_ecs().add<vn::ecs::Transform>(m_player_sprite, { .parent = m_player });
+        m_player_visuals = get_ecs().create_entity();
+        get_ecs().add<vn::ecs::Transform>(m_player_visuals, { .parent = m_player });
         auto& player_sprite = get_ecs().add<vn::ecs::Sprite>(
-            m_player_sprite,
+            m_player_visuals,
             vn::ecs::Sprite::create(
                 get_textures().load("../../../examples/bomberman/assets/textures/player.png"), 36, 1
             )
         );
 
-        auto& player_sprite_animator = get_ecs().add<vn::ecs::SpriteAnimator>(m_player_sprite);
+        auto& player_sprite_animator = get_ecs().add<vn::ecs::SpriteAnimator>(m_player_visuals);
         player_sprite_animator.add("idle_down", 0, 3, 3, true);
-        player_sprite_animator.add("idle_downright", 3, 6, 3, true);
-        player_sprite_animator.add("idle_upright", 6, 9, 3, true);
-        player_sprite_animator.add("idle_up", 9, 12, 3, true);
-        player_sprite_animator.add("walking_down", 12, 15, 3, true);
-        player_sprite_animator.add("walking_downright", 15, 18, 3, true);
-        player_sprite_animator.add("walking_upright", 18, 21, 3, true);
-        player_sprite_animator.add("walking_up", 21, 24, 3, true);
+        player_sprite_animator.add("idle_downright", 4, 7, 3, true);
+        player_sprite_animator.add("idle_upright", 8, 11, 3, true);
+        player_sprite_animator.add("idle_up", 12, 15, 3, true);
+        player_sprite_animator.add("walking_down", 15, 18, 3, true);
+        player_sprite_animator.add("walking_downright", 19, 22, 3, true);
+        player_sprite_animator.add("walking_upright", 23, 26, 3, true);
+        player_sprite_animator.add("walking_up", 27, 30, 3, true);
         player_sprite_animator.play(player_sprite, "idle_down");
 
         get_ecs().add<SpriteDirector>(
-            m_player_sprite, { .face_pattern = SpriteDirector::FacePattern::Hexagon }
+            m_player_visuals, { .face_pattern = SpriteDirector::FacePattern::Hexagon }
         );
 
         get_systems().add(vn::ecs::ResolveTransformTreeSystem(get_ecs()));
@@ -77,7 +77,7 @@ protected:
     }
 
     void update(float /*delta*/) override {
-        auto& player_sprite_transform = get_ecs().get<vn::ecs::Transform>(m_player_sprite);
+        auto& player_sprite_transform = get_ecs().get<vn::ecs::Transform>(m_player_visuals);
         if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Up)) {
             player_sprite_transform.local.scale *= 1.5f;
         } else if (get_devices().get_mouse().is_wheel_triggered(vn::Mouse::Wheel::Down)) {
@@ -92,6 +92,6 @@ protected:
 
 private:
     vn::ecs::Entity m_player {};
-    vn::ecs::Entity m_player_sprite {};
+    vn::ecs::Entity m_player_visuals {};
     vn::Font m_font {};
 };
