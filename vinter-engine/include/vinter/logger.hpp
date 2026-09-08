@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <cstdlib>
 #include <format>
@@ -32,6 +33,11 @@ namespace vn {
 
         static void enable_colored_logs(bool enabled) {
             m_colored_logs = enabled;
+        }
+
+        // NEW: toggle timestamps
+        static void enable_timestamps(bool enabled) {
+            m_timestamps_enabled = enabled;
         }
 
         template <typename... Args>
@@ -82,6 +88,10 @@ namespace vn {
                 std::cerr << ConsoleColor::Red;
             }
 
+            if (m_timestamps_enabled) {
+                std::cerr << get_timestamp() << ' ';
+            }
+
             std::cerr << "[FATAL] " << std::format(fmt, std::forward<Args>(args)...)
                       << "\nFile: " << file << "\nLine: " << line << '\n';
 
@@ -122,6 +132,19 @@ namespace vn {
             static constexpr const char* Red = "\033[31m";
         };
 
+        // Generate a timestamp string in the format "[YYYY-MM-DD HH:MM:SS]"
+        static std::string get_timestamp() {
+            auto now = std::chrono::system_clock::now();
+            auto local_time =
+                std::chrono::zoned_time { std::chrono::current_zone(), now }.get_local_time();
+
+            auto sec = floor<std::chrono::seconds>(local_time);
+            auto millis = duration_cast<std::chrono::milliseconds>(local_time - sec).count();
+            auto hundredths = millis / 10;
+
+            return std::format("[{:%Y-%m-%d %H:%M:%S}.{:02d}]", sec, hundredths);
+        }
+
         template <typename... Args>
         static void
         log(Level level,
@@ -138,6 +161,11 @@ namespace vn {
                 out << color;
             }
 
+            // NEW: prepend timestamp if enabled
+            if (m_timestamps_enabled) {
+                out << get_timestamp() << ' ';
+            }
+
             out << label << ' ' << std::format(fmt, std::forward<Args>(args)...);
 
             if (m_colored_logs) {
@@ -149,6 +177,7 @@ namespace vn {
 
         inline static Level m_level_filter = Level::Debug;
         inline static bool m_colored_logs = true;
+        inline static bool m_timestamps_enabled = true; // NEW: default on
     };
 
 } // namespace vn
