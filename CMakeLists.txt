@@ -38,7 +38,6 @@ endif()
 add_subdirectory("vinter-engine")
 add_subdirectory("vinter-editor")
 add_subdirectory("examples/bomberman")
-add_subdirectory("examples/gravitas")
 
 ######################################################################################################################
 # Platform and Compiler settings

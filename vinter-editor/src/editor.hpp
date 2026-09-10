@@ -36,7 +36,7 @@ protected:
         ImGui_ImplSDLRenderer3_Init(get_renderer().get_native_handle());
     }
 
-    void update() override {
+    void update(float /*delta*/) override {
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
