@@ -33,8 +33,6 @@ if(VINTER_ENABLE_ASAN)
     endif()
 endif()
 
-
-
 add_subdirectory("vinter-engine")
 add_subdirectory("vinter-editor")
 add_subdirectory("examples/bomberman")
