@@ -40,7 +40,7 @@ protected:
             m_player,
             {
                 .max_speed = 300.f,
-                .acceleration_coefficient = 200.f,
+                .acceleration_coefficient = 9.f,
             }
         );
         get_ecs().add<Player>(m_player);
