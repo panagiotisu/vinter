@@ -73,7 +73,7 @@ private:
     void integrate_accelerations(float delta) {
         m_database.query<LinearKinematics>().for_each([&](LinearKinematics& lkin) {
             const glm::vec2 target_velocity = lkin.acceleration_direction * lkin.max_speed;
-            const float speed_delta = lkin.acceleration_coefficient * delta;
+            const float speed_delta = 1.f - std::exp(-lkin.acceleration_coefficient * delta);
 
             lkin.velocity.x = std::lerp(lkin.velocity.x, target_velocity.x, speed_delta);
             lkin.velocity.y = std::lerp(lkin.velocity.y, target_velocity.y, speed_delta);
