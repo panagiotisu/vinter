@@ -29,6 +29,10 @@ namespace vn {
         }
 
         void reset() override {
+            this->m_samples.clear();
+            m_running_sum = {};
+            m_weighted_sum = {};
+            m_total_weight = {};
         }
 
     private:

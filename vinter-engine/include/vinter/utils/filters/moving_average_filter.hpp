@@ -29,7 +29,7 @@ namespace vn {
 
         void reset() override {
             this->m_samples.clear();
-            m_running_sum = T {};
+            m_running_sum = {};
         }
 
     private:
