@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string_view>
-
 #include <glm/glm.hpp>
 
 #include "vinter/assets/font_manager.hpp"
